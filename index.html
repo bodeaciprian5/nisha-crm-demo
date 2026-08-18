@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NISHA · CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bone:#F1F0EB; --bone-2:#E7E5DE; --paper:#FFFFFF;
+  --ink:#1C1D1D; --ink-2:#3A3B3B;
+  --muted:#86867F; --muted-2:#9E9E9B;
+  --line:#D8D6CE; --line-2:#CCCBC6;
+  --sage:#6E7A6B; --clay:#A8785F; --sand:#B9A489; --slate:#5B6B73; --rose:#9A5B52; --gold:#C0A062;
+  --serif:'Cormorant Garamond',Georgia,'Times New Roman',serif;
+  --sans:'Jost',-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;
+  --shadow:0 1px 2px rgba(28,29,29,.04),0 8px 24px -16px rgba(28,29,29,.18);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bone);color:var(--ink);font-family:var(--sans);font-weight:300;font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer;background:none;border:none}
+a{color:inherit;text-decoration:none}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-thumb{background:var(--line-2)}
+::-webkit-scrollbar-track{background:transparent}
+
+.eyebrow{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:400}
+.serif{font-family:var(--serif);font-weight:300;text-transform:uppercase;letter-spacing:.02em;line-height:1.05}
+
+/* ---------- shell ---------- */
+.app{display:flex;height:100vh;overflow:hidden}
+.sidebar{width:232px;flex:0 0 232px;background:var(--ink);color:var(--bone);display:flex;flex-direction:column;padding:26px 0}
+.brand{padding:0 26px 30px;border-bottom:1px solid rgba(241,240,235,.12);margin-bottom:22px}
+.brand .mark{font-family:var(--serif);font-size:27px;letter-spacing:.34em;text-transform:uppercase;font-weight:300}
+.brand .sub{font-size:7.5px;letter-spacing:.34em;text-transform:uppercase;color:rgba(241,240,235,.45);margin-top:5px}
+.nav{flex:1;overflow-y:auto}
+.nav .grp{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(241,240,235,.32);padding:16px 26px 8px}
+.nav a{display:flex;align-items:center;gap:11px;padding:9px 26px;font-size:12.5px;letter-spacing:.06em;color:rgba(241,240,235,.66);border-left:2px solid transparent;transition:.15s}
+.nav a:hover{color:#fff;background:rgba(241,240,235,.04)}
+.nav a.on{color:#fff;border-left-color:var(--sand);background:rgba(241,240,235,.06)}
+.nav a .ico{width:15px;text-align:center;opacity:.8;font-size:13px}
+.nav a .cnt{margin-left:auto;font-size:10px;color:rgba(241,240,235,.4)}
+.sidefoot{padding:18px 26px 0;border-top:1px solid rgba(241,240,235,.12);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(241,240,235,.34)}
+
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{height:66px;flex:0 0 66px;display:flex;align-items:center;gap:16px;padding:0 26px;background:var(--bone);border-bottom:1px solid var(--line)}
+.topbar h1{font-family:var(--serif);font-size:24px;font-weight:300;text-transform:uppercase;letter-spacing:.08em}
+.search{flex:1;max-width:300px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--line-2);padding:6px 2px}
+.search input{border:none;outline:none;background:none;width:100%;font-size:13px}
+.search input::placeholder{color:var(--muted-2)}
+.spacer{flex:1}
+.who{display:flex;align-items:center;gap:9px;border:1px solid var(--line-2);padding:6px 10px}
+.who select{border:none;outline:none;background:none;font-size:11px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}
+.content{flex:1;overflow:auto;padding:26px}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--ink);padding:10px 20px;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;transition:.18s;white-space:nowrap}
+.btn:hover{background:var(--ink);color:var(--bone)}
+.btn.dark{background:var(--ink);color:var(--bone)}
+.btn.dark:hover{background:transparent;color:var(--ink)}
+.btn.sm{padding:7px 14px;font-size:9.5px;letter-spacing:.14em}
+.btn.ghost{border-color:var(--line-2);color:var(--muted)}
+.btn.ghost:hover{border-color:var(--ink);background:transparent;color:var(--ink)}
+.btn[disabled]{opacity:.35;pointer-events:none}
+
+/* ---------- misc atoms ---------- */
+.tag{display:inline-flex;align-items:center;gap:5px;font-size:9px;letter-spacing:.13em;text-transform:uppercase;padding:3px 8px;border:1px solid var(--line-2);color:var(--muted);white-space:nowrap}
+.tag.f{background:var(--ink);color:var(--bone);border-color:var(--ink)}
+.dot{width:6px;height:6px;display:inline-block;flex:0 0 6px}
+.warn{color:var(--rose)}
+.card{background:var(--paper);border:1px solid var(--line);padding:16px}
+.stat{background:var(--paper);border:1px solid var(--line);padding:16px 18px}
+.stat .n{font-family:var(--serif);font-size:38px;line-height:1;font-weight:300}
+.stat .l{font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:7px}
+.grid-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px}
+.empty{padding:50px;text-align:center;color:var(--muted-2);font-size:13px;border:1px dashed var(--line-2)}
+.seg{display:inline-flex;border:1px solid var(--line-2)}
+.seg button{padding:7px 15px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.seg button.on{background:var(--ink);color:var(--bone)}
+
+/* ---------- kanban ---------- */
+.board{display:flex;gap:14px;align-items:flex-start;overflow-x:auto;padding-bottom:16px;min-height:70vh}
+.col{flex:0 0 258px;width:258px;background:rgba(255,255,255,.5);border:1px solid var(--line);display:flex;flex-direction:column;max-height:calc(100vh - 210px)}
+.col.over{border-color:var(--ink);background:#fff}
+.col .hd{padding:13px 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
+.col .hd .nm{font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:400;line-height:1.3}
+.col .hd .n{margin-left:auto;font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums}
+.col .hd .ow{font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);display:block;margin-top:3px}
+.col .body{padding:10px;display:flex;flex-direction:column;gap:9px;overflow-y:auto}
+.kc{background:var(--paper);border:1px solid var(--line);padding:12px;cursor:grab;transition:.15s}
+.kc:hover{border-color:var(--ink);box-shadow:var(--shadow)}
+.kc.drag{opacity:.35}
+.kc .nm{font-family:var(--serif);font-size:17px;text-transform:uppercase;letter-spacing:.03em;line-height:1.15}
+.kc .meta{font-size:10.5px;color:var(--muted);margin-top:5px;letter-spacing:.02em}
+.kc .row{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+.kc .bar{height:2px;background:var(--bone-2);margin-top:10px}
+.kc .bar i{display:block;height:2px;background:var(--ink)}
+
+/* ---------- table ---------- */
+table{width:100%;border-collapse:collapse;background:var(--paper);border:1px solid var(--line)}
+th{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:400;text-align:left;padding:12px 14px;border-bottom:1px solid var(--line)}
+td{padding:12px 14px;border-bottom:1px solid var(--bone-2);font-size:13px;vertical-align:middle}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--bone)}
+tbody tr:last-child td{border-bottom:none}
+td .nm{font-family:var(--serif);font-size:17px;text-transform:uppercase;letter-spacing:.03em}
+
+/* ---------- drawer ---------- */
+.scrim{position:fixed;inset:0;background:rgba(28,29,29,.42);opacity:0;pointer-events:none;transition:.25s;z-index:40}
+.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(660px,94vw);background:var(--bone);border-left:1px solid var(--line);transform:translateX(102%);transition:transform .3s cubic-bezier(.4,0,.2,1);z-index:50;display:flex;flex-direction:column}
+.drawer.on{transform:none}
+.drawer .dhd{padding:24px 28px 18px;border-bottom:1px solid var(--line);background:var(--ink);color:var(--bone)}
+.drawer .dhd h2{font-family:var(--serif);font-size:31px;font-weight:300;text-transform:uppercase;letter-spacing:.04em;line-height:1.05}
+.drawer .dbd{flex:1;overflow-y:auto;padding:24px 28px 60px}
+.tabs{display:flex;gap:22px;border-bottom:1px solid var(--line);margin-bottom:22px}
+.tabs button{padding:10px 0;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid transparent;margin-bottom:-1px}
+.tabs button.on{color:var(--ink);border-bottom-color:var(--ink)}
+.kv{display:grid;grid-template-columns:130px 1fr;gap:10px 16px;font-size:13px}
+.kv dt{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+.sec{margin-bottom:26px}
+.sec h3{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.close{position:absolute;top:22px;right:26px;font-size:22px;line-height:1;color:var(--bone);opacity:.7}
+.close:hover{opacity:1}
+
+/* ---------- timeline ---------- */
+.tl{position:relative;padding-left:22px}
+.tl:before{content:'';position:absolute;left:4px;top:5px;bottom:5px;width:1px;background:var(--line-2)}
+.tl .it{position:relative;padding-bottom:16px}
+.tl .it:before{content:'';position:absolute;left:-22px;top:5px;width:9px;height:9px;border:1px solid var(--ink);background:var(--bone)}
+.tl .it.done:before{background:var(--ink)}
+.tl .it.cur:before{background:var(--sand);border-color:var(--sand)}
+.tl .t{font-size:12.5px;letter-spacing:.02em}
+.tl .d{font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+
+/* ---------- audio ---------- */
+.anote{display:flex;align-items:center;gap:12px;background:var(--paper);border:1px solid var(--line);padding:11px 13px;margin-bottom:8px}
+.anote .play{width:30px;height:30px;flex:0 0 30px;border:1px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:10px}
+.anote .play:hover{background:var(--ink);color:var(--bone)}
+.wave{flex:1;display:flex;align-items:center;gap:2px;height:22px}
+.wave i{flex:1;background:var(--line-2);min-height:3px}
+.rec{display:flex;align-items:center;gap:12px;border:1px dashed var(--line-2);padding:13px;background:rgba(255,255,255,.5)}
+.rec.live{border-color:var(--rose);border-style:solid}
+.pulse{width:9px;height:9px;background:var(--rose);border-radius:50%;animation:p 1s infinite}
+@keyframes p{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* ---------- forms ---------- */
+.field{margin-bottom:15px}
+.field label{display:block;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;border:1px solid var(--line-2);background:var(--paper);padding:9px 11px;outline:none;font-size:13px}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--ink)}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:12px;color:var(--ink-2);line-height:1.45}
+.chk input{margin-top:3px;flex:0 0 auto;accent-color:#1C1D1D}
+.notice{border-left:2px solid var(--sand);background:rgba(185,164,137,.1);padding:11px 14px;font-size:12px;color:var(--ink-2);margin-bottom:15px}
+.notice.rose{border-color:var(--rose);background:rgba(154,91,82,.08)}
+
+.modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:60;padding:24px}
+.modal.on{display:flex}
+.modal .box{background:var(--bone);border:1px solid var(--line);width:min(620px,100%);max-height:88vh;overflow-y:auto}
+.modal .box .mh{padding:22px 26px;border-bottom:1px solid var(--line);display:flex;align-items:center}
+.modal .box .mh h2{font-family:var(--serif);font-size:25px;font-weight:300;text-transform:uppercase;letter-spacing:.05em}
+.modal .box .mb{padding:24px 26px}
+.modal .box .mf{padding:18px 26px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;background:rgba(255,255,255,.4)}
+
+/* ---------- tasks ---------- */
+.tk{display:flex;gap:13px;align-items:flex-start;background:var(--paper);border:1px solid var(--line);padding:14px;margin-bottom:9px}
+.tk.done{opacity:.5}
+.tk .box{width:16px;height:16px;flex:0 0 16px;border:1px solid var(--ink);margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:10px}
+.tk .t{font-size:13.5px;letter-spacing:.01em}
+.tk.done .t{text-decoration:line-through}
+.tk .m{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:5px;display:flex;gap:12px;flex-wrap:wrap}
+.tk .ph{display:flex;gap:6px;margin-top:9px}
+.tk .ph img{width:54px;height:54px;object-fit:cover;border:1px solid var(--line)}
+.who-pill{font-size:9px;letter-spacing:.12em;text-transform:uppercase;background:var(--bone-2);padding:2px 7px;color:var(--ink-2)}
+
+.rem{display:grid;grid-template-columns:78px 1fr auto;gap:16px;align-items:center;background:var(--paper);border:1px solid var(--line);padding:14px;margin-bottom:9px}
+.rem .when{text-align:center;border-right:1px solid var(--bone-2);padding-right:14px}
+.rem .when .d{font-family:var(--serif);font-size:26px;line-height:1}
+.rem .when .m{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.rem.late{border-color:var(--rose)}
+.rem.late .when .d{color:var(--rose)}
+
+.legend{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:18px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.legend span{display:flex;align-items:center;gap:6px}
+@media(max-width:900px){.sidebar{display:none}.content{padding:16px}.kv{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="mark">Nisha</div>
+      <div class="sub">Mobilier personalizat</div>
+    </div>
+    <nav class="nav" id="nav"></nav>
+    <div class="sidefoot">Prototip v1 · <a href="#" onclick="exportJSON();return false" style="text-decoration:underline">Export date</a></div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <h1 id="pageTitle">Pipeline</h1>
+      <div class="search"><span style="color:var(--muted-2)">⌕</span><input id="q" placeholder="Caută client, adresă, telefon…" oninput="STATE.q=this.value;render()"></div>
+      <div class="spacer"></div>
+      <div class="who">
+        <span class="eyebrow">Vezi ca</span>
+        <select id="userSel" onchange="STATE.me=this.value;render()"></select>
+      </div>
+      <button class="btn dark" onclick="openNew()">+ Client nou</button>
+    </header>
+    <div class="content" id="view"></div>
+  </div>
+</div>
+
+<div class="scrim" id="scrim" onclick="closeDrawer()"></div>
+<aside class="drawer" id="drawer"></aside>
+<div class="modal" id="modal"></div>
+
+<script>
+/* =========================================================
+   NISHA CRM — prototip
+   Proces reconstituit din discuția Andrei Mureșan (aug. 2026)
+   ========================================================= */
+
+const TEAM = [
+  {id:'ilie',    name:'Andrei Mureșan',       role:'Administrator',            short:'IG'},
+  {id:'roxana',  name:'Ana Popescu',    role:'Coordonator proiectare',   short:'RB'},
+  {id:'mihaela', name:'Maria Ionescu',    role:'Măsurători',               short:'MG'},
+  {id:'andreea', name:'Elena Radu', role:'Comenzi & achiziții',      short:'AC'},
+  {id:'trutca',  name:'Cristina Stan',  role:'Proiectant / lansare',     short:'TA'},
+  {id:'sorin',   name:'Sorin',           role:'Proiectant',               short:'S'},
+  {id:'gabriel', name:'Gabriel',         role:'Proiectant',               short:'G'},
+  {id:'potco',   name:'Dan Ilieș',role:'Proiectant',               short:'AP'},
+  {id:'adela',   name:'Adela',           role:'Producție atelier',        short:'A'},
+  {id:'vasile',  name:'Vasile',          role:'Montaj',                   short:'V'},
+];
+const NAME = id => (TEAM.find(t=>t.id===id)||{name:'—'}).name;
+
+const STAGES = [
+  {id:'inreg',    n:1,  nm:'Înregistrare clienți',      ow:'ilie',    c:'#86867F', note:'Andrei introduce clientul + specificații audio'},
+  {id:'triaj',    n:2,  nm:'Triaj & programare',        ow:'roxana',  c:'#5B6B73', note:'Ana decide dacă și când se măsoară'},
+  {id:'masur',    n:3,  nm:'Măsurători',                ow:'mihaela', c:'#6E7A6B', note:'Doar dacă spațiul e finisat (șapă + glet)'},
+  {id:'proiect',  n:4,  nm:'Proiectare',                ow:'sorin',   c:'#6E7A6B', note:'Delegat de Ana unui proiectant'},
+  {id:'deofert',  n:5,  nm:'Clienți de ofertat',        ow:'roxana',  c:'#B9A489', note:'Proiect validat, gata de ofertare'},
+  {id:'ofertare', n:6,  nm:'Ofertare & achiziție',      ow:'andreea', c:'#B9A489', note:'Se emite oferta, se comandă materialele'},
+  {id:'ofertat',  n:7,  nm:'Clienți ofertați',          ow:'andreea', c:'#C0A062', note:'Ofertă trimisă, așteptăm confirmare'},
+  {id:'delansat', n:8,  nm:'De lansat în producție',    ow:'trutca',  c:'#A8785F', note:'Materiale în firmă, proiect validat'},
+  {id:'productie',n:9,  nm:'Producție atelier',         ow:'adela',   c:'#A8785F', note:'Se lucrează efectiv'},
+  {id:'livrat',   n:10, nm:'Lucrări livrate',           ow:'vasile',  c:'#1C1D1D', note:'Montaj terminat, snag list încărcat'},
+  {id:'restante', n:11, nm:'Restanțe',                  ow:'vasile',  c:'#9A5B52', note:'Ce a rămas de rezolvat după montaj'},
+];
+const ST = id => STAGES.find(s=>s.id===id) || STAGES[0];
+
+const AVANS = {apartament:5000, casa:10000, comercial:10000};
+
+/* ---------------- date demo ---------------- */
+const today = new Date(2026,7,18); // 18 aug 2026
+const d = (off)=>{const x=new Date(today);x.setDate(x.getDate()+off);return x.toISOString().slice(0,10)};
+
+let SEQ = 100;
+const mk = o => Object.assign({
+  id:'C'+(++SEQ), stage:'inreg', designer:'—', tip:'fara', santier:'finisat',
+  buget:'', avans:0, avansPlatit:false, gdpr:true, tel:'', adresa:'Str. Exemplu 12, ap. 4', oras:'Oraș Demo',
+  audio:[], docs:[], hist:[], creat:d(-30), termen:'', proiectant:'', obs:''
+}, o);
+
+let CLIENTS = [
+  mk({nume:'Radu Marinescu', stage:'deofert', designer:'Studio Alfa', tip:'cu', santier:'finisat',
+      tel:'07xx xxx xxx', adresa:'Bd. Demo 44', tipLocuinta:'apartament', avansPlatit:true,
+      creat:d(-24), termen:d(34), proiectant:'sorin', buget:'62.000 lei',
+      obs:'Vine prin Ana. Bucătărie + dressing + living. Proiect 3D primit.',
+      audio:[{t:'0:42',dsc:'Brief inițial — preferă furnir stejar natur, fronturi fără mânere'},{t:'1:08',dsc:'Detalii bucătărie: electrocasnice Bosch, coloană cuptor+microunde'}],
+      hist:[['inreg',d(-24)],['triaj',d(-22)],['masur',d(-18)],['proiect',d(-9)],['deofert',d(-2)]]}),
+  mk({nume:'Carmen Vlad', stage:'restante', designer:'Atelier Beta', tip:'cu', santier:'finisat',
+      tel:'07xx xxx xxx', adresa:'Str. Exemplu 8, casă', tipLocuinta:'apartament', avansPlatit:true,
+      creat:d(-142), termen:d(-12), proiectant:'gabriel', buget:'48.500 lei',
+      obs:'Montaj finalizat. Rămase: mâner sertar, retuș blat, ușă dressing.',
+      hist:[['inreg',d(-142)],['triaj',d(-138)],['masur',d(-130)],['proiect',d(-112)],['deofert',d(-98)],['ofertare',d(-92)],['ofertat',d(-84)],['delansat',d(-56)],['productie',d(-30)],['livrat',d(-12)],['restante',d(-11)]]}),
+  mk({nume:'Familia Anton', stage:'productie', designer:'Forma Studio', tip:'cu', santier:'finisat',
+      tel:'07xx xxx xxx', adresa:'Str. Demo 21', tipLocuinta:'casa', avansPlatit:true,
+      creat:d(-96), termen:d(21), proiectant:'potco', buget:'186.000 lei',
+      obs:'Mobilier integral casă. 4 dormitoare + living + 2 băi.',
+      audio:[{t:'2:15',dsc:'Vizionare la fața locului — atenție la grinda din living'}],
+      hist:[['inreg',d(-96)],['triaj',d(-93)],['masur',d(-88)],['proiect',d(-70)],['deofert',d(-60)],['ofertare',d(-54)],['ofertat',d(-46)],['delansat',d(-20)],['productie',d(-6)]]}),
+  mk({nume:'Tudor Barbu', stage:'ofertare', designer:'Nord Design', tip:'cu', santier:'rosu',
+      tel:'07xx xxx xxx', adresa:'Str. Exemplu 118, ap. 12', tipLocuinta:'casa', avansPlatit:true,
+      creat:d(-40), termen:d(120), proiectant:'sorin', buget:'—',
+      obs:'Șantier la roșu. Ofertăm pe proiectul designerului; măsurăm după finisaje.',
+      hist:[['inreg',d(-40)],['triaj',d(-38)],['proiect',d(-20)],['deofert',d(-8)],['ofertare',d(-3)]]}),
+  mk({nume:'Ioana Neagu', stage:'inreg', designer:'—', tip:'fara', santier:'finisat',
+      tel:'07xx xxx xxx', adresa:'Str. Demo 3, casă', tipLocuinta:'apartament', avansPlatit:false,
+      creat:d(-2), termen:'', buget:'—',
+      obs:'Prima discuție ok. Nu are proiect de design — pornim de la zero.',
+      audio:[{t:'1:31',dsc:'Vrea bucătărie + hol. Buget orientativ 40k. Nu are proiect.'}],
+      hist:[['inreg',d(-2)]]}),
+  mk({nume:'Cristian Dobre', stage:'triaj', designer:'Studio Alfa', tip:'cu', santier:'rosu',
+      tel:'07xx xxx xxx', adresa:'Str. Exemplu 7', tipLocuinta:'casa', avansPlatit:false,
+      creat:d(-6), termen:'', buget:'—',
+      obs:'Are proiect de design. Casa e la roșu — de reevaluat în 6 săptămâni.',
+      hist:[['inreg',d(-6)],['triaj',d(-4)]]}),
+  mk({nume:'Diana Oprea', stage:'masur', designer:'—', tip:'fara', santier:'finisat',
+      tel:'07xx xxx xxx', adresa:'Str. Demo 60, ap. 3', tipLocuinta:'apartament', avansPlatit:true,
+      creat:d(-16), termen:d(58), buget:'—',
+      obs:'Măsurătoare programată. Fără proiect — proiectăm noi.',
+      hist:[['inreg',d(-16)],['triaj',d(-13)],['masur',d(-1)]]}),
+  mk({nume:'Paul Sabin', stage:'proiect', designer:'Atelier Beta', tip:'cu', santier:'finisat',
+      tel:'07xx xxx xxx', adresa:'Str. Exemplu 122', tipLocuinta:'apartament', avansPlatit:true,
+      creat:d(-34), termen:d(45), proiectant:'gabriel', buget:'—',
+      obs:'Redesenare proiect designer. Gabriel are 3 zile normate.',
+      hist:[['inreg',d(-34)],['triaj',d(-31)],['masur',d(-26)],['proiect',d(-11)]]}),
+  mk({nume:'Raluca Enache', stage:'ofertat', designer:'Forma Studio', tip:'cu', santier:'finisat',
+      tel:'07xx xxx xxx', adresa:'Str. Demo 15', tipLocuinta:'apartament', avansPlatit:true,
+      creat:d(-52), termen:d(30), proiectant:'potco', buget:'71.200 lei',
+      obs:'Ofertă trimisă acum 9 zile. De sunat pentru confirmare.',
+      hist:[['inreg',d(-52)],['triaj',d(-50)],['masur',d(-44)],['proiect',d(-28)],['deofert',d(-18)],['ofertare',d(-13)],['ofertat',d(-9)]]}),
+  mk({nume:'Bogdan Filip', stage:'delansat', designer:'Studio Alfa', tip:'cu', santier:'finisat',
+      tel:'07xx xxx xxx', adresa:'Str. Exemplu 90', tipLocuinta:'casa', avansPlatit:true,
+      creat:d(-78), termen:d(12), proiectant:'sorin', buget:'134.000 lei',
+      obs:'Materiale intrate integral. Cristina a bifat achiziția.',
+      hist:[['inreg',d(-78)],['triaj',d(-75)],['masur',d(-68)],['proiect',d(-50)],['deofert',d(-40)],['ofertare',d(-34)],['ofertat',d(-26)],['delansat',d(-3)]]}),
+  mk({nume:'Mihai Lazăr', stage:'livrat', designer:'—', tip:'fara', santier:'finisat',
+      tel:'07xx xxx xxx', adresa:'Str. Demo 41, ap. 8', tipLocuinta:'apartament', avansPlatit:true,
+      creat:d(-118), termen:d(-5), proiectant:'gabriel', buget:'39.800 lei',
+      obs:'Montaj terminat, fără restanțe raportate.',
+      hist:[['inreg',d(-118)],['triaj',d(-115)],['masur',d(-108)],['proiect',d(-90)],['deofert',d(-78)],['ofertare',d(-70)],['ofertat',d(-62)],['delansat',d(-32)],['productie',d(-14)],['livrat',d(-5)]]}),
+  mk({nume:'Simona Rusu', stage:'inreg', designer:'Nord Design', tip:'cu', santier:'finisat',
+      tel:'07xx xxx xxx', adresa:'Str. Exemplu 12, ap. 4', tipLocuinta:'apartament', avansPlatit:false,
+      creat:d(-1), termen:'', buget:'—',
+      obs:'Are ofertă de la un concurent, vrea comparație. GDPR semnat.',
+      audio:[{t:'0:58',dsc:'Are deja ofertă — pornim discuția de pe ea, nu percepem avans de ofertare'}],
+      hist:[['inreg',d(-1)]]}),
+];
+
+let TASKS = [
+  {id:'T1', cid:'C102', t:'Mâner sertar bucătărie — de înlocuit (comandat, sosește vineri)', who:'vasile', due:d(3), done:false, restanta:true, photos:[]},
+  {id:'T2', cid:'C102', t:'Retuș blat lângă plită — zgârietură la montaj', who:'vasile', due:d(3), done:false, restanta:true, photos:[]},
+  {id:'T3', cid:'C102', t:'Ușă dressing — se freacă în partea de jos, de reglat balamale', who:'adela', due:d(-1), done:false, restanta:true, photos:[]},
+  {id:'T4', cid:'C101', t:'Trimite oferta finală și fișa tehnică', who:'andreea', due:d(2), done:false, restanta:false, photos:[]},
+  {id:'T5', cid:'C106', t:'Programează măsurătoarea după ce se toarnă șapa', who:'roxana', due:d(40), done:false, restanta:false, photos:[]},
+  {id:'T6', cid:'C108', t:'Redesenare proiect — corpuri suspendate living', who:'gabriel', due:d(4), done:false, restanta:false, photos:[]},
+  {id:'T7', cid:'C110', t:'Verifică stocul de PAL Egger H1180 înainte de lansare', who:'andreea', due:d(1), done:false, restanta:false, photos:[]},
+  {id:'T8', cid:'C103', t:'Confirmă la client data de montaj (3 săptămâni)', who:'ilie', due:d(6), done:false, restanta:false, photos:[]},
+  {id:'T9', cid:'C107', t:'Măsurătoare la fața locului — Str. Exemplu 7', who:'mihaela', due:d(-1), done:true, restanta:false, photos:[]},
+  {id:'T10',cid:'C105', t:'Sună clientul pentru confirmarea avansului de proiectare', who:'ilie', due:d(0), done:false, restanta:false, photos:[]},
+];
+
+let REMINDERS = [
+  {id:'R1', cid:'C109', t:'Follow-up ofertă trimisă — a trecut o săptămână fără răspuns', due:d(-2), tip:'Follow-up ofertă', done:false},
+  {id:'R2', cid:'C106', t:'Reverificare stadiu șantier (era la roșu) — se poate măsura?', due:d(1), tip:'Recall șantier', done:false},
+  {id:'R3', cid:'C110', t:'Notificare client: lansare în producție peste 2 săptămâni', due:d(-2), tip:'Notificare 2 săptămâni', done:false},
+  {id:'R4', cid:'C105', t:'Recall client fără proiect de design — a trecut o săptămână', due:d(5), tip:'Recall client nou', done:false},
+  {id:'R5', cid:'C104', t:'Verifică prețurile la materiale — comandă anticipată (proiect la 4 luni)', due:d(3), tip:'Blocare preț materiale', done:false},
+  {id:'R6', cid:'C103', t:'Confirmare termen final de montaj cu clientul', due:d(9), tip:'Confirmare termen', done:false},
+];
+
+/* ---------------- state ---------------- */
+const STATE = {view:'pipeline', me:'ilie', q:'', boardMode:'kanban', drawerId:null, tab:'detalii', recording:null};
+
+const VIEWS = [
+  {id:'pipeline',  nm:'Pipeline',        ico:'▤', grp:'Proces'},
+  {id:'clienti',   nm:'Clienți',         ico:'◈', grp:'Proces'},
+  {id:'taskuri',   nm:'Task-uri',        ico:'✓', grp:'Execuție'},
+  {id:'restante',  nm:'Restanțe',        ico:'!',  grp:'Execuție'},
+  {id:'remindere', nm:'Remindere',       ico:'◔', grp:'Execuție'},
+  {id:'echipa',    nm:'Echipă & roluri', ico:'◇', grp:'Organizare'},
+  {id:'reguli',    nm:'Reguli proces',   ico:'§', grp:'Organizare'},
+];
+
+/* ---------------- helpers ---------------- */
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const days = iso => iso ? Math.round((new Date(iso)-today)/86400000) : null;
+const fmt = iso => { if(!iso) return '—'; const p=iso.split('-'); const M=['ian','feb','mar','apr','mai','iun','iul','aug','sep','oct','nov','dec'];
+  return p[2].replace(/^0/,'')+' '+M[+p[1]-1]+' '+p[0]; };
+const clientById = id => CLIENTS.find(c=>c.id===id);
+const tipLabel = c => (c.tip==='cu'?'Cu proiect design':'Fără proiect design');
+const santLabel = c => (c.santier==='rosu'?'Șantier la roșu':'Spațiu finisat');
+const matched = c => { const q=STATE.q.trim().toLowerCase(); if(!q) return true;
+  return (c.nume+' '+c.adresa+' '+c.tel+' '+c.designer+' '+(c.obs||'')).toLowerCase().includes(q); };
+const progress = c => Math.round((ST(c.stage).n/11)*100);
+
+/* ---------------- nav ---------------- */
+function renderNav(){
+  let h='', last='';
+  VIEWS.forEach(v=>{
+    if(v.grp!==last){h+=`<div class="grp">${v.grp}</div>`;last=v.grp}
+    let cnt='';
+    if(v.id==='clienti') cnt=CLIENTS.length;
+    if(v.id==='taskuri') cnt=TASKS.filter(t=>!t.done&&!t.restanta).length;
+    if(v.id==='restante')cnt=TASKS.filter(t=>!t.done&&t.restanta).length;
+    if(v.id==='remindere')cnt=REMINDERS.filter(r=>!r.done).length;
+    h+=`<a href="#" class="${STATE.view===v.id?'on':''}" onclick="go('${v.id}');return false">
+        <span class="ico">${v.ico}</span>${v.nm}<span class="cnt">${cnt}</span></a>`;
+  });
+  document.getElementById('nav').innerHTML=h;
+  const sel=document.getElementById('userSel');
+  if(!sel.options.length) sel.innerHTML=TEAM.map(t=>`<option value="${t.id}">${t.name}</option>`).join('');
+  sel.value=STATE.me;
+}
+function go(v){STATE.view=v;render();document.getElementById('view').scrollTop=0}
+
+/* ---------------- render ---------------- */
+function render(){
+  renderNav();
+  const v=VIEWS.find(x=>x.id===STATE.view);
+  document.getElementById('pageTitle').textContent=v.nm;
+  document.getElementById('view').innerHTML =
+    STATE.view==='pipeline' ? viewPipeline() :
+    STATE.view==='clienti'  ? viewClienti()  :
+    STATE.view==='taskuri'  ? viewTasks(false):
+    STATE.view==='restante' ? viewTasks(true) :
+    STATE.view==='remindere'? viewRemindere() :
+    STATE.view==='echipa'   ? viewEchipa()   : viewReguli();
+  if(STATE.drawerId) renderDrawer();
+}
+
+/* ---------------- PIPELINE ---------------- */
+function viewPipeline(){
+  const list=CLIENTS.filter(matched);
+  const late=REMINDERS.filter(r=>!r.done&&days(r.due)<0).length;
+  const rest=TASKS.filter(t=>t.restanta&&!t.done).length;
+  const stats=`<div class="grid-stats">
+    <div class="stat"><div class="n">${CLIENTS.length}</div><div class="l">Clienți activi</div></div>
+    <div class="stat"><div class="n">${CLIENTS.filter(c=>['delansat','productie'].includes(c.stage)).length}</div><div class="l">În producție</div></div>
+    <div class="stat"><div class="n">${CLIENTS.filter(c=>!c.avansPlatit).length}</div><div class="l">Fără avans încasat</div></div>
+    <div class="stat"><div class="n">${rest}</div><div class="l">Restanțe deschise</div></div>
+    <div class="stat"><div class="n" style="${late?'color:var(--rose)':''}">${late}</div><div class="l">Remindere depășite</div></div>
+  </div>`;
+
+  const toolbar=`<div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+    <div class="seg">
+      <button class="${STATE.boardMode==='kanban'?'on':''}" onclick="STATE.boardMode='kanban';render()">Kanban</button>
+      <button class="${STATE.boardMode==='lista'?'on':''}" onclick="STATE.boardMode='lista';render()">Listă</button>
+    </div>
+    <span class="eyebrow">Trage o fișă dintr-o coloană în alta pentru a avansa etapa</span>
+  </div>`;
+
+  if(STATE.boardMode==='lista') return stats+toolbar+tableOf(list);
+
+  const cols=STAGES.map(s=>{
+    const items=list.filter(c=>c.stage===s.id);
+    return `<div class="col" data-stage="${s.id}"
+      ondragover="event.preventDefault();this.classList.add('over')"
+      ondragleave="this.classList.remove('over')"
+      ondrop="drop(event,'${s.id}');this.classList.remove('over')">
+      <div class="hd">
+        <span class="dot" style="background:${s.c}"></span>
+        <div style="min-width:0"><div class="nm">${s.n}. ${esc(s.nm)}</div><span class="ow">${esc(NAME(s.ow))}</span></div>
+        <span class="n">${items.length}</span>
+      </div>
+      <div class="body">
+        ${items.map(kcard).join('') || `<div style="font-size:11px;color:var(--muted-2);padding:14px 4px;letter-spacing:.05em">${esc(s.note)}</div>`}
+      </div></div>`;
+  }).join('');
+  return stats+toolbar+`<div class="board">${cols}</div>`;
+}
+
+function kcard(c){
+  const alerts=[];
+  if(!c.avansPlatit && ST(c.stage).n>=5) alerts.push('<span class="tag" style="border-color:var(--rose);color:var(--rose)">Avans neîncasat</span>');
+  if(c.santier==='rosu') alerts.push('<span class="tag">La roșu</span>');
+  if(c.tip==='cu') alerts.push(`<span class="tag">${esc(c.designer)}</span>`);
+  else alerts.push('<span class="tag">Fără proiect</span>');
+  const t=days(c.termen);
+  const term = c.termen ? `<span class="tag ${t<0?'':''}" style="${t<0?'border-color:var(--rose);color:var(--rose)':''}">${t<0?'Depășit '+Math.abs(t)+'z':'T-'+t+'z'}</span>` : '';
+  const nt=TASKS.filter(x=>x.cid===c.id&&!x.done).length;
+  return `<div class="kc" draggable="true" ondragstart="drag(event,'${c.id}')" ondragend="this.classList.remove('drag')" onclick="openClient('${c.id}')">
+    <div class="nm">${esc(c.nume)}</div>
+    <div class="meta">${esc(c.adresa)}</div>
+    <div class="row">${alerts.join('')}${term}${nt?`<span class="tag">${nt} task</span>`:''}${c.audio.length?`<span class="tag">♪ ${c.audio.length}</span>`:''}</div>
+    <div class="bar"><i style="width:${progress(c)}%"></i></div>
+  </div>`;
+}
+function drag(e,id){e.dataTransfer.setData('text/plain',id);e.target.classList.add('drag')}
+function drop(e,stage){
+  e.preventDefault();
+  const id=e.dataTransfer.getData('text/plain'); const c=clientById(id); if(!c||c.stage===stage) return;
+  const s=ST(stage);
+  if(s.n>=6 && !c.avansPlatit){
+    if(!confirm(`${c.nume} nu are avansul de ofertare încasat (${AVANS[c.tipLocuinta||'apartament'].toLocaleString('ro-RO')} lei).\n\nRegula procesului: oferta de preț nu se face fără angajament financiar.\n\nContinui totuși?`)) return;
+  }
+  if(stage==='masur' && c.santier==='rosu'){
+    if(!confirm(`${c.nume} are șantierul la roșu. Nu se poate măsura până la șapă turnată + pereți gletuiți.\n\nContinui totuși?`)) return;
+  }
+  c.stage=stage; c.hist.push([stage,d(0)]); render();
+}
+
+function tableOf(list){
+  if(!list.length) return `<div class="empty">Niciun client care să corespundă căutării.</div>`;
+  return `<table><thead><tr>
+    <th>Client</th><th>Etapă</th><th>Tipologie</th><th>Designer</th><th>Responsabil</th><th>Termen</th><th>Avans</th><th>Progres</th>
+  </tr></thead><tbody>${list.map(c=>{
+    const s=ST(c.stage), t=days(c.termen);
+    return `<tr onclick="openClient('${c.id}')">
+      <td><div class="nm">${esc(c.nume)}</div><div style="font-size:11px;color:var(--muted)">${esc(c.adresa)}</div></td>
+      <td><span class="tag"><span class="dot" style="background:${s.c}"></span>${s.n}. ${esc(s.nm)}</span></td>
+      <td style="font-size:11.5px">${tipLabel(c)}<br><span style="color:var(--muted)">${santLabel(c)}</span></td>
+      <td style="font-size:12px">${esc(c.designer)}</td>
+      <td style="font-size:12px">${esc(NAME(s.ow))}</td>
+      <td style="font-size:12px;${t!=null&&t<0?'color:var(--rose)':''}">${fmt(c.termen)}</td>
+      <td>${c.avansPlatit?'<span class="tag f">Încasat</span>':'<span class="tag" style="border-color:var(--rose);color:var(--rose)">Neîncasat</span>'}</td>
+      <td style="width:110px"><div class="bar" style="height:2px;background:var(--bone-2)"><i style="display:block;height:2px;background:var(--ink);width:${progress(c)}%"></i></div></td>
+    </tr>`}).join('')}</tbody></table>`;
+}
+
+/* ---------------- CLIENTI ---------------- */
+function viewClienti(){
+  const list=CLIENTS.filter(matched);
+  const byTip=[['cu','Cu proiect de design'],['fara','Fără proiect de design']];
+  return `<div class="grid-stats">
+    ${byTip.map(([k,l])=>`<div class="stat"><div class="n">${CLIENTS.filter(c=>c.tip===k).length}</div><div class="l">${l}</div></div>`).join('')}
+    <div class="stat"><div class="n">${CLIENTS.filter(c=>c.santier==='rosu').length}</div><div class="l">Șantier la roșu</div></div>
+    <div class="stat"><div class="n">${CLIENTS.reduce((a,c)=>a+c.audio.length,0)}</div><div class="l">Note vocale</div></div>
+  </div>`+tableOf(list);
+}
+
+/* ---------------- TASKS / RESTANTE ---------------- */
+function viewTasks(restOnly){
+  const mine=TASKS.filter(t=>t.restanta===restOnly);
+  const hdr = restOnly
+    ? `<div class="notice">Restanțele înlocuiesc grupul de WhatsApp: montatorul bifează lucrarea, încarcă poze și lista de rest la montaj. Task-ul rămâne pe client până la închidere.</div>`
+    : `<div class="notice">Task-urile sunt generate automat la fiecare tranziție de etapă și pot fi adăugate manual de coordonator.</div>`;
+  const groups={};
+  mine.forEach(t=>{(groups[t.who]=groups[t.who]||[]).push(t)});
+  const order=TEAM.map(t=>t.id).filter(id=>groups[id]);
+  const body = order.length ? order.map(who=>`
+    <div class="sec">
+      <h3>${esc(NAME(who))} · ${(TEAM.find(t=>t.id===who)||{}).role||''} — ${groups[who].filter(t=>!t.done).length} deschise</h3>
+      ${groups[who].sort((a,b)=>(a.done-b.done)||(a.due<b.due?-1:1)).map(taskRow).join('')}
+    </div>`).join('') : `<div class="empty">Nimic aici. Curat.</div>`;
+  const add=`<div style="display:flex;justify-content:flex-end;margin-bottom:16px"><button class="btn" onclick="openTaskModal(${restOnly})">+ ${restOnly?'Restanță nouă':'Task nou'}</button></div>`;
+  return hdr+add+body;
+}
+function taskRow(t){
+  const c=clientById(t.cid), dd=days(t.due);
+  const late=!t.done&&dd<0;
+  return `<div class="tk ${t.done?'done':''}">
+    <button class="box" onclick="toggleTask('${t.id}')">${t.done?'✓':''}</button>
+    <div style="flex:1;min-width:0">
+      <div class="t">${esc(t.t)}</div>
+      <div class="m">
+        <span class="who-pill">${esc(c?c.nume:'—')}</span>
+        <span style="${late?'color:var(--rose)':''}">Termen ${fmt(t.due)}${late?' · depășit '+Math.abs(dd)+'z':''}</span>
+        ${t.restanta?'<span>Restanță montaj</span>':''}
+      </div>
+      ${t.photos.length?`<div class="ph">${t.photos.map(p=>`<img src="${p}">`).join('')}</div>`:''}
+      ${t.restanta&&!t.done?`<div style="margin-top:9px"><label class="btn sm ghost" style="cursor:pointer">+ Poză<input type="file" accept="image/*" hidden onchange="addPhoto('${t.id}',this)"></label></div>`:''}
+    </div>
+    ${c?`<button class="btn sm ghost" onclick="openClient('${c.id}')">Fișă</button>`:''}
+  </div>`;
+}
+function toggleTask(id){const t=TASKS.find(x=>x.id===id);t.done=!t.done;render()}
+function addPhoto(id,inp){
+  const f=inp.files[0]; if(!f) return;
+  const r=new FileReader(); r.onload=e=>{TASKS.find(x=>x.id===id).photos.push(e.target.result);render()}; r.readAsDataURL(f);
+}
+
+/* ---------------- REMINDERE ---------------- */
+function viewRemindere(){
+  const list=REMINDERS.filter(r=>!r.done).sort((a,b)=>a.due<b.due?-1:1);
+  const M=['IAN','FEB','MAR','APR','MAI','IUN','IUL','AUG','SEP','OCT','NOI','DEC'];
+  return `<div class="notice">Reguli active: recall la 7 zile pentru clienți fără răspuns · reverificare șantier la 14 zile pentru lucrările la roșu · notificare client cu 14 zile înainte de lansarea în producție · alertă de blocare preț materiale pentru proiecte la peste 3 luni.</div>
+  ${list.length?list.map(r=>{
+    const c=clientById(r.cid), dd=days(r.due), p=r.due.split('-');
+    return `<div class="rem ${dd<0?'late':''}">
+      <div class="when"><div class="d">${p[2].replace(/^0/,'')}</div><div class="m">${M[+p[1]-1]}</div></div>
+      <div>
+        <div style="font-size:13.5px">${esc(r.t)}</div>
+        <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:5px;display:flex;gap:12px;flex-wrap:wrap">
+          <span class="who-pill">${esc(c?c.nume:'—')}</span><span>${esc(r.tip)}</span>
+          <span style="${dd<0?'color:var(--rose)':''}">${dd<0?'depășit cu '+Math.abs(dd)+' zile':dd===0?'astăzi':'peste '+dd+' zile'}</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        ${c?`<button class="btn sm ghost" onclick="openClient('${c.id}')">Fișă</button>`:''}
+        <button class="btn sm" onclick="doneRem('${r.id}')">Rezolvat</button>
+      </div>
+    </div>`}).join(''):`<div class="empty">Niciun reminder activ.</div>`}`;
+}
+function doneRem(id){REMINDERS.find(r=>r.id===id).done=true;render()}
+
+/* ---------------- ECHIPA ---------------- */
+function viewEchipa(){
+  return `<div class="notice">În prototip nu există login — schimbi persoana din colțul din dreapta sus. În versiunea cu backend fiecare rol vede doar etapele lui, exact ca drepturile de acces pe folderele din Drive.</div>
+  <table><thead><tr><th>Persoană</th><th>Rol</th><th>Etape pe care le deține</th><th>Task-uri deschise</th><th>Clienți în lucru</th></tr></thead><tbody>
+  ${TEAM.map(t=>{
+    const st=STAGES.filter(s=>s.ow===t.id);
+    const tk=TASKS.filter(x=>x.who===t.id&&!x.done).length;
+    const cl=CLIENTS.filter(c=>st.some(s=>s.id===c.stage)).length;
+    return `<tr style="cursor:default"><td><div class="nm">${esc(t.name)}</div></td>
+      <td style="font-size:12px">${esc(t.role)}</td>
+      <td>${st.length?st.map(s=>`<span class="tag"><span class="dot" style="background:${s.c}"></span>${s.n}. ${esc(s.nm)}</span>`).join(' '):'<span style="color:var(--muted-2)">—</span>'}</td>
+      <td>${tk}</td><td>${cl}</td></tr>`}).join('')}
+  </tbody></table>
+  <div class="sec" style="margin-top:30px"><h3>Designeri parteneri</h3>
+  <div style="display:flex;gap:10px;flex-wrap:wrap">${['Studio Alfa','Atelier Beta','Forma Studio','Nord Design'].map(dz=>
+    `<div class="card" style="flex:1;min-width:180px"><div class="serif" style="font-size:21px">${esc(dz)}</div>
+     <div style="font-size:11px;color:var(--muted);margin-top:6px">${CLIENTS.filter(c=>c.designer===dz).length} clienți · folder izolat, nu vede ceilalți designeri</div></div>`).join('')}</div></div>`;
+}
+
+/* ---------------- REGULI ---------------- */
+function viewReguli(){
+  const R=[
+    ['Calificare','Decizia de colaborare se ia în primele 5 minute de discuție. Dacă nu există compatibilitate, clientul nu intră în sistem.'],
+    ['Avans de ofertare','Oferta de preț nu se face fără angajament financiar: 5.000 lei pentru apartament, 10.000 lei pentru casă. Excepție: clientul vine cu o ofertă existentă — se pornește discuția de pe ea.'],
+    ['GDPR','Bifă obligatorie înainte de submit la înregistrarea clientului. Clientul primește documentul înainte de introducerea în sistem.'],
+    ['Procedura semnată','La intrarea în sistem clientul semnează procedura care clarifică termenele, calendarul și consecințele nerespectării lor.'],
+    ['Prag de măsurare','Se măsoară doar cu șapă turnată și pereți gletuiți. Lavabilul nu e necesar. Pentru șantier la roșu se ofertează pe proiectul designerului.'],
+    ['Comandă anticipată materiale','Materialele se comandă imediat după validarea proiectului final, chiar dacă montajul e peste 6 luni — prețurile se pot dubla.'],
+    ['Nerespectarea termenului','Clientul e anunțat cu 14 zile înainte de lansarea în producție. Dacă spațiul nu e gata, lucrarea se reprogramează la prima dată disponibilă (1 săptămână – 2 luni, în funcție de încărcare).'],
+    ['Interacțiunea cu clientul','Doar Andrei, Ana și proiectantul discută cu clientul. Restul echipei lucrează pe fișa din CRM.'],
+    ['Specificații audio','La înregistrare, specificațiile se lasă ca note vocale, nu ca text — mai multă informație ajunge mai departe în flux.'],
+    ['Normare','Fiecare proiectant primește o normă de timp per lucrare. De definit înainte de trecerea în producție a sistemului.'],
+  ];
+  return `<div class="notice">Regulile de mai jos sunt extrase din discuția înregistrată și sunt aplicate ca validări în pipeline (încearcă să muți un client fără avans în „Ofertare”).</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px">
+  ${R.map((r,i)=>`<div class="card"><div class="eyebrow">Regula ${String(i+1).padStart(2,'0')}</div>
+    <div class="serif" style="font-size:22px;margin:7px 0 9px">${esc(r[0])}</div>
+    <div style="font-size:12.5px;color:var(--ink-2);line-height:1.6">${esc(r[1])}</div></div>`).join('')}
+  </div>`;
+}
+
+/* ---------------- DRAWER: fișă client ---------------- */
+function openClient(id){STATE.drawerId=id;STATE.tab='detalii';renderDrawer();
+  document.getElementById('drawer').classList.add('on');document.getElementById('scrim').classList.add('on')}
+function closeDrawer(){STATE.drawerId=null;stopRec();document.getElementById('drawer').classList.remove('on');document.getElementById('scrim').classList.remove('on')}
+function setTab(t){STATE.tab=t;renderDrawer()}
+
+function renderDrawer(){
+  const c=clientById(STATE.drawerId); if(!c) return;
+  const s=ST(c.stage);
+  const tabs=[['detalii','Detalii'],['audio','Note vocale'],['parcurs','Parcurs'],['taskuri','Task-uri'],['ofertare','Ofertare']];
+  document.getElementById('drawer').innerHTML=`
+   <div class="dhd" style="position:relative">
+     <button class="close" onclick="closeDrawer()">×</button>
+     <div class="eyebrow" style="color:rgba(241,240,235,.5)">${esc(c.id)} · ${esc(c.oras)}</div>
+     <h2>${esc(c.nume)}</h2>
+     <div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:12px">
+       <span class="tag" style="border-color:rgba(241,240,235,.3);color:rgba(241,240,235,.8)"><span class="dot" style="background:${s.c}"></span>${s.n}. ${esc(s.nm)}</span>
+       <span class="tag" style="border-color:rgba(241,240,235,.3);color:rgba(241,240,235,.8)">${tipLabel(c)}</span>
+       <span class="tag" style="border-color:rgba(241,240,235,.3);color:rgba(241,240,235,.8)">${santLabel(c)}</span>
+     </div>
+   </div>
+   <div class="dbd">
+     <div class="tabs">${tabs.map(t=>`<button class="${STATE.tab===t[0]?'on':''}" onclick="setTab('${t[0]}')">${t[1]}</button>`).join('')}</div>
+     ${STATE.tab==='detalii'?tabDetalii(c):STATE.tab==='audio'?tabAudio(c):STATE.tab==='parcurs'?tabParcurs(c):STATE.tab==='taskuri'?tabTask(c):tabOfertare(c)}
+   </div>`;
+}
+
+function tabDetalii(c){
+  const s=ST(c.stage), next=STAGES[Math.min(s.n,10)];
+  return `<div class="sec"><h3>Date client</h3>
+   <dl class="kv">
+     <dt>Telefon</dt><dd>${esc(c.tel||'—')}</dd>
+     <dt>Adresă lucrare</dt><dd>${esc(c.adresa||'—')}</dd>
+     <dt>Tip locuință</dt><dd>${esc(c.tipLocuinta||'—')}</dd>
+     <dt>Designer</dt><dd>${esc(c.designer)}</dd>
+     <dt>Proiectant</dt><dd>${esc(c.proiectant?NAME(c.proiectant):'neasignat')}</dd>
+     <dt>Înregistrat</dt><dd>${fmt(c.creat)}</dd>
+     <dt>Termen agreat</dt><dd>${fmt(c.termen)}</dd>
+     <dt>Valoare</dt><dd>${esc(c.buget||'—')}</dd>
+     <dt>GDPR</dt><dd>${c.gdpr?'Bifat la înregistrare':'<span class="warn">Lipsă</span>'}</dd>
+   </dl></div>
+   <div class="sec"><h3>Observații</h3><div style="font-size:13px;color:var(--ink-2)">${esc(c.obs||'—')}</div></div>
+   <div class="sec"><h3>Avansează etapa</h3>
+     ${!c.avansPlatit&&ST(c.stage).n>=5?`<div class="notice rose">Avansul de ofertare nu e încasat. Oferta nu se emite fără angajament financiar.</div>`:''}
+     ${c.santier==='rosu'?`<div class="notice">Șantier la roșu — măsurătoarea se face după finisaje. Ofertăm pe proiectul designerului și blocăm prețul la materiale.</div>`:''}
+     <div style="display:flex;gap:9px;flex-wrap:wrap">
+       ${s.n<11?`<button class="btn dark" onclick="advance('${c.id}')">Bifează → ${esc(next.nm)}</button>`:''}
+       <button class="btn" onclick="openTaskModal(false,'${c.id}')">+ Task</button>
+       <button class="btn ghost" onclick="toggleAvans('${c.id}')">${c.avansPlatit?'Marchează avans neîncasat':'Marchează avans încasat'}</button>
+     </div>
+   </div>`;
+}
+function advance(id){
+  const c=clientById(id); const i=ST(c.stage).n;
+  const nx=STAGES[Math.min(i,10)];
+  const fake={dataTransfer:{getData:()=>id},preventDefault(){}};
+  drop(fake,nx.id);
+}
+function toggleAvans(id){const c=clientById(id);c.avansPlatit=!c.avansPlatit;render()}
+
+function tabAudio(c){
+  const bars=n=>Array.from({length:34},(_,i)=>`<i style="height:${6+((i*37+n*13)%17)}px"></i>`).join('');
+  return `<div class="sec"><h3>Specificații vocale</h3>
+   <div class="notice">Andrei lasă 5–6 note vocale la înregistrarea clientului. Ele merg mai departe la Ana, la proiectant și la ofertare — nimic nu se pierde în traducere.</div>
+   <div id="recBox">${recBoxHTML()}</div>
+   <div style="margin-top:14px">
+   ${c.audio.length?c.audio.map((a,i)=>`
+     <div class="anote">
+       <button class="play" onclick="playNote('${c.id}',${i})">▶</button>
+       <div style="flex:1;min-width:0">
+         <div class="wave">${bars(i)}</div>
+         <div style="font-size:11.5px;color:var(--ink-2);margin-top:6px">${esc(a.dsc||'Notă vocală')}</div>
+       </div>
+       <span class="eyebrow">${esc(a.t||'')}</span>
+     </div>`).join(''):`<div class="empty">Nicio notă vocală încă.</div>`}
+   </div></div>`;
+}
+function recBoxHTML(){
+  return STATE.recording
+   ? `<div class="rec live"><span class="pulse"></span><span style="flex:1;font-size:12.5px">Se înregistrează… <span id="recT">0:00</span></span>
+      <button class="btn sm dark" onclick="stopRec(true)">Oprește & salvează</button>
+      <button class="btn sm ghost" onclick="stopRec(false)">Renunță</button></div>`
+   : `<div class="rec"><span style="font-size:16px">●</span><span style="flex:1;font-size:12.5px;color:var(--muted)">Înregistrează o notă vocală direct din browser</span>
+      <button class="btn sm" onclick="startRec()">Înregistrează</button></div>`;
+}
+let mediaRec=null, chunks=[], recStart=0, recTimer=null;
+async function startRec(){
+  try{
+    const st=await navigator.mediaDevices.getUserMedia({audio:true});
+    mediaRec=new MediaRecorder(st); chunks=[];
+    mediaRec.ondataavailable=e=>chunks.push(e.data);
+    mediaRec.onstop=()=>{ st.getTracks().forEach(t=>t.stop());
+      if(mediaRec._save){
+        const blob=new Blob(chunks,{type:'audio/webm'});
+        const sec=Math.round((Date.now()-recStart)/1000);
+        const c=clientById(STATE.drawerId);
+        c.audio.push({t:Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0'),
+          dsc:prompt('Descriere scurtă a notei vocale:','Notă vocală '+(c.audio.length+1))||'Notă vocală',
+          url:URL.createObjectURL(blob)});
+      }
+      STATE.recording=null; mediaRec=null; clearInterval(recTimer); renderDrawer();
+    };
+    mediaRec.start(); recStart=Date.now(); STATE.recording=true; renderDrawer();
+    recTimer=setInterval(()=>{const el=document.getElementById('recT');if(!el)return;
+      const s=Math.round((Date.now()-recStart)/1000);el.textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0')},400);
+  }catch(err){ alert('Microfonul nu e disponibil în acest context.\n\nÎn aplicația reală, nota vocală se înregistrează din telefon direct în fișa clientului.'); }
+}
+function stopRec(save){ if(mediaRec&&mediaRec.state!=='inactive'){mediaRec._save=!!save;mediaRec.stop();} else {STATE.recording=null;clearInterval(recTimer);} }
+function playNote(cid,i){
+  const a=clientById(cid).audio[i];
+  if(a.url){ new Audio(a.url).play(); }
+  else alert('Notă demo — fără fișier audio atașat.\n\n„'+(a.dsc||'')+'”');
+}
+
+function tabParcurs(c){
+  const done=c.hist.map(h=>h[0]);
+  return `<div class="sec"><h3>Parcurs în proces</h3><div class="tl">
+   ${STAGES.map(s=>{
+     const h=c.hist.find(x=>x[0]===s.id);
+     const cur=c.stage===s.id;
+     return `<div class="it ${h&&!cur?'done':''} ${cur?'cur':''}">
+       <div class="t">${s.n}. ${esc(s.nm)}</div>
+       <div class="d">${h?fmt(h[1]):'—'} · ${esc(NAME(s.ow))}</div>
+     </div>`}).join('')}
+   </div></div>`;
+}
+function tabTask(c){
+  const ts=TASKS.filter(t=>t.cid===c.id);
+  return `<div class="sec"><h3>Task-uri & restanțe</h3>
+   ${ts.length?ts.map(taskRow).join(''):`<div class="empty">Niciun task pe acest client.</div>`}
+   <div style="margin-top:14px"><button class="btn sm" onclick="openTaskModal(false,'${c.id}')">+ Task</button>
+   <button class="btn sm ghost" onclick="openTaskModal(true,'${c.id}')">+ Restanță</button></div></div>`;
+}
+function tabOfertare(c){
+  const av=AVANS[c.tipLocuinta||'apartament'];
+  return `<div class="sec"><h3>Angajament financiar</h3>
+   <dl class="kv">
+     <dt>Avans ofertare</dt><dd>${av.toLocaleString('ro-RO')} lei · ${esc(c.tipLocuinta||'apartament')}</dd>
+     <dt>Stare</dt><dd>${c.avansPlatit?'<span class="tag f">Încasat</span>':'<span class="tag" style="border-color:var(--rose);color:var(--rose)">Neîncasat</span>'}</dd>
+     <dt>Facturare</dt><dd>${c.avansPlatit?'Factură emisă (Smart Bill)':'Se emite la încasare'}</dd>
+     <dt>Valoare estimată</dt><dd>${esc(c.buget||'—')}</dd>
+   </dl></div>
+   <div class="sec"><h3>Materiale</h3>
+   <div class="notice">${c.termen&&days(c.termen)>90
+     ? 'Lucrare la peste 3 luni — se comandă materialele imediat după validarea proiectului, ca să blocăm prețul.'
+     : 'Comanda de materiale se lansează după validarea proiectului final de către coordonator.'}</div>
+   <div style="display:flex;gap:9px;flex-wrap:wrap">
+     <button class="btn ghost" onclick="alert('În versiunea cu backend: generează PDF-ul ofertei din fișa tehnică și îl trimite pe e-mail clientului.')">Generează ofertă</button>
+     <button class="btn ghost" onclick="alert('În versiunea cu backend: emite factura de avans prin API-ul Smart Bill.')">Emite factură avans</button>
+   </div></div>`;
+}
+
+/* ---------------- MODALE ---------------- */
+function modal(html){const m=document.getElementById('modal');m.innerHTML=`<div class="box">${html}</div>`;m.classList.add('on')}
+function closeModal(){document.getElementById('modal').classList.remove('on')}
+
+function openNew(){
+  modal(`<div class="mh"><h2>Client nou</h2></div>
+  <div class="mb">
+    <div class="notice">Primele 5 minute decid dacă intrăm în colaborare. Dacă da — clientul intră în sistem cu GDPR bifat și cu specificațiile lăsate ca note vocale.</div>
+    <div class="f2">
+      <div class="field"><label>Nume client</label><input id="n_nume" placeholder="Nume și prenume"></div>
+      <div class="field"><label>Telefon</label><input id="n_tel" placeholder="07xx xxx xxx"></div>
+    </div>
+    <div class="field"><label>Adresă lucrare</label><input id="n_adr" placeholder="Stradă, număr, apartament"></div>
+    <div class="f2">
+      <div class="field"><label>Tip locuință</label><select id="n_loc" onchange="updAvans()">
+        <option value="apartament">Apartament — avans 5.000 lei</option>
+        <option value="casa">Casă — avans 10.000 lei</option>
+        <option value="comercial">Spațiu comercial — avans 10.000 lei</option></select></div>
+      <div class="field"><label>Stadiu spațiu</label><select id="n_sant">
+        <option value="finisat">Spațiu finisat (șapă + glet)</option>
+        <option value="rosu">Șantier la roșu</option></select></div>
+    </div>
+    <div class="f2">
+      <div class="field"><label>Proiect de design</label><select id="n_tip" onchange="updDesigner()">
+        <option value="fara">Fără proiect — proiectăm noi</option>
+        <option value="cu">Are proiect de design</option></select></div>
+      <div class="field"><label>Designer</label><select id="n_des" disabled>
+        <option>—</option><option>Studio Alfa</option><option>Atelier Beta</option><option>Forma Studio</option><option>Nord Design</option></select></div>
+    </div>
+    <div class="field"><label>Specificații (rezumat scris — notele vocale se adaugă din fișă)</label><textarea id="n_obs" rows="3" placeholder="Ce vrea clientul, ce s-a discutat, ce l-a adus la noi…"></textarea></div>
+    <div class="notice" id="n_av">Avans de ofertare: <strong>5.000 lei</strong>. Oferta de preț nu se emite înainte de încasare.</div>
+    <label class="chk"><input type="checkbox" id="n_gdpr"><span>Clientul a primit și a bifat acordul GDPR înainte de introducerea datelor în sistem.</span></label>
+    <label class="chk" style="margin-top:10px"><input type="checkbox" id="n_proc"><span>Clientul a primit procedura cu termenele, calendarul și consecințele nerespectării lor.</span></label>
+  </div>
+  <div class="mf"><button class="btn ghost" onclick="closeModal()">Renunță</button><button class="btn dark" onclick="saveNew()">Înregistrează client</button></div>`);
+}
+function updAvans(){const v=document.getElementById('n_loc').value;
+  document.getElementById('n_av').innerHTML=`Avans de ofertare: <strong>${AVANS[v].toLocaleString('ro-RO')} lei</strong>. Oferta de preț nu se emite înainte de încasare.`}
+function updDesigner(){const cu=document.getElementById('n_tip').value==='cu';document.getElementById('n_des').disabled=!cu;if(!cu)document.getElementById('n_des').value='—'}
+function saveNew(){
+  const g=id=>document.getElementById(id);
+  if(!g('n_nume').value.trim()) return alert('Numele clientului e obligatoriu.');
+  if(!g('n_gdpr').checked) return alert('Bifa GDPR este obligatorie înainte de salvare.');
+  const c=mk({nume:g('n_nume').value.trim(),tel:g('n_tel').value,adresa:g('n_adr').value,
+    tipLocuinta:g('n_loc').value, santier:g('n_sant').value, tip:g('n_tip').value,
+    designer:g('n_tip').value==='cu'?g('n_des').value:'—', obs:g('n_obs').value,
+    creat:d(0), hist:[['inreg',d(0)]], gdpr:true});
+  CLIENTS.unshift(c);
+  REMINDERS.push({id:'R'+(Math.random()*1e6|0), cid:c.id, t:'Recall client nou — verifică dacă mergem mai departe', due:d(7), tip:'Recall client nou', done:false});
+  TASKS.push({id:'T'+(Math.random()*1e6|0), cid:c.id, t:'Triaj și programare măsurătoare', who:'roxana', due:d(3), done:false, restanta:false, photos:[]});
+  closeModal(); STATE.view='pipeline'; render(); openClient(c.id);
+}
+
+function openTaskModal(rest, cid){
+  modal(`<div class="mh"><h2>${rest?'Restanță nouă':'Task nou'}</h2></div>
+  <div class="mb">
+    <div class="field"><label>Client</label><select id="t_c">${CLIENTS.map(c=>`<option value="${c.id}" ${cid===c.id?'selected':''}>${esc(c.nume)}</option>`).join('')}</select></div>
+    <div class="field"><label>Descriere</label><textarea id="t_t" rows="3" placeholder="${rest?'Ce a rămas de rezolvat la montaj…':'Ce trebuie făcut…'}"></textarea></div>
+    <div class="f2">
+      <div class="field"><label>Responsabil</label><select id="t_w">${TEAM.map(t=>`<option value="${t.id}">${esc(t.name)} — ${esc(t.role)}</option>`).join('')}</select></div>
+      <div class="field"><label>Termen</label><input type="date" id="t_d" value="${d(3)}"></div>
+    </div>
+  </div>
+  <div class="mf"><button class="btn ghost" onclick="closeModal()">Renunță</button><button class="btn dark" onclick="saveTask(${!!rest})">Salvează</button></div>`);
+}
+function saveTask(rest){
+  const g=id=>document.getElementById(id);
+  if(!g('t_t').value.trim()) return alert('Descrierea e obligatorie.');
+  TASKS.push({id:'T'+(Math.random()*1e6|0),cid:g('t_c').value,t:g('t_t').value.trim(),who:g('t_w').value,due:g('t_d').value,done:false,restanta:rest,photos:[]});
+  closeModal(); render();
+}
+
+/* ---------------- export ---------------- */
+function exportJSON(){
+  const data={exportat:new Date().toISOString(),clienti:CLIENTS,taskuri:TASKS,remindere:REMINDERS,echipa:TEAM,etape:STAGES};
+  const b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='nisha-crm-export.json'; a.click();
+}
+
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeDrawer()}});
+render();
+</script>
+</body>
+</html>
