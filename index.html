@@ -2,7 +2,9 @@
 <html lang="ro">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#1C1D1D">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title>NISHA · CRM</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,8 +37,12 @@ a{color:inherit;text-decoration:none}
 .app{display:flex;height:100vh;overflow:hidden}
 .sidebar{width:232px;flex:0 0 232px;background:var(--ink);color:var(--bone);display:flex;flex-direction:column;padding:26px 0}
 .brand{padding:0 26px 30px;border-bottom:1px solid rgba(241,240,235,.12);margin-bottom:22px}
-.brand .mark{font-family:var(--serif);font-size:27px;letter-spacing:.34em;text-transform:uppercase;font-weight:300}
-.brand .sub{font-size:7.5px;letter-spacing:.34em;text-transform:uppercase;color:rgba(241,240,235,.45);margin-top:5px}
+.brand .lg{width:118px;height:auto;color:#fff;display:block;margin-bottom:12px}
+.brand .sub{font-size:7.5px;letter-spacing:.26em;text-transform:uppercase;color:rgba(241,240,235,.45)}
+.brandbar{display:none;align-items:center;gap:11px;min-width:0;flex:1}
+.brandbar .lgw{height:13px;width:auto;flex:0 0 auto;color:var(--ink)}
+.crumb{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+  padding-left:11px;border-left:1px solid var(--line-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .nav{flex:1;overflow-y:auto}
 .nav .grp{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(241,240,235,.32);padding:16px 26px 8px}
 .nav a{display:flex;align-items:center;gap:11px;padding:9px 26px;font-size:12.5px;letter-spacing:.06em;color:rgba(241,240,235,.66);border-left:2px solid transparent;transition:.15s}
@@ -187,15 +193,123 @@ td .nm{font-family:var(--serif);font-size:17px;text-transform:uppercase;letter-s
 
 .legend{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:18px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .legend span{display:flex;align-items:center;gap:6px}
-@media(max-width:900px){.sidebar{display:none}.content{padding:16px}.kv{grid-template-columns:1fr}}
+/* ---------- mobil: tab bar + sheet ---------- */
+.tabbar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:45;background:var(--ink);
+  padding-bottom:env(safe-area-inset-bottom);border-top:1px solid rgba(241,240,235,.14)}
+.tabbar .row{display:flex}
+.tabbar a{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 2px 8px;
+  color:rgba(241,240,235,.5);position:relative;min-height:56px;justify-content:center}
+.tabbar a.on{color:#fff}
+.tabbar a.on:before{content:'';position:absolute;top:0;left:22%;right:22%;height:2px;background:var(--sand)}
+.tabbar .i{font-size:16px;line-height:1}
+.tabbar .l{font-size:8.5px;letter-spacing:.1em;text-transform:uppercase}
+.tabbar .b{position:absolute;top:6px;right:50%;margin-right:-22px;background:var(--sand);color:var(--ink);
+  font-size:8.5px;min-width:15px;height:15px;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+.tabbar a.alert .b{background:var(--rose);color:#fff}
+
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:55;background:var(--bone);border-top:1px solid var(--line);
+  transform:translateY(102%);transition:transform .26s cubic-bezier(.4,0,.2,1);padding-bottom:env(safe-area-inset-bottom)}
+.sheet.on{transform:none}
+.sheet .sh{padding:16px 20px 10px;border-bottom:1px solid var(--line)}
+.sheet .grip{width:36px;height:3px;background:var(--line-2);margin:0 auto 12px}
+.sheet a,.sheet button.it{display:flex;align-items:center;gap:12px;width:100%;text-align:left;
+  padding:15px 20px;border-bottom:1px solid var(--bone-2);font-size:14px}
+.sheet .sf{padding:14px 20px 20px}
+.mnav{display:none}
+.only-m{display:none}
+
+.mchips{display:flex;gap:7px;overflow-x:auto;padding:2px 14px 12px;margin:0 -14px;scrollbar-width:none}
+.mchips::-webkit-scrollbar{display:none}
+.mchip{flex:0 0 auto;display:flex;align-items:center;gap:7px;border:1px solid var(--line-2);background:var(--paper);
+  padding:9px 13px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;min-height:38px}
+.mchip.on{background:var(--ink);color:var(--bone);border-color:var(--ink)}
+.mchip .n{font-size:10px;opacity:.6}
+.mlist{display:flex;flex-direction:column;gap:10px}
+.mlist .kc{cursor:pointer}
+.mstage{display:flex;align-items:center;gap:7px;font-size:9px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:7px}
+
+@media(max-width:900px){
+  .app{height:100dvh}
+  .sidebar{display:none}
+  .tabbar{display:block}
+  .mnav{display:flex;align-items:center;justify-content:center;width:38px;height:38px;margin-left:-8px;
+    border:1px solid var(--line-2);font-size:15px;flex:0 0 38px}
+  .only-m{display:inline}
+  .hide-m{display:none}
+
+  .topbar{height:auto;flex:0 0 auto;flex-wrap:wrap;padding:10px 14px;gap:9px;position:sticky;top:0;z-index:30}
+  .topbar h1{display:none}
+  .brandbar{display:flex}
+  .topbar .who,.topbar .spacer{display:none}
+  .topbar .btn{padding:0;width:38px;height:38px;justify-content:center;font-size:17px;letter-spacing:0}
+  .search{order:3;flex:1 1 100%;max-width:none;padding:8px 2px;min-height:38px}
+
+  .content{padding:16px 14px 92px}
+  .grid-stats{grid-template-columns:1fr 1fr;gap:9px;margin-bottom:18px}
+  .grid-stats>.stat:last-child:nth-child(odd){grid-column:1/-1}
+  .stat{padding:13px 14px}
+  .stat .n{font-size:29px}
+  .stat .l{font-size:8.5px;letter-spacing:.14em;margin-top:5px}
+
+  .kc{padding:14px}
+  .kc .nm{font-size:19px}
+  .kc .meta{font-size:12px}
+  .tag{font-size:9.5px;padding:4px 9px}
+
+  .kv{grid-template-columns:1fr;gap:3px 0}
+  .kv dt{padding-top:9px}
+  .drawer{width:100%;border-left:none}
+  .drawer .dhd{padding:18px 18px 16px}
+  .drawer .dhd h2{font-size:26px}
+  .drawer .dbd{padding:18px 18px 90px}
+  .close{top:16px;right:16px;font-size:26px;width:34px;height:34px}
+  .tabs{gap:0;overflow-x:auto;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tabs button{padding:11px 13px;white-space:nowrap}
+
+  .modal{padding:0;align-items:flex-end}
+  .modal .box{width:100%;max-height:92vh;border:none;border-top:1px solid var(--line)}
+  .modal .box .mh{padding:18px 18px 14px;position:sticky;top:0;background:var(--bone);z-index:2}
+  .modal .box .mb{padding:18px}
+  .modal .box .mf{padding:14px 18px;padding-bottom:calc(14px + env(safe-area-inset-bottom));position:sticky;bottom:0;
+    background:var(--bone);box-shadow:0 -8px 16px -12px rgba(28,29,29,.35)}
+  .modal .box .mf .btn{flex:1;justify-content:center;padding:14px 10px}
+  .f2{grid-template-columns:1fr;gap:0}
+  .field input,.field select,.field textarea{padding:12px 12px;font-size:16px}
+
+  .tk{padding:14px}
+  .tk .box{width:22px;height:22px;flex:0 0 22px}
+  .tk .t{font-size:14px}
+  .rem{grid-template-columns:60px 1fr;gap:12px;row-gap:12px}
+  .rem>div:last-child{grid-column:1/-1;display:flex;gap:8px}
+  .rem>div:last-child .btn{flex:1;justify-content:center;padding:11px}
+  .sec h3{font-size:9.5px}
+  table{display:none}
+}
+@media(max-width:380px){
+  .tabbar .l{font-size:7.5px;letter-spacing:.06em}
+  .topbar h1{font-size:17px}
+}
 </style>
 </head>
 <body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
+<g id="lg-mark"><path d="M231.11,50.7l37.6,37.6V2.84h-5.25V75.64L187.83,0V76.08l-37.6-37.6V124.38h5.25V51.14l75.64,75.64V50.7Zm-38.04,30.62V12.67l32.79,32.79V114.11l-32.79-32.79Z"/></g>
+<g id="lg-word">
+<polygon points="41.94 221.5 5.11 171.46 0 171.46 0 230.22 5.02 230.22 5.02 179.48 42.02 230.22 46.96 230.22 46.96 171.46 41.94 171.46 41.94 221.5"/>
+<rect x="105.64" y="171.46" width="5.02" height="58.76"/>
+<path d="M188.55,197.1c-8.02-2.2-15.33-4.23-15.33-11.19,0-6.34,5.9-10.84,13.74-10.84,6.61,0,12.6,2.29,16.83,7.4l3.35-3.7c-4.58-5.2-11.19-8.28-19.91-8.28-10.66,0-19.29,6.08-19.29,15.68,0,10.84,9.87,13.48,19.12,16.03,8.19,2.2,16.12,4.49,16.12,12.77,0,5.02-3.44,11.72-15.51,11.72-8.37,0-14.54-4.14-18.33-8.55l-3.26,3.79c4.49,5.46,11.81,9.34,21.5,9.34,15.86,0,20.88-9.07,20.88-16.56,0-11.98-10.48-14.98-19.91-17.62Z"/>
+<polygon points="311.98 230.22 311.98 171.46 306.87 171.46 306.87 197.71 269.61 197.71 269.61 171.46 264.58 171.46 264.58 230.22 269.61 230.22 269.61 202.29 306.87 202.29 306.87 230.22 311.98 230.22"/>
+<path d="M394.89,171.46h-6.26l-24.05,58.76h5.64l5.9-14.45h31.28l5.9,14.45h5.64l-24.05-58.76Zm-17.18,39.73l14.01-34.8,14.1,34.8h-28.1Z"/>
+</g>
+</defs></svg>
+
 <div class="app">
   <aside class="sidebar">
     <div class="brand">
-      <div class="mark">Nisha</div>
-      <div class="sub">Mobilier personalizat</div>
+      <svg class="lg" viewBox="0 0 418.95 230.22" fill="currentColor" role="img" aria-label="Nisha"><use href="#lg-mark"/><use href="#lg-word"/></svg>
+      <div class="sub">Furniture &amp; Design · CRM</div>
     </div>
     <nav class="nav" id="nav"></nav>
     <div class="sidefoot">Prototip v1 · <a href="#" onclick="exportJSON();return false" style="text-decoration:underline">Export date</a></div>
@@ -203,6 +317,11 @@ td .nm{font-family:var(--serif);font-size:17px;text-transform:uppercase;letter-s
 
   <div class="main">
     <header class="topbar">
+      <button class="mnav" onclick="openSheet()" aria-label="Meniu">≡</button>
+      <div class="brandbar">
+        <svg class="lgw" viewBox="0 171.46 418.95 58.76" fill="currentColor" role="img" aria-label="Nisha"><use href="#lg-word"/></svg>
+        <span class="crumb" id="crumb"></span>
+      </div>
       <h1 id="pageTitle">Pipeline</h1>
       <div class="search"><span style="color:var(--muted-2)">⌕</span><input id="q" placeholder="Caută client, adresă, telefon…" oninput="STATE.q=this.value;render()"></div>
       <div class="spacer"></div>
@@ -210,14 +329,18 @@ td .nm{font-family:var(--serif);font-size:17px;text-transform:uppercase;letter-s
         <span class="eyebrow">Vezi ca</span>
         <select id="userSel" onchange="STATE.me=this.value;render()"></select>
       </div>
-      <button class="btn dark" onclick="openNew()">+ Client nou</button>
+      <button class="btn dark" onclick="openNew()"><span class="hide-m">+ Client nou</span><span class="only-m">+</span></button>
     </header>
     <div class="content" id="view"></div>
   </div>
 </div>
 
+<nav class="tabbar" id="tabbar"></nav>
+
 <div class="scrim" id="scrim" onclick="closeDrawer()"></div>
+<div class="scrim" id="sheetScrim" onclick="closeSheet()"></div>
 <aside class="drawer" id="drawer"></aside>
+<div class="sheet" id="sheet"></div>
 <div class="modal" id="modal"></div>
 
 <script>
@@ -358,7 +481,16 @@ let REMINDERS = [
 ];
 
 /* ---------------- state ---------------- */
-const STATE = {view:'pipeline', me:'ilie', q:'', boardMode:'kanban', drawerId:null, tab:'detalii', recording:null};
+const STATE = {view:'pipeline', me:'ilie', q:'', boardMode:'kanban', drawerId:null, tab:'detalii', recording:null, mStage:'inreg'};
+const MOB = () => window.innerWidth <= 900;
+
+const TABS = [
+  {id:'pipeline',  nm:'Pipeline',  ico:'▤'},
+  {id:'clienti',   nm:'Clienți',   ico:'◈'},
+  {id:'taskuri',   nm:'Task-uri',  ico:'✓'},
+  {id:'restante',  nm:'Restanțe',  ico:'!'},
+  {id:'remindere', nm:'Remind.',   ico:'◔'},
+];
 
 const VIEWS = [
   {id:'pipeline',  nm:'Pipeline',        ico:'▤', grp:'Proces'},
@@ -366,8 +498,8 @@ const VIEWS = [
   {id:'taskuri',   nm:'Task-uri',        ico:'✓', grp:'Execuție'},
   {id:'restante',  nm:'Restanțe',        ico:'!',  grp:'Execuție'},
   {id:'remindere', nm:'Remindere',       ico:'◔', grp:'Execuție'},
-  {id:'echipa',    nm:'Echipă & roluri', ico:'◇', grp:'Organizare'},
-  {id:'reguli',    nm:'Reguli proces',   ico:'§', grp:'Organizare'},
+  {id:'echipa',    nm:'Echipă & roluri', short:'Echipă', ico:'◇', grp:'Organizare'},
+  {id:'reguli',    nm:'Reguli proces',   short:'Reguli', ico:'§', grp:'Organizare'},
 ];
 
 /* ---------------- helpers ---------------- */
@@ -375,6 +507,7 @@ const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&
 const days = iso => iso ? Math.round((new Date(iso)-today)/86400000) : null;
 const fmt = iso => { if(!iso) return '—'; const p=iso.split('-'); const M=['ian','feb','mar','apr','mai','iun','iul','aug','sep','oct','nov','dec'];
   return p[2].replace(/^0/,'')+' '+M[+p[1]-1]+' '+p[0]; };
+const zile = n => n===1 ? '1 zi' : n+' zile';
 const clientById = id => CLIENTS.find(c=>c.id===id);
 const tipLabel = c => (c.tip==='cu'?'Cu proiect design':'Fără proiect design');
 const santLabel = c => (c.santier==='rosu'?'Șantier la roșu':'Spațiu finisat');
@@ -399,14 +532,52 @@ function renderNav(){
   const sel=document.getElementById('userSel');
   if(!sel.options.length) sel.innerHTML=TEAM.map(t=>`<option value="${t.id}">${t.name}</option>`).join('');
   sel.value=STATE.me;
+  renderTabbar();
 }
-function go(v){STATE.view=v;render();document.getElementById('view').scrollTop=0}
+function renderTabbar(){
+  const cnt={taskuri:TASKS.filter(t=>!t.done&&!t.restanta).length,
+             restante:TASKS.filter(t=>!t.done&&t.restanta).length,
+             remindere:REMINDERS.filter(r=>!r.done&&days(r.due)<0).length};
+  document.getElementById('tabbar').innerHTML='<div class="row">'+TABS.map(t=>{
+    const n=cnt[t.id];
+    const alert = t.id==='remindere'||t.id==='restante';
+    return `<a href="#" class="${STATE.view===t.id?'on':''} ${alert&&n?'alert':''}" onclick="go('${t.id}');return false">
+      <span class="i">${t.ico}</span><span class="l">${t.nm}</span>${n?`<span class="b">${n}</span>`:''}</a>`;
+  }).join('')+'</div>';
+}
+function go(v){STATE.view=v;closeSheet();render();document.getElementById('view').scrollTop=0;window.scrollTo(0,0)}
+
+/* ---------- sheet mobil ---------- */
+function openSheet(){
+  document.getElementById('sheet').innerHTML=`
+    <div class="sh"><div class="grip"></div>
+      <div class="eyebrow" style="margin-bottom:8px">Vezi ca</div>
+      <select id="userSelM" onchange="STATE.me=this.value;render()"
+        style="width:100%;border:1px solid var(--line-2);background:var(--paper);padding:12px;font-size:15px">
+        ${TEAM.map(t=>`<option value="${t.id}" ${STATE.me===t.id?'selected':''}>${esc(t.name)} — ${esc(t.role)}</option>`).join('')}
+      </select>
+    </div>
+    <button class="it" onclick="go('echipa')"><span style="width:18px">◇</span>Echipă &amp; roluri</button>
+    <button class="it" onclick="go('reguli')"><span style="width:18px">§</span>Reguli proces</button>
+    <button class="it" onclick="exportJSON();closeSheet()"><span style="width:18px">↓</span>Export date (JSON)</button>
+    <div class="sf"><button class="btn ghost" style="width:100%;justify-content:center;padding:14px" onclick="closeSheet()">Închide</button></div>`;
+  document.getElementById('sheet').classList.add('on');
+  document.getElementById('sheetScrim').classList.add('on');
+}
+function closeSheet(){
+  const s=document.getElementById('sheet'); if(!s) return;
+  s.classList.remove('on'); document.getElementById('sheetScrim').classList.remove('on');
+}
 
 /* ---------------- render ---------------- */
 function render(){
   renderNav();
   const v=VIEWS.find(x=>x.id===STATE.view);
-  document.getElementById('pageTitle').textContent=v.nm;
+  document.getElementById('pageTitle').textContent = MOB() ? (v.short||v.nm) : v.nm;
+  const cr=document.getElementById('crumb');
+  const inTabs=TABS.some(t=>t.id===STATE.view);
+  cr.textContent = (MOB() && !inTabs) ? (v.short||v.nm) : '';
+  cr.style.display = cr.textContent ? '' : 'none';
   document.getElementById('view').innerHTML =
     STATE.view==='pipeline' ? viewPipeline() :
     STATE.view==='clienti'  ? viewClienti()  :
@@ -414,6 +585,8 @@ function render(){
     STATE.view==='restante' ? viewTasks(true) :
     STATE.view==='remindere'? viewRemindere() :
     STATE.view==='echipa'   ? viewEchipa()   : viewReguli();
+  const chip=document.querySelector('.mchip.on');
+  if(chip) chip.parentElement.scrollLeft = Math.max(0, chip.offsetLeft - 46);
   if(STATE.drawerId) renderDrawer();
 }
 
@@ -429,6 +602,20 @@ function viewPipeline(){
     <div class="stat"><div class="n">${rest}</div><div class="l">Restanțe deschise</div></div>
     <div class="stat"><div class="n" style="${late?'color:var(--rose)':''}">${late}</div><div class="l">Remindere depășite</div></div>
   </div>`;
+
+  if(MOB()){
+    const chips=`<div class="mchips">${STAGES.map(s=>{
+      const n=list.filter(c=>c.stage===s.id).length;
+      return `<button class="mchip ${STATE.mStage===s.id?'on':''}" onclick="STATE.mStage='${s.id}';render()">
+        <span class="dot" style="background:${s.c}"></span>${s.n}. ${esc(s.nm)}<span class="n">${n}</span></button>`;
+    }).join('')}</div>`;
+    const s=ST(STATE.mStage);
+    const items=list.filter(c=>c.stage===STATE.mStage);
+    return stats+chips+
+      `<div class="mstage"><span class="dot" style="background:${s.c}"></span>${esc(s.nm)} · ${esc(NAME(s.ow))}</div>
+       <div class="mlist">${items.length?items.map(c=>kcard(c)).join('')
+         :`<div class="empty" style="padding:34px 20px">${esc(s.note)}</div>`}</div>`;
+  }
 
   const toolbar=`<div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
     <div class="seg">
@@ -452,13 +639,13 @@ function viewPipeline(){
         <span class="n">${items.length}</span>
       </div>
       <div class="body">
-        ${items.map(kcard).join('') || `<div style="font-size:11px;color:var(--muted-2);padding:14px 4px;letter-spacing:.05em">${esc(s.note)}</div>`}
+        ${items.map(c=>kcard(c)).join('') || `<div style="font-size:11px;color:var(--muted-2);padding:14px 4px;letter-spacing:.05em">${esc(s.note)}</div>`}
       </div></div>`;
   }).join('');
   return stats+toolbar+`<div class="board">${cols}</div>`;
 }
 
-function kcard(c){
+function kcard(c, withStage){
   const alerts=[];
   if(!c.avansPlatit && ST(c.stage).n>=5) alerts.push('<span class="tag" style="border-color:var(--rose);color:var(--rose)">Avans neîncasat</span>');
   if(c.santier==='rosu') alerts.push('<span class="tag">La roșu</span>');
@@ -467,9 +654,12 @@ function kcard(c){
   const t=days(c.termen);
   const term = c.termen ? `<span class="tag ${t<0?'':''}" style="${t<0?'border-color:var(--rose);color:var(--rose)':''}">${t<0?'Depășit '+Math.abs(t)+'z':'T-'+t+'z'}</span>` : '';
   const nt=TASKS.filter(x=>x.cid===c.id&&!x.done).length;
-  return `<div class="kc" draggable="true" ondragstart="drag(event,'${c.id}')" ondragend="this.classList.remove('drag')" onclick="openClient('${c.id}')">
+  const st=ST(c.stage);
+  const drg=MOB()?'':`draggable="true" ondragstart="drag(event,'${c.id}')" ondragend="this.classList.remove('drag')"`;
+  return `<div class="kc" ${drg} onclick="openClient('${c.id}')">
+    ${withStage?`<div class="mstage"><span class="dot" style="background:${st.c}"></span>${st.n}. ${esc(st.nm)}</div>`:''}
     <div class="nm">${esc(c.nume)}</div>
-    <div class="meta">${esc(c.adresa)}</div>
+    <div class="meta">${esc(c.adresa)}${c.tel?' · '+esc(c.tel):''}</div>
     <div class="row">${alerts.join('')}${term}${nt?`<span class="tag">${nt} task</span>`:''}${c.audio.length?`<span class="tag">♪ ${c.audio.length}</span>`:''}</div>
     <div class="bar"><i style="width:${progress(c)}%"></i></div>
   </div>`;
@@ -490,6 +680,7 @@ function drop(e,stage){
 
 function tableOf(list){
   if(!list.length) return `<div class="empty">Niciun client care să corespundă căutării.</div>`;
+  if(MOB()) return `<div class="mlist">${list.map(c=>kcard(c,true)).join('')}</div>`;
   return `<table><thead><tr>
     <th>Client</th><th>Etapă</th><th>Tipologie</th><th>Designer</th><th>Responsabil</th><th>Termen</th><th>Avans</th><th>Progres</th>
   </tr></thead><tbody>${list.map(c=>{
@@ -571,7 +762,7 @@ function viewRemindere(){
         <div style="font-size:13.5px">${esc(r.t)}</div>
         <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:5px;display:flex;gap:12px;flex-wrap:wrap">
           <span class="who-pill">${esc(c?c.nume:'—')}</span><span>${esc(r.tip)}</span>
-          <span style="${dd<0?'color:var(--rose)':''}">${dd<0?'depășit cu '+Math.abs(dd)+' zile':dd===0?'astăzi':'peste '+dd+' zile'}</span>
+          <span style="${dd<0?'color:var(--rose)':''}">${dd<0?'depășit cu '+zile(Math.abs(dd)):dd===0?'astăzi':'peste '+zile(dd)}</span>
         </div>
       </div>
       <div style="display:flex;gap:8px">
@@ -584,7 +775,24 @@ function doneRem(id){REMINDERS.find(r=>r.id===id).done=true;render()}
 
 /* ---------------- ECHIPA ---------------- */
 function viewEchipa(){
-  return `<div class="notice">În prototip nu există login — schimbi persoana din colțul din dreapta sus. În versiunea cu backend fiecare rol vede doar etapele lui, exact ca drepturile de acces pe folderele din Drive.</div>
+  const intro=`<div class="notice">În prototip nu există login — schimbi persoana din meniul de sus. În versiunea cu backend fiecare rol vede doar etapele lui, exact ca drepturile de acces pe folderele din Drive.</div>`;
+  if(MOB()){
+    return intro+`<div class="mlist">${TEAM.map(t=>{
+      const st=STAGES.filter(s=>s.ow===t.id);
+      const tk=TASKS.filter(x=>x.who===t.id&&!x.done).length;
+      return `<div class="card">
+        <div class="serif" style="font-size:21px">${esc(t.name)}</div>
+        <div style="font-size:11.5px;color:var(--muted);margin:4px 0 10px">${esc(t.role)} · ${tk===1?'1 task deschis':tk+' task-uri deschise'}</div>
+        <div style="display:flex;flex-wrap:wrap;gap:5px">${st.length?st.map(s=>
+          `<span class="tag"><span class="dot" style="background:${s.c}"></span>${s.n}. ${esc(s.nm)}</span>`).join('')
+          :'<span style="font-size:11px;color:var(--muted-2)">fără etapă proprie</span>'}</div>
+      </div>`}).join('')}</div>
+      <div class="sec" style="margin-top:24px"><h3>Designeri parteneri</h3>
+      <div class="mlist">${['Studio Alfa','Atelier Beta','Forma Studio','Nord Design'].map(dz=>
+        `<div class="card"><div class="serif" style="font-size:19px">${esc(dz)}</div>
+         <div style="font-size:11px;color:var(--muted);margin-top:5px">${CLIENTS.filter(c=>c.designer===dz).length} clienți · folder izolat</div></div>`).join('')}</div></div>`;
+  }
+  return intro+`
   <table><thead><tr><th>Persoană</th><th>Rol</th><th>Etape pe care le deține</th><th>Task-uri deschise</th><th>Clienți în lucru</th></tr></thead><tbody>
   ${TEAM.map(t=>{
     const st=STAGES.filter(s=>s.ow===t.id);
@@ -854,7 +1062,15 @@ function exportJSON(){
   const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='nisha-crm-export.json'; a.click();
 }
 
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeDrawer()}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeDrawer();closeSheet()}});
+
+let lastMob=MOB(), rzT=null;
+window.addEventListener('resize',()=>{
+  clearTimeout(rzT);
+  rzT=setTimeout(()=>{ if(MOB()!==lastMob){ lastMob=MOB(); closeSheet(); render(); } },150);
+});
+window.addEventListener('orientationchange',()=>setTimeout(render,250));
+
 render();
 </script>
 </body>
