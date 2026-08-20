@@ -191,6 +191,25 @@ td .nm{font-family:var(--serif);font-size:17px;text-transform:uppercase;letter-s
 .rem.late{border-color:var(--rose)}
 .rem.late .when .d{color:var(--rose)}
 
+/* ---------- panou birouri de design ---------- */
+.panel{margin-bottom:22px}
+.panel header{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.panel header h2{font-size:19px;font-weight:300}
+.bstrip{display:grid;grid-template-columns:repeat(auto-fit,minmax(202px,1fr));gap:10px}
+.bcard{background:var(--paper);border:1px solid var(--line);padding:14px 15px;text-align:left;transition:.16s;display:block;width:100%}
+.bcard:hover{border-color:var(--ink);box-shadow:var(--shadow)}
+.bcard.on{background:var(--ink);border-color:var(--ink);color:var(--bone)}
+.bcard .bn{font-family:var(--serif);font-size:31px;line-height:1;font-weight:300}
+.bcard .bnm{font-size:11px;letter-spacing:.1em;text-transform:uppercase;margin:6px 0 10px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bcard .bbar{height:2px;background:var(--bone-2);margin-bottom:9px}
+.bcard.on .bbar{background:rgba(241,240,235,.22)}
+.bcard .bbar i{display:block;height:2px;background:var(--ink)}
+.bcard.on .bbar i{background:var(--sand)}
+.bcard .bmeta{font-size:9.5px;letter-spacing:.03em;color:var(--muted);line-height:1.7;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bcard.on .bmeta{color:rgba(241,240,235,.6)}
+
 .legend{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:18px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .legend span{display:flex;align-items:center;gap:6px}
 /* ---------- mobil: tab bar + sheet ---------- */
@@ -246,6 +265,15 @@ td .nm{font-family:var(--serif);font-size:17px;text-transform:uppercase;letter-s
   .search{order:3;flex:1 1 100%;max-width:none;padding:8px 2px;min-height:38px}
 
   .content{padding:16px 14px 92px}
+  .panel{margin-bottom:16px}
+  .panel header{gap:8px;flex-wrap:nowrap;margin-bottom:10px}
+  .panel header h2{font-size:16px;white-space:nowrap}
+  .panel header .hint{display:none}
+  .panel header .eyebrow{font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bstrip{display:flex;gap:9px;overflow-x:auto;margin:0 -14px;padding:2px 14px 6px;scrollbar-width:none}
+  .bstrip::-webkit-scrollbar{display:none}
+  .bcard{flex:0 0 156px;width:156px}
+  .bcard .bn{font-size:26px}
   .grid-stats{grid-template-columns:1fr 1fr;gap:9px;margin-bottom:18px}
   .grid-stats>.stat:last-child:nth-child(odd){grid-column:1/-1}
   .stat{padding:13px 14px}
@@ -406,8 +434,8 @@ let CLIENTS = [
   {id:'C108', nume:'Ioana Enache', tel:'', adresa:'', oras:'', tip:'cu', santier:'', tipLocuinta:'', designer:'', proiectant:'dedecor', stage:'triaj', substadiu:'0 - tema proiectare', statusS:'Stand by', nrSpatii:'4', mp:'70mp', tipSpatiu:'Mixt', buget:'10-50K €', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie premium · prioritate normal', audio:[], docs:[], hist:[['inreg','2026-08-10'],['triaj','2026-08-10']]},
   {id:'C109', nume:'Paul Filip', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Nord Design', proiectant:'', stage:'inreg', substadiu:'', statusS:'', nrSpatii:'', mp:'', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate scazuta', audio:[], docs:[], hist:[['inreg','2026-08-10']]},
   {id:'C110', nume:'Simona Lazăr', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Nord Design', proiectant:'', stage:'masur', substadiu:'0 - masurare', statusS:'', nrSpatii:'4', mp:'60mp', tipSpatiu:'Mixt', buget:'10-50K €', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate scazuta', audio:[], docs:[], hist:[['inreg','2026-08-10'],['masur','2026-08-07']]},
-  {id:'C111', nume:'Radu Rusu', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Atelier Beta', proiectant:'', stage:'masur', substadiu:'0 - masurare', statusS:'', nrSpatii:'2', mp:'40mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie premium · prioritate normal', audio:[], docs:[], hist:[['inreg','2026-08-10'],['masur','2026-08-11']]},
-  {id:'C112', nume:'Carmen Vlad', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Studio Alfa', proiectant:'', stage:'masur', substadiu:'0 - masurare', statusS:'', nrSpatii:'5', mp:'70mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2024-07-30', termen:'', obs:'categorie mediu · prioritate normal', audio:[], docs:[], hist:[['inreg','2024-07-30'],['masur','2026-08-07']]},
+  {id:'C111', nume:'Radu Rusu', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Studio Alfa', proiectant:'', stage:'masur', substadiu:'0 - masurare', statusS:'', nrSpatii:'2', mp:'40mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie premium · prioritate normal', audio:[], docs:[], hist:[['inreg','2026-08-10'],['masur','2026-08-11']]},
+  {id:'C112', nume:'Carmen Vlad', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Atelier Beta', proiectant:'', stage:'masur', substadiu:'0 - masurare', statusS:'', nrSpatii:'5', mp:'70mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2024-07-30', termen:'', obs:'categorie mediu · prioritate normal', audio:[], docs:[], hist:[['inreg','2024-07-30'],['masur','2026-08-07']]},
   {id:'C113', nume:'Tudor Preda', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'bright', stage:'proiect', substadiu:'1 - design general', statusS:'Activ', nrSpatii:'7', mp:'120mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-04', termen:'2026-08-21', obs:'categorie economic · prioritate ridicata', audio:[], docs:[], hist:[['inreg','2026-08-04'],['proiect','2026-08-07']]},
   {id:'C114', nume:'Alina Dinu', tel:'07xx xxx xxx', adresa:'', oras:'', tip:'cu', santier:'', tipLocuinta:'', designer:'Forma Studio', proiectant:'sorin', stage:'deofert', substadiu:'3 - design final', statusS:'Activ', nrSpatii:'5', mp:'70mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'2026-08-21', obs:'categorie premium · prioritate ridicata', audio:[], docs:[], hist:[['inreg','2026-08-10'],['masur','2026-08-12'],['proiect','2026-08-04'],['deofert','2026-08-10']]},
   {id:'C115', nume:'Mihai Toma', tel:'', adresa:'', oras:'', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'potco', stage:'ofertat', substadiu:'4 - ofertare', statusS:'Finalizat', nrSpatii:'5', mp:'70mp', tipSpatiu:'Mixt', buget:'10-50K €', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate normal · predat efectiv 2026-08-10', audio:[], docs:[], hist:[['inreg','2026-08-10'],['ofertat','2026-08-10']]},
@@ -467,7 +495,7 @@ let REMINDERS = [
 ];
 
 /* ---------------- state ---------------- */
-const STATE = {view:'pipeline', me:'ilie', q:'', boardMode:'kanban', drawerId:null, tab:'detalii', recording:null, mStage:'inreg'};
+const STATE = {view:'pipeline', me:'ilie', q:'', boardMode:'kanban', drawerId:null, tab:'detalii', recording:null, mStage:'inreg', fDes:''};
 const MOB = () => window.innerWidth <= 900;
 
 const TABS = [
@@ -502,7 +530,19 @@ const desLabel = c => c.tip==='cu' ? ((c.designer && c.designer!=='—') ? c.des
 const dim = c => [c.nrSpatii?(c.nrSpatii==='1'?'1 spațiu':c.nrSpatii+' spații'):'', c.mp||'', c.tipSpatiu||''].filter(Boolean).join(' · ');
 const loc = c => c.adresa || c.oras || 'adresă necompletată';
 const respons = c => c.proiectant ? NAME(c.proiectant) : NAME(ST(c.stage).ow);
-const matched = c => { const q=STATE.q.trim().toLowerCase(); if(!q) return true;
+const birou = c => c.tip==='cu' ? ((c.designer && c.designer!=='—') ? c.designer : 'Designer neprecizat')
+               : c.tip==='fara' ? 'Intern (Nisha)' : 'Sursă neprecizată';
+const birouri = () => {
+  const m=new Map();
+  CLIENTS.forEach(c=>{ const b=birou(c);
+    const e=m.get(b)||{nm:b,n:0,activ:0,sb:0,fin:0,mp:0,spatii:0};
+    e.n++; if(c.statusS==='Stand by')e.sb++; else if(c.statusS==='Finalizat')e.fin++; else e.activ++;
+    e.mp+=parseInt(c.mp)||0; e.spatii+=parseInt(c.nrSpatii)||0; m.set(b,e); });
+  return [...m.values()].sort((a,b)=>b.n-a.n);
+};
+const matched = c => {
+  if(STATE.fDes && birou(c)!==STATE.fDes) return false;
+  const q=STATE.q.trim().toLowerCase(); if(!q) return true;
   return (c.nume+' '+c.adresa+' '+c.tel+' '+c.designer+' '+(c.obs||'')).toLowerCase().includes(q); };
 const progress = c => Math.round((ST(c.stage).n/11)*100);
 
@@ -586,13 +626,32 @@ function viewPipeline(){
   const list=CLIENTS.filter(matched);
   const late=REMINDERS.filter(r=>!r.done&&days(r.due)<0).length;
   const rest=TASKS.filter(t=>t.restanta&&!t.done).length;
-  const sb=CLIENTS.filter(c=>c.statusS==='Stand by').length;
-  const inLucru=CLIENTS.filter(c=>['proiect','deofert'].includes(c.stage)).length;
-  const stats=`<div class="grid-stats">
-    <div class="stat"><div class="n">${CLIENTS.length}</div><div class="l">Clienți în sistem</div></div>
+  const sb=list.filter(c=>c.statusS==='Stand by').length;
+  const inLucru=list.filter(c=>['proiect','deofert'].includes(c.stage)).length;
+  const B=birouri(), maxB=Math.max(...B.map(b=>b.n),1), tot=CLIENTS.length;
+  const birouriPanel=`<section class="panel">
+    <header>
+      <h2 class="serif">Proiecte per birou de design</h2>
+      <span class="eyebrow">${B.length} surse · ${tot} fișe</span>
+      <div class="spacer"></div>
+      ${STATE.fDes?`<button class="btn sm ghost" onclick="STATE.fDes='';render()">Arată tot</button>`
+                   :`<span class="eyebrow hint">Apasă un birou ca să filtrezi pipeline-ul</span>`}
+    </header>
+    <div class="bstrip">${B.map(b=>`
+      <button class="bcard ${STATE.fDes===b.nm?'on':''}" onclick="STATE.fDes=(STATE.fDes==='${b.nm.replace(/'/g,"\\'")}'?'':'${b.nm.replace(/'/g,"\\'")}');render()">
+        <div class="bn">${b.n}</div>
+        <div class="bnm">${esc(b.nm)}</div>
+        <div class="bbar"><i style="width:${Math.round(b.n/maxB*100)}%"></i></div>
+        <div class="bmeta">${b.activ} activi · ${b.sb} stand by · ${b.fin} finalizate</div>
+        <div class="bmeta">${b.spatii} spații · ${b.mp} mp</div>
+      </button>`).join('')}</div>
+  </section>`;
+
+  const stats=birouriPanel+`<div class="grid-stats">
+    <div class="stat"><div class="n">${list.length}</div><div class="l">${STATE.fDes?'Fișe filtrate':'Clienți în sistem'}</div></div>
     <div class="stat"><div class="n">${inLucru}</div><div class="l">În proiectare</div></div>
     <div class="stat"><div class="n" style="${sb?'color:var(--clay)':''}">${sb}</div><div class="l">În stand by</div></div>
-    <div class="stat"><div class="n">${CLIENTS.filter(c=>!c.tel).length}</div><div class="l">Fără telefon</div></div>
+    <div class="stat"><div class="n">${list.filter(c=>!c.tel).length}</div><div class="l">Fără telefon</div></div>
     <div class="stat"><div class="n" style="${late?'color:var(--rose)':''}">${late}</div><div class="l">Remindere depășite</div></div>
   </div>`;
 
