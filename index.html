@@ -302,7 +302,8 @@ td .nm{font-family:var(--serif);font-size:17px;text-transform:uppercase;letter-s
   .modal .box .mb{padding:18px}
   .modal .box .mf{padding:14px 18px;padding-bottom:calc(14px + env(safe-area-inset-bottom));position:sticky;bottom:0;
     background:var(--bone);box-shadow:0 -8px 16px -12px rgba(28,29,29,.35)}
-  .modal .box .mf .btn{flex:1;justify-content:center;padding:14px 10px}
+  .modal .box .mf{flex-wrap:wrap;gap:8px}
+  .modal .box .mf .btn{flex:1 1 calc(50% - 4px);min-width:118px;justify-content:center;padding:14px 8px}
   .f2{grid-template-columns:1fr;gap:0}
   .field input,.field select,.field textarea{padding:12px 12px;font-size:16px}
 
@@ -340,7 +341,11 @@ td .nm{font-family:var(--serif);font-size:17px;text-transform:uppercase;letter-s
       <div class="sub">Furniture &amp; Design · CRM</div>
     </div>
     <nav class="nav" id="nav"></nav>
-    <div class="sidefoot">Prototip v1 · <a href="#" onclick="exportJSON();return false" style="text-decoration:underline">Export date</a></div>
+    <div class="sidefoot">
+      <a href="#" onclick="openSync();return false" style="text-decoration:underline">Sincronizează</a> ·
+      <a href="#" onclick="exportJSON();return false" style="text-decoration:underline">Export</a>
+      <div id="syncFoot" style="margin-top:7px;text-transform:none;letter-spacing:.02em;font-size:9.5px;color:rgba(241,240,235,.28)"></div>
+    </div>
   </aside>
 
   <div class="main">
@@ -434,8 +439,8 @@ let CLIENTS = [
   {id:'C108', nume:'Ioana Enache', tel:'', adresa:'', oras:'', tip:'cu', santier:'', tipLocuinta:'', designer:'', proiectant:'dedecor', stage:'triaj', substadiu:'0 - tema proiectare', statusS:'Stand by', nrSpatii:'4', mp:'70mp', tipSpatiu:'Mixt', buget:'10-50K €', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie premium · prioritate normal', audio:[], docs:[], hist:[['inreg','2026-08-10'],['triaj','2026-08-10']]},
   {id:'C109', nume:'Paul Filip', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Nord Design', proiectant:'', stage:'inreg', substadiu:'', statusS:'', nrSpatii:'', mp:'', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate scazuta', audio:[], docs:[], hist:[['inreg','2026-08-10']]},
   {id:'C110', nume:'Simona Lazăr', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Nord Design', proiectant:'', stage:'masur', substadiu:'0 - masurare', statusS:'', nrSpatii:'4', mp:'60mp', tipSpatiu:'Mixt', buget:'10-50K €', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate scazuta', audio:[], docs:[], hist:[['inreg','2026-08-10'],['masur','2026-08-07']]},
-  {id:'C111', nume:'Radu Rusu', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Studio Alfa', proiectant:'', stage:'masur', substadiu:'0 - masurare', statusS:'', nrSpatii:'2', mp:'40mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie premium · prioritate normal', audio:[], docs:[], hist:[['inreg','2026-08-10'],['masur','2026-08-11']]},
-  {id:'C112', nume:'Carmen Vlad', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Atelier Beta', proiectant:'', stage:'masur', substadiu:'0 - masurare', statusS:'', nrSpatii:'5', mp:'70mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2024-07-30', termen:'', obs:'categorie mediu · prioritate normal', audio:[], docs:[], hist:[['inreg','2024-07-30'],['masur','2026-08-07']]},
+  {id:'C111', nume:'Radu Rusu', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Atelier Beta', proiectant:'', stage:'masur', substadiu:'0 - masurare', statusS:'', nrSpatii:'2', mp:'40mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie premium · prioritate normal', audio:[], docs:[], hist:[['inreg','2026-08-10'],['masur','2026-08-11']]},
+  {id:'C112', nume:'Carmen Vlad', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Studio Alfa', proiectant:'', stage:'masur', substadiu:'0 - masurare', statusS:'', nrSpatii:'5', mp:'70mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2024-07-30', termen:'', obs:'categorie mediu · prioritate normal', audio:[], docs:[], hist:[['inreg','2024-07-30'],['masur','2026-08-07']]},
   {id:'C113', nume:'Tudor Preda', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'bright', stage:'proiect', substadiu:'1 - design general', statusS:'Activ', nrSpatii:'7', mp:'120mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-04', termen:'2026-08-21', obs:'categorie economic · prioritate ridicata', audio:[], docs:[], hist:[['inreg','2026-08-04'],['proiect','2026-08-07']]},
   {id:'C114', nume:'Alina Dinu', tel:'07xx xxx xxx', adresa:'', oras:'', tip:'cu', santier:'', tipLocuinta:'', designer:'Forma Studio', proiectant:'sorin', stage:'deofert', substadiu:'3 - design final', statusS:'Activ', nrSpatii:'5', mp:'70mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'2026-08-21', obs:'categorie premium · prioritate ridicata', audio:[], docs:[], hist:[['inreg','2026-08-10'],['masur','2026-08-12'],['proiect','2026-08-04'],['deofert','2026-08-10']]},
   {id:'C115', nume:'Mihai Toma', tel:'', adresa:'', oras:'', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'potco', stage:'ofertat', substadiu:'4 - ofertare', statusS:'Finalizat', nrSpatii:'5', mp:'70mp', tipSpatiu:'Mixt', buget:'10-50K €', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate normal · predat efectiv 2026-08-10', audio:[], docs:[], hist:[['inreg','2026-08-10'],['ofertat','2026-08-10']]},
@@ -462,36 +467,36 @@ let CLIENTS = [
 ];
 
 let TASKS = [
-  {id:'T1', cid:'C102', t:'Triaj: stabilește etapa curentă și programează măsurătoarea', who:'roxana', due:'2026-08-20', done:false, restanta:false, photos:[]},
-  {id:'T2', cid:'C104', t:'Triaj: stabilește etapa curentă și programează măsurătoarea', who:'roxana', due:'2026-08-20', done:false, restanta:false, photos:[]},
-  {id:'T3', cid:'C105', t:'Triaj: stabilește etapa curentă și programează măsurătoarea', who:'roxana', due:'2026-08-20', done:false, restanta:false, photos:[]},
-  {id:'T4', cid:'C106', t:'Triaj: stabilește etapa curentă și programează măsurătoarea', who:'roxana', due:'2026-08-20', done:false, restanta:false, photos:[]},
-  {id:'T5', cid:'C107', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[]},
-  {id:'T6', cid:'C108', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[]},
-  {id:'T7', cid:'C109', t:'Triaj: stabilește etapa curentă și programează măsurătoarea', who:'roxana', due:'2026-08-20', done:false, restanta:false, photos:[]},
-  {id:'T8', cid:'C115', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[]},
-  {id:'T9', cid:'C125', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[]},
-  {id:'T10', cid:'C126', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[]},
-  {id:'T11', cid:'C127', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[]},
-  {id:'T12', cid:'C128', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[]},
-  {id:'T13', cid:'C129', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[]},
-  {id:'T14', cid:'C130', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[]},
-  {id:'T15', cid:'C131', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[]},
-  {id:'T16', cid:'C132', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[]},
-  {id:'T17', cid:'C133', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[]},
-  {id:'T18', cid:'C134', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[]},
-  {id:'T19', cid:'C135', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[]},
+  {id:'T1', cid:'C102', t:'Triaj: stabilește etapa curentă și programează măsurătoarea', who:'roxana', due:'2026-08-20', done:false, restanta:false, photos:[], auto:true},
+  {id:'T2', cid:'C104', t:'Triaj: stabilește etapa curentă și programează măsurătoarea', who:'roxana', due:'2026-08-20', done:false, restanta:false, photos:[], auto:true},
+  {id:'T3', cid:'C105', t:'Triaj: stabilește etapa curentă și programează măsurătoarea', who:'roxana', due:'2026-08-20', done:false, restanta:false, photos:[], auto:true},
+  {id:'T4', cid:'C106', t:'Triaj: stabilește etapa curentă și programează măsurătoarea', who:'roxana', due:'2026-08-20', done:false, restanta:false, photos:[], auto:true},
+  {id:'T5', cid:'C107', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[], auto:true},
+  {id:'T6', cid:'C108', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[], auto:true},
+  {id:'T7', cid:'C109', t:'Triaj: stabilește etapa curentă și programează măsurătoarea', who:'roxana', due:'2026-08-20', done:false, restanta:false, photos:[], auto:true},
+  {id:'T8', cid:'C115', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[], auto:true},
+  {id:'T9', cid:'C125', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[], auto:true},
+  {id:'T10', cid:'C126', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[], auto:true},
+  {id:'T11', cid:'C127', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[], auto:true},
+  {id:'T12', cid:'C128', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[], auto:true},
+  {id:'T13', cid:'C129', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[], auto:true},
+  {id:'T14', cid:'C130', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[], auto:true},
+  {id:'T15', cid:'C131', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[], auto:true},
+  {id:'T16', cid:'C132', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[], auto:true},
+  {id:'T17', cid:'C133', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[], auto:true},
+  {id:'T18', cid:'C134', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[], auto:true},
+  {id:'T19', cid:'C135', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[], auto:true},
 ];
 
 let REMINDERS = [
-  {id:'R1', cid:'C108', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-08-24', tip:'Recall stand by', done:false},
-  {id:'R2', cid:'C120', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-08-24', tip:'Recall stand by', done:false},
-  {id:'R3', cid:'C121', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-08-24', tip:'Recall stand by', done:false},
-  {id:'R4', cid:'C127', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-08-24', tip:'Recall stand by', done:false},
-  {id:'R5', cid:'C128', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-08-24', tip:'Recall stand by', done:false},
-  {id:'R6', cid:'C133', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-08-24', tip:'Recall stand by', done:false},
-  {id:'R7', cid:'C134', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-08-24', tip:'Recall stand by', done:false},
-  {id:'R8', cid:'C135', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-08-24', tip:'Recall stand by', done:false},
+  {id:'R1', cid:'C108', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-08-24', tip:'Recall stand by', done:false, auto:true},
+  {id:'R2', cid:'C120', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-08-24', tip:'Recall stand by', done:false, auto:true},
+  {id:'R3', cid:'C121', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-08-24', tip:'Recall stand by', done:false, auto:true},
+  {id:'R4', cid:'C127', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-08-24', tip:'Recall stand by', done:false, auto:true},
+  {id:'R5', cid:'C128', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-08-24', tip:'Recall stand by', done:false, auto:true},
+  {id:'R6', cid:'C133', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-08-24', tip:'Recall stand by', done:false, auto:true},
+  {id:'R7', cid:'C134', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-08-24', tip:'Recall stand by', done:false, auto:true},
+  {id:'R8', cid:'C135', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-08-24', tip:'Recall stand by', done:false, auto:true},
 ];
 
 /* ---------------- state ---------------- */
@@ -588,6 +593,7 @@ function openSheet(){
         ${TEAM.map(t=>`<option value="${t.id}" ${STATE.me===t.id?'selected':''}>${esc(t.name)} — ${esc(t.role)}</option>`).join('')}
       </select>
     </div>
+    <button class="it" onclick="closeSheet();openSync()"><span style="width:18px">⟳</span>Sincronizează cu sheet-ul</button>
     <button class="it" onclick="go('echipa')"><span style="width:18px">◇</span>Echipă &amp; roluri</button>
     <button class="it" onclick="go('reguli')"><span style="width:18px">§</span>Reguli proces</button>
     <button class="it" onclick="exportJSON();closeSheet()"><span style="width:18px">↓</span>Export date (JSON)</button>
@@ -616,6 +622,10 @@ function render(){
     STATE.view==='restante' ? viewTasks(true) :
     STATE.view==='remindere'? viewRemindere() :
     STATE.view==='echipa'   ? viewEchipa()   : viewReguli();
+  const sf=document.getElementById('syncFoot');
+  if(sf) sf.textContent = SYNC.last
+    ? 'Sincronizat ' + SYNC.last.toLocaleTimeString('ro-RO',{hour:'2-digit',minute:'2-digit'}) + (SYNC.auto&&SYNC.url?' · auto 5 min':'')
+    : 'Date importate 18 aug · nesincronizat';
   const chip=document.querySelector('.mchip.on');
   if(chip) chip.parentElement.scrollLeft = Math.max(0, chip.offsetLeft - 46);
   if(STATE.drawerId) renderDrawer();
@@ -699,6 +709,7 @@ function viewPipeline(){
 
 function kcard(c, withStage){
   const alerts=[];
+  if(c.lipsaSheet) alerts.push('<span class="tag" style="border-color:var(--rose);color:var(--rose)">Lipsă din sheet</span>');
   if(c.statusS==='Stand by') alerts.push('<span class="tag" style="border-color:var(--clay);color:var(--clay)">Stand by</span>');
   if(c.avansPlatit===false && ST(c.stage).n>=5) alerts.push('<span class="tag" style="border-color:var(--rose);color:var(--rose)">Avans neîncasat</span>');
   if(c.santier==='rosu') alerts.push('<span class="tag">La roșu</span>');
@@ -1126,6 +1137,266 @@ function saveTask(rest){
   if(!g('t_t').value.trim()) return alert('Descrierea e obligatorie.');
   TASKS.push({id:'T'+(Math.random()*1e6|0),cid:g('t_c').value,t:g('t_t').value.trim(),who:g('t_w').value,due:g('t_d').value,done:false,restanta:rest,photos:[]});
   closeModal(); render();
+}
+
+/* =========================================================
+   SINCRONIZARE cu centralizatorul de proiectare (Google Sheets)
+   Sursa: CSV lipit, fișier .csv, sau URL publicat (File → Share → Publish to web)
+   ========================================================= */
+const SYNC = {last:null, url:'', auto:false, timer:null, msg:'', pending:null};
+
+const SH_STAGE = {'':'inreg','0 - tema proiectare':'triaj','0 - masurare':'masur',
+  '1 - design general':'proiect','2 - design detalii':'proiect',
+  '3 - design final':'deofert','4 - ofertare':'ofertare'};
+const SH_PRO = {'andrei':'potco','sorin':'sorin','gabriel':'gabriel','bright':'bright','dedecor':'dedecor'};
+const SH_LUNI = {ianuarie:1,februarie:2,martie:3,aprilie:4,mai:5,iunie:6,iulie:7,
+  august:8,septembrie:9,octombrie:10,noiembrie:11,decembrie:12};
+const SH_FIELDS = ['tel','oras','tip','designer','proiectant','stage','substadiu','statusS',
+                   'nrSpatii','mp','tipSpatiu','buget','creat','termen','obs'];
+
+const normKey = s => (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')
+  .replace(/[^a-z0-9]+/g,' ').trim();
+
+function parseCSV(text){
+  const rows=[]; let row=[], cell='', q=false;
+  text = text.replace(/\r\n?/g,'\n');
+  for(let i=0;i<text.length;i++){
+    const ch=text[i];
+    if(q){ if(ch==='"'){ if(text[i+1]==='"'){cell+='"';i++;} else q=false; } else cell+=ch; }
+    else if(ch==='"') q=true;
+    else if(ch===','){ row.push(cell); cell=''; }
+    else if(ch==='\n'){ row.push(cell); rows.push(row); row=[]; cell=''; }
+    else cell+=ch;
+  }
+  if(cell!==''||row.length){ row.push(cell); rows.push(row); }
+  return rows.map(r=>r.map(c=>c.trim()));
+}
+
+function shDate(s){
+  s=(s||'').trim(); if(!s||s.startsWith('00.00')) return '';
+  let m=s.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+  if(m){ const d=+m[1],mo=+m[2],y=+m[3]; if(!d||!mo) return '';
+    return `${y}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
+  m=s.match(/^new\s+(\d{1,2})\s+([a-zăâîșț]+)$/i);
+  if(m && SH_LUNI[m[2].toLowerCase()]) return `2026-${String(SH_LUNI[m[2].toLowerCase()]).padStart(2,'0')}-${String(+m[1]).padStart(2,'0')}`;
+  m=s.match(/^(\d{4})-(\d{2})-(\d{2})$/); return m?s:'';
+}
+const shDes = s => (s||'').trim().replace(/\s*0\d{3}\s?\d{3}\s?\d{3}\s*$/,'')
+  .replace(/^Design\s+S(?:tu|u)dio\s*-\s*/i,'');
+
+function rowsToClients(rows){
+  let hi=-1;
+  for(let i=0;i<Math.min(rows.length,8);i++){
+    const low=rows[i].map(c=>c.toLowerCase());
+    if(low.includes('nume')&&low.includes('prenume')){ hi=i; break; }
+  }
+  if(hi<0) throw new Error('Nu găsesc rândul de antet (trebuie să conțină „Nume” și „Prenume”).');
+  const H=rows[hi].map(c=>c.toLowerCase());
+  const col=n=>H.indexOf(n.toLowerCase());
+  const need=['nume','prenume','tip proiect','etapa curenta','status'];
+  const missing=need.filter(n=>col(n)<0);
+  if(missing.length) throw new Error('Lipsesc coloanele: '+missing.join(', '));
+  const g=(r,n)=>{const i=col(n); return i<0?'':(r[i]||'').trim();};
+
+  return rows.slice(hi+1).map(r=>{
+    const nm=(g(r,'prenume')+' '+g(r,'nume')).trim();
+    if(!nm) return null;
+    const etapa=g(r,'etapa curenta'), status=g(r,'status'), tipP=g(r,'tip proiect').toLowerCase();
+    let stage=SH_STAGE[etapa]!==undefined?SH_STAGE[etapa]:'inreg';
+    if(etapa==='4 - ofertare'&&status==='Finalizat') stage='ofertat';
+    const sursa=g(r,'sursa'), efec=shDate(g(r,'data predare efectiva'));
+    const obs=[g(r,'categorie client')&&'categorie '+g(r,'categorie client'),
+               g(r,'prioritate')&&'prioritate '+g(r,'prioritate'),
+               (sursa&&tipP!=='extern')&&'sursă: internă'+sursa,
+               efec&&'predat efectiv '+efec].filter(Boolean).join(' · ');
+    const oras=g(r,'oras');
+    return {
+      key:normKey(nm), nume:nm, tel:g(r,'telefon'),
+      oras:(oras==='text'?'':oras),
+      tip: tipP==='extern'?'cu':tipP==='intern'?'fara':'',
+      designer: tipP==='extern'?shDes(sursa):'—',
+      proiectant: SH_PRO[g(r,'designer alocat').toLowerCase()]||'',
+      stage, substadiu:etapa, statusS:status,
+      nrSpatii:g(r,'nr. spatii'), mp:g(r,'mp totali').replace(/\s/g,''), tipSpatiu:g(r,'tip spatiu'),
+      buget:g(r,'buget estimat'),
+      creat: shDate(g(r,'data contact'))||shDate(g(r,'ultima actualizare'))||d(0),
+      termen: shDate(g(r,'data predare estimata')),
+      _masur: shDate(g(r,'data masuratori')),
+      obs
+    };
+  }).filter(Boolean);
+}
+
+function diffSync(inc){
+  const byKey=new Map(CLIENTS.map(c=>[normKey(c.nume),c]));
+  const seen=new Set(), noi=[], mod=[];
+  inc.forEach(x=>{
+    seen.add(x.key);
+    const c=byKey.get(x.key);
+    if(!c){ noi.push(x); return; }
+    const ch=SH_FIELDS.filter(f=>(c[f]||'')!==(x[f]||''))
+      .map(f=>({f, de:c[f]||'—', la:x[f]||'—'}));
+    if(ch.length) mod.push({c, x, ch});
+  });
+  const lipsa=CLIENTS.filter(c=>!seen.has(normKey(c.nume)));
+  return {noi, mod, lipsa, total:inc.length};
+}
+
+function applySync(inc){
+  const dif=diffSync(inc);
+  const byKey=new Map(CLIENTS.map(c=>[normKey(c.nume),c]));
+  dif.mod.forEach(({c,x})=>{
+    const old=c.stage;
+    SH_FIELDS.forEach(f=>{ c[f]=x[f]; });
+    if(old!==c.stage) c.hist.push([c.stage, d(0)]);
+    c._masur=x._masur;
+  });
+  dif.noi.forEach(x=>{
+    const c=mk({nume:x.nume, hist:[['inreg',x.creat]], avansPlatit:null, gdpr:false,
+                santier:'', tipLocuinta:'', adresa:''});
+    SH_FIELDS.forEach(f=>{ c[f]=x[f]; });
+    c._masur=x._masur;
+    if(c.stage!=='inreg') c.hist.push([c.stage, d(0)]);
+    CLIENTS.push(c);
+  });
+  dif.lipsa.forEach(c=>{ c.lipsaSheet=true; });
+  regenAuto();
+  SYNC.last=new Date();
+  SYNC.msg=`${dif.noi.length} fișe noi · ${dif.mod.length} actualizate · ${dif.lipsa.length} nu mai apar în sheet`;
+  return dif;
+}
+
+/* task-urile și reminderele derivate se refac; cele adăugate manual rămân */
+function regenAuto(){
+  TASKS = TASKS.filter(t=>!t.auto);
+  REMINDERS = REMINDERS.filter(r=>!r.auto);
+  let n=0;
+  CLIENTS.forEach(c=>{
+    const dd=iso=>iso?days(iso):null;
+    const add=(o)=>TASKS.push(Object.assign({id:'TA'+(++n), cid:c.id, done:false, restanta:false, photos:[], auto:true}, o));
+    const rem=(o)=>REMINDERS.push(Object.assign({id:'RA'+(++n), cid:c.id, done:false, auto:true}, o));
+    if(c._masur && dd(c._masur)>=0) add({t:'Măsurătoare programată — '+c.nume, who:'mihaela', due:c._masur});
+    if(!c.tel && c.stage!=='inreg') add({t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:d(3)});
+    if(!c.substadiu && c.tip) add({t:'Triaj: stabilește etapa curentă și programează măsurătoarea', who:'roxana', due:d(2)});
+    if(c.statusS==='Stand by') rem({t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:d(14), tip:'Recall stand by'});
+    if(c.termen && dd(c.termen)<0 && c.statusS!=='Finalizat')
+      rem({t:'Termen de predare depășit — proiectul nu e marcat finalizat', due:c.termen, tip:'Termen depășit'});
+    if(c.lipsaSheet) rem({t:'Fișa nu mai apare în centralizator — verifică dacă a fost ștearsă din sheet', due:d(2), tip:'Dispărut din sheet'});
+  });
+}
+
+/* ---------------- UI sincronizare ---------------- */
+function openSync(){
+  const L = SYNC.last ? SYNC.last.toLocaleString('ro-RO') : 'niciodată în această sesiune';
+  modal(`<div class="mh"><h2>Sincronizare</h2></div>
+  <div class="mb">
+    <div class="notice">Sursa: tab-ul <strong>Clienti</strong> din centralizatorul de proiectare.
+      Ultima sincronizare: ${esc(L)}.${SYNC.msg?' '+esc(SYNC.msg):''}</div>
+
+    <div class="sec"><h3>1 · Lipește exportul CSV</h3>
+      <div style="font-size:12px;color:var(--ink-2);margin-bottom:9px">
+        În Sheets: <em>File → Download → Comma-separated values</em>, deschizi fișierul și lipești tot aici.
+        Sau trage direct fișierul <code>.csv</code> mai jos.</div>
+      <textarea id="sy_csv" rows="5" placeholder="Nume,Prenume,Telefon,Data contact,…" style="width:100%;border:1px solid var(--line-2);background:var(--paper);padding:10px;font-family:ui-monospace,monospace;font-size:11.5px"></textarea>
+      <div style="margin-top:9px"><label class="btn sm ghost" style="cursor:pointer">Încarcă fișier .csv
+        <input type="file" accept=".csv,text/csv" hidden onchange="syFile(this)"></label></div>
+    </div>
+
+    <div class="sec"><h3>2 · Sau, dacă publici tab-ul</h3>
+      <div style="font-size:12px;color:var(--ink-2);margin-bottom:9px">
+        <em>File → Share → Publish to web → Clienti → CSV</em>. Lipești URL-ul aici și sincronizarea
+        se poate face automat, la 5 minute. Atenție: oricine are acel URL poate citi tab-ul.</div>
+      <input id="sy_url" value="${esc(SYNC.url)}" placeholder="https://docs.google.com/spreadsheets/d/e/2PACX-…/pub?gid=…&single=true&output=csv"
+        style="width:100%;border:1px solid var(--line-2);background:var(--paper);padding:10px;font-size:12px">
+      <label class="chk" style="margin-top:11px"><input type="checkbox" id="sy_auto" ${SYNC.auto?'checked':''}>
+        <span>Reinterogează automat la 5 minute cât timp aplicația e deschisă</span></label>
+    </div>
+
+    <div id="sy_out"></div>
+  </div>
+  <div class="mf">
+    <button class="btn ghost" onclick="closeModal()">Închide</button>
+    <button class="btn" onclick="syRun(false)">Verifică diferențele</button>
+    <button class="btn dark" onclick="syRun(true)">Sincronizează</button>
+  </div>`);
+}
+function syFile(inp){
+  const f=inp.files[0]; if(!f) return;
+  const r=new FileReader(); r.onload=e=>{document.getElementById('sy_csv').value=e.target.result;
+    document.getElementById('sy_out').innerHTML='<div class="notice">Fișier încărcat: '+esc(f.name)+'. Apasă „Verifică diferențele”.</div>';};
+  r.readAsText(f,'utf-8');
+}
+function syOut(html){const el=document.getElementById('sy_out'); if(el) el.innerHTML=html;}
+
+async function syRun(apply){
+  const csvEl=document.getElementById('sy_csv'), urlEl=document.getElementById('sy_url');
+  if(urlEl){ SYNC.url=urlEl.value.trim(); SYNC.auto=document.getElementById('sy_auto').checked; }
+  let text=csvEl?csvEl.value.trim():'';
+  try{
+    if(!text && SYNC.url){
+      syOut('<div class="notice">Se descarcă din URL…</div>');
+      const r=await fetch(SYNC.url,{cache:'no-store'});
+      if(!r.ok) throw new Error('Răspuns '+r.status+' de la Google. Verifică dacă tab-ul e publicat.');
+      text=await r.text();
+      if(/<html/i.test(text)) throw new Error('URL-ul nu returnează CSV. Folosește link-ul de la „Publish to web → CSV”.');
+    }
+    if(!text) throw new Error('Nu am de unde citi: lipește CSV-ul sau pune URL-ul publicat.');
+    const inc=rowsToClients(parseCSV(text));
+    if(!inc.length) throw new Error('Nu am găsit niciun rând cu nume.');
+    const dif=diffSync(inc);
+    if(!apply){
+      syOut(syDiffHTML(dif));
+    } else {
+      applySync(inc); setAuto();
+      syOut(`<div class="notice">Sincronizat. ${esc(SYNC.msg)}</div>`);
+      render();
+    }
+  }catch(e){
+    syOut('<div class="notice rose"><strong>Nu a mers:</strong> '+esc(e.message)+
+      (String(e.message).match(/Failed to fetch|NetworkError/i)
+       ?'<br>Browserul a blocat cererea. Tab-ul trebuie publicat prin „Publish to web”, nu doar partajat cu link.':'')+'</div>');
+  }
+}
+const F_LBL={tel:'telefon',oras:'oraș',tip:'tipologie',designer:'Studio Vega',proiectant:'proiectant',
+  stage:'etapă',substadiu:'sub-etapă',statusS:'status',nrSpatii:'nr. spații',mp:'mp',
+  tipSpatiu:'tip spațiu',buget:'buget',creat:'dată contact',termen:'termen predare',obs:'observații'};
+const F_VAL=(f,v)=>{ v=v==null||v===''?'—':v;
+  if(f==='stage'&&v!=='—') return ST(v).nm;
+  if(f==='proiectant'&&v!=='—') return NAME(v);
+  if(f==='tip') return v==='cu'?'cu proiect design':v==='fara'?'fără proiect':'—';
+  return String(v); };
+
+function syDiffHTML(dif){
+  const line=m=>`<div style="font-size:12px;padding:7px 0;border-bottom:1px solid var(--bone-2)">${m}</div>`;
+  let h=`<div class="sec"><h3>Diferențe față de datele din aplicație</h3>
+    <div style="display:flex;gap:9px;flex-wrap:wrap;margin-bottom:12px">
+      <span class="tag f">${dif.total} rânduri citite</span>
+      <span class="tag">${dif.noi.length===1?'1 fișă nouă':dif.noi.length+' fișe noi'}</span>
+      <span class="tag">${dif.mod.length===1?'1 actualizată':dif.mod.length+' actualizate'}</span>
+      ${dif.lipsa.length?`<span class="tag" style="border-color:var(--rose);color:var(--rose)">${dif.lipsa.length} lipsă din sheet</span>`:''}
+    </div>`;
+  dif.noi.slice(0,6).forEach(x=>h+=line(`<strong>Nou:</strong> ${esc(x.nume)} — ${esc(ST(x.stage).nm)}`));
+  if(dif.noi.length>6) h+=line(`<span style="color:var(--muted)">…și încă ${dif.noi.length-6} fișe noi</span>`);
+  dif.mod.slice(0,8).forEach(m=>h+=line(`<strong>${esc(m.c.nume)}</strong> — ${
+    m.ch.slice(0,3).map(c=>`${esc(F_LBL[c.f]||c.f)}: ${esc(F_VAL(c.f,c.de).slice(0,26))} → ${esc(F_VAL(c.f,c.la).slice(0,26))}`).join(' · ')
+  }${m.ch.length>3?' · +'+(m.ch.length-3)+' câmpuri':''}`));
+  if(dif.mod.length>8) h+=line(`<span style="color:var(--muted)">…și încă ${dif.mod.length-8} actualizate</span>`);
+  dif.lipsa.slice(0,5).forEach(c=>h+=line(`<span class="warn">Lipsă din sheet:</span> ${esc(c.nume)}`));
+  h+=`<div style="font-size:11.5px;color:var(--muted);margin-top:12px">Avansul, tipul locuinței, stadiul șantierului,
+    notele vocale și task-urile adăugate manual nu se ating — sheet-ul nu le conține.</div></div>`;
+  return h;
+}
+function setAuto(){
+  if(SYNC.timer){clearInterval(SYNC.timer); SYNC.timer=null;}
+  if(SYNC.auto && SYNC.url){
+    SYNC.timer=setInterval(async()=>{
+      try{
+        const r=await fetch(SYNC.url,{cache:'no-store'}); if(!r.ok) return;
+        const inc=rowsToClients(parseCSV(await r.text()));
+        if(inc.length){ applySync(inc); render(); }
+      }catch(e){ SYNC.msg='Ultima încercare automată a eșuat: '+e.message; }
+    }, 5*60*1000);
+  }
 }
 
 /* ---------------- export ---------------- */
