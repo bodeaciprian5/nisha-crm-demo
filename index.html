@@ -244,6 +244,27 @@ td .nm{font-family:var(--serif);font-size:17px;text-transform:uppercase;letter-s
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bcard.on .bmeta{color:rgba(241,240,235,.6)}
 
+.gate{position:fixed;inset:0;z-index:90;background:var(--ink);display:none;
+  align-items:center;justify-content:center;padding:26px}
+.gate.on{display:flex}
+.gbox{width:min(370px,100%);color:var(--bone)}
+.glogo{width:132px;height:auto;color:var(--bone);display:block;margin:0 auto 12px}
+.gsub{font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:rgba(241,240,235,.4);
+  text-align:center;margin-bottom:34px}
+.gbox .field label{color:rgba(241,240,235,.45)}
+.gbox .field select,.gbox .field input{background:rgba(241,240,235,.06);border-color:rgba(241,240,235,.2);
+  color:var(--bone);padding:13px 12px;font-size:15px}
+.gbox .field select:focus,.gbox .field input:focus{border-color:var(--sand)}
+.gbox .field select option{background:var(--ink);color:var(--bone)}
+.gbox .btn.dark{background:var(--bone);color:var(--ink);border-color:var(--bone);margin-top:6px}
+.gbox .btn.dark:hover{background:var(--sand);border-color:var(--sand)}
+.gerr{min-height:18px;font-size:12px;color:#D98B80;margin-top:11px;text-align:center}
+.gnote{font-size:10.5px;line-height:1.6;color:rgba(241,240,235,.35);margin-top:22px;text-align:center}
+
+.who .out{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+  border-left:1px solid var(--line-2);padding-left:10px;margin-left:2px}
+.who .out:hover{color:var(--ink)}
+
 .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,16px);z-index:70;
   background:var(--ink);color:var(--bone);padding:13px 20px;font-size:12.5px;letter-spacing:.02em;
   max-width:min(560px,92vw);opacity:0;pointer-events:none;transition:.22s;box-shadow:0 10px 30px -12px rgba(28,29,29,.5)}
@@ -392,8 +413,7 @@ td .nm{font-family:var(--serif);font-size:17px;text-transform:uppercase;letter-s
     </div>
     <nav class="nav" id="nav"></nav>
     <div class="sidefoot">
-      <a href="#" onclick="openSync();return false" style="text-decoration:underline">Setări sync</a> ·
-      <a href="#" onclick="exportJSON();return false" style="text-decoration:underline">Export</a>
+      <span id="footLinks"></span>
       <div id="syncFoot" style="margin-top:7px;text-transform:none;letter-spacing:.02em;font-size:9.5px;color:rgba(241,240,235,.28)"></div>
     </div>
   </aside>
@@ -408,17 +428,16 @@ td .nm{font-family:var(--serif);font-size:17px;text-transform:uppercase;letter-s
       <h1 id="pageTitle">Pipeline</h1>
       <div class="search"><span style="color:var(--muted-2)">⌕</span><input id="q" placeholder="Caută client, adresă, telefon…" oninput="STATE.q=this.value;render()"></div>
       <div class="spacer"></div>
-      <div class="who">
-        <span class="eyebrow">Vezi ca</span>
-        <select id="userSel" onchange="STATE.me=this.value;render()"></select>
-      </div>
+      <div class="who" id="whoBox"></div>
       <button class="btn sync" id="btnSync" onclick="quickSync()" title="Sincronizează datele cu sheet-ul">
         <span class="ico">⟳</span><span class="hide-m">Sincronizează</span></button>
-      <button class="btn dark" onclick="openNew()"><span class="hide-m">+ Client nou</span><span class="only-m">+</span></button>
+      <button class="btn dark" id="btnNew" onclick="openNew()"><span class="hide-m">+ Client nou</span><span class="only-m">+</span></button>
     </header>
     <div class="content" id="view"></div>
   </div>
 </div>
+
+<div class="gate" id="gate"></div>
 
 <nav class="tabbar" id="tabbar"></nav>
 
@@ -491,8 +510,8 @@ let CLIENTS = [
   {id:'C108', nume:'Ioana Enache', tel:'', adresa:'', oras:'', tip:'cu', santier:'', tipLocuinta:'', designer:'', proiectant:'dedecor', stage:'triaj', substadiu:'0 - tema proiectare', statusS:'Stand by', nrSpatii:'4', mp:'70mp', tipSpatiu:'Mixt', buget:'10-50K €', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie premium · prioritate normal', audio:[], docs:[], hist:[['inreg','2026-08-10'],['triaj','2026-08-10']]},
   {id:'C109', nume:'Paul Filip', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Nord Design', proiectant:'', stage:'inreg', substadiu:'', statusS:'', nrSpatii:'', mp:'', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate scazuta', audio:[], docs:[], hist:[['inreg','2026-08-10']]},
   {id:'C110', nume:'Simona Lazăr', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Nord Design', proiectant:'', stage:'masur', substadiu:'0 - masurare', statusS:'', nrSpatii:'4', mp:'60mp', tipSpatiu:'Mixt', buget:'10-50K €', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate scazuta', audio:[], docs:[], hist:[['inreg','2026-08-10'],['masur','2026-08-07']]},
-  {id:'C111', nume:'Radu Rusu', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Studio Alfa', proiectant:'', stage:'masur', substadiu:'0 - masurare', statusS:'', nrSpatii:'2', mp:'40mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie premium · prioritate normal', audio:[], docs:[], hist:[['inreg','2026-08-10'],['masur','2026-08-11']]},
-  {id:'C112', nume:'Carmen Vlad', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Atelier Beta', proiectant:'', stage:'masur', substadiu:'0 - masurare', statusS:'', nrSpatii:'5', mp:'70mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2024-07-30', termen:'', obs:'categorie mediu · prioritate normal', audio:[], docs:[], hist:[['inreg','2024-07-30'],['masur','2026-08-07']]},
+  {id:'C111', nume:'Radu Rusu', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Atelier Beta', proiectant:'', stage:'masur', substadiu:'0 - masurare', statusS:'', nrSpatii:'2', mp:'40mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie premium · prioritate normal', audio:[], docs:[], hist:[['inreg','2026-08-10'],['masur','2026-08-11']]},
+  {id:'C112', nume:'Carmen Vlad', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Studio Alfa', proiectant:'', stage:'masur', substadiu:'0 - masurare', statusS:'', nrSpatii:'5', mp:'70mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2024-07-30', termen:'', obs:'categorie mediu · prioritate normal', audio:[], docs:[], hist:[['inreg','2024-07-30'],['masur','2026-08-07']]},
   {id:'C113', nume:'Tudor Preda', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'bright', stage:'proiect', substadiu:'1 - design general', statusS:'Activ', nrSpatii:'7', mp:'120mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-04', termen:'2026-08-21', obs:'categorie economic · prioritate ridicata', audio:[], docs:[], hist:[['inreg','2026-08-04'],['proiect','2026-08-07']]},
   {id:'C114', nume:'Alina Dinu', tel:'07xx xxx xxx', adresa:'', oras:'', tip:'cu', santier:'', tipLocuinta:'', designer:'Forma Studio', proiectant:'sorin', stage:'deofert', substadiu:'3 - design final', statusS:'Activ', nrSpatii:'5', mp:'70mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'2026-08-21', obs:'categorie premium · prioritate ridicata', audio:[], docs:[], hist:[['inreg','2026-08-10'],['masur','2026-08-12'],['proiect','2026-08-04'],['deofert','2026-08-10']]},
   {id:'C115', nume:'Mihai Toma', tel:'', adresa:'', oras:'', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'potco', stage:'ofertat', substadiu:'4 - ofertare', statusS:'Finalizat', nrSpatii:'5', mp:'70mp', tipSpatiu:'Mixt', buget:'10-50K €', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate normal · predat efectiv 2026-08-10', audio:[], docs:[], hist:[['inreg','2026-08-10'],['ofertat','2026-08-10']]},
@@ -551,6 +570,102 @@ let REMINDERS = [
   {id:'R8', cid:'C135', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-08-24', tip:'Recall stand by', done:false, auto:true},
 ];
 
+/* ---- Conturi. Parolele sunt stocate ca hash SHA-256, nu în clar. ----
+   ATENȚIE: acesta e un strat de ROLURI, nu de securitate. Într-o pagină statică
+   oricine poate ocoli ecranul de login citind sursa. Protecția reală trebuie să
+   stea în fața site-ului (Cloudflare Access) sau într-un backend.
+   Ca să schimbi o parolă: rulează în consola browserului
+   crypto.subtle.digest('SHA-256',new TextEncoder().encode('parola-noua'))
+   și înlocuiește hash-ul. */
+const ACCOUNTS = {
+  ilie: {h:'2a97516c354b68848cdbd8f54a226a0a55b21ed138e207ad6c5cbb9c00aa5aea', perm:'admin'},
+  roxana: {h:'2a97516c354b68848cdbd8f54a226a0a55b21ed138e207ad6c5cbb9c00aa5aea', perm:'coordonator'},
+  mihaela: {h:'2a97516c354b68848cdbd8f54a226a0a55b21ed138e207ad6c5cbb9c00aa5aea', perm:'masurator'},
+  andreea: {h:'2a97516c354b68848cdbd8f54a226a0a55b21ed138e207ad6c5cbb9c00aa5aea', perm:'ofertare'},
+  trutca: {h:'2a97516c354b68848cdbd8f54a226a0a55b21ed138e207ad6c5cbb9c00aa5aea', perm:'proiectant'},
+  sorin: {h:'2a97516c354b68848cdbd8f54a226a0a55b21ed138e207ad6c5cbb9c00aa5aea', perm:'proiectant'},
+  gabriel: {h:'2a97516c354b68848cdbd8f54a226a0a55b21ed138e207ad6c5cbb9c00aa5aea', perm:'proiectant'},
+  potco: {h:'2a97516c354b68848cdbd8f54a226a0a55b21ed138e207ad6c5cbb9c00aa5aea', perm:'proiectant'},
+  bright: {h:'2a97516c354b68848cdbd8f54a226a0a55b21ed138e207ad6c5cbb9c00aa5aea', perm:'proiectant'},
+  dedecor: {h:'2a97516c354b68848cdbd8f54a226a0a55b21ed138e207ad6c5cbb9c00aa5aea', perm:'proiectant'},
+  adela: {h:'2a97516c354b68848cdbd8f54a226a0a55b21ed138e207ad6c5cbb9c00aa5aea', perm:'productie'},
+  vasile: {h:'2a97516c354b68848cdbd8f54a226a0a55b21ed138e207ad6c5cbb9c00aa5aea', perm:'productie'},
+};
+
+/* ---- Ce poate face fiecare rol ---- */
+const ACL = {
+  admin:       {views:'all', stages:'all', sync:true,  export:true,  intake:true,  team:'all'},
+  coordonator: {views:['pipeline','clienti','taskuri','restante','remindere','echipa','reguli'],
+                stages:'all', sync:false, export:true,  intake:true,  team:'all'},
+  masurator:   {views:['pipeline','clienti','taskuri','remindere'],
+                stages:['triaj','masur'], sync:false, export:false, intake:false, team:'self'},
+  proiectant:  {views:['pipeline','clienti','taskuri','remindere'],
+                stages:['proiect','deofert'], sync:false, export:false, intake:false, team:'self'},
+  ofertare:    {views:['pipeline','clienti','taskuri','remindere'],
+                stages:['deofert','ofertare','ofertat','delansat'], sync:false, export:false, intake:false, team:'self'},
+  productie:   {views:['pipeline','clienti','taskuri','restante','remindere'],
+                stages:['delansat','productie','livrat','restante'], sync:false, export:false, intake:false, team:'self'},
+};
+const AUTH = {user:null, perm:null};
+const acl  = () => ACL[AUTH.perm] || ACL.proiectant;
+const can  = k => !!acl()[k];
+const canView  = v => acl().views==='all' || acl().views.includes(v);
+const canStage = st => acl().stages==='all' || acl().stages.includes(st);
+/* cine vede ce: adminul și coordonatorul văd tot; ceilalți, etapele lor plus fișele unde sunt asignați */
+const scopeClients = () => acl().stages==='all' ? CLIENTS
+  : CLIENTS.filter(c => canStage(c.stage) || c.proiectant===AUTH.user);
+const scopeTasks = () => acl().team==='all' ? TASKS : TASKS.filter(t => t.who===AUTH.user);
+const scopeRem   = () => acl().team==='all' ? REMINDERS
+  : REMINDERS.filter(r => { const c=clientById(r.cid); return c && (canStage(c.stage)||c.proiectant===AUTH.user); });
+
+async function sha256(txt){
+  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(txt));
+  return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+
+function loginScreen(){
+  const opts = TEAM.filter(t=>ACCOUNTS[t.id])
+    .map(t=>`<option value="${t.id}">${esc(t.name)} — ${esc(t.role)}</option>`).join('');
+  document.getElementById('gate').innerHTML = `
+    <div class="gbox">
+      <svg class="glogo" viewBox="0 0 418.95 230.22" fill="currentColor" role="img" aria-label="Nisha"><use href="#lg-mark"/><use href="#lg-word"/></svg>
+      <div class="gsub">Furniture &amp; Design · CRM</div>
+      <div class="field"><label>Cine ești</label><select id="g_user">${opts}</select></div>
+      <div class="field"><label>Parolă</label><input id="g_pass" type="password" autocomplete="current-password"
+        onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <button class="btn dark" style="width:100%;justify-content:center;padding:15px" onclick="doLogin()">Intră</button>
+      <div id="g_err" class="gerr"></div><div class="gnote" style="color:rgba(241,240,235,.5);margin-top:14px">Demo public: parola pentru orice cont este <strong>demo</strong>. Alege un rol diferit ca sa vezi cum se schimba ce vede fiecare.</div>
+      <div class="gnote">Ecranul acesta separă rolurile — fiecare vede doar ce îi trebuie.
+        Nu ține loc de securitate: pentru asta site-ul trebuie pus în spatele unei porți de acces.</div>
+    </div>`;
+  document.getElementById('gate').classList.add('on');
+  setTimeout(()=>{const el=document.getElementById('g_pass'); if(el) el.focus();}, 120);
+}
+
+async function doLogin(){
+  const id = document.getElementById('g_user').value;
+  const pw = document.getElementById('g_pass').value;
+  const err = document.getElementById('g_err');
+  const a = ACCOUNTS[id];
+  if(!a || !pw || await sha256(pw) !== a.h){
+    err.textContent = 'Parolă greșită.';
+    document.getElementById('g_pass').value=''; document.getElementById('g_pass').focus();
+    return;
+  }
+  AUTH.user = id; AUTH.perm = a.perm; STATE.me = id;
+  if(!canView(STATE.view)) STATE.view = acl().views==='all' ? 'pipeline' : acl().views[0];
+  document.getElementById('gate').classList.remove('on');
+  render();
+  toast('Bine ai venit, ' + NAME(id).split(' ')[0] + '.');
+}
+
+function logout(){
+  AUTH.user=null; AUTH.perm=null; STATE.drawerId=null; STATE.fDes=''; STATE.q='';
+  closeDrawer(); closeSheet(); closeModal();
+  const q=document.getElementById('q'); if(q) q.value='';
+  loginScreen();
+}
+
 /* ---------------- state ---------------- */
 const STATE = {view:'pipeline', me:'ilie', q:'', boardMode:'kanban', drawerId:null, tab:'detalii', recording:null, mStage:'inreg', fDes:''};
 const MOB = () => window.innerWidth <= 900;
@@ -591,7 +706,7 @@ const birou = c => c.tip==='cu' ? ((c.designer && c.designer!=='—') ? c.design
                : c.tip==='fara' ? 'Intern (Nisha)' : 'Sursă neprecizată';
 const birouri = () => {
   const m=new Map();
-  CLIENTS.forEach(c=>{ const b=birou(c);
+  scopeClients().forEach(c=>{ const b=birou(c);
     const e=m.get(b)||{nm:b,n:0,activ:0,sb:0,fin:0,mp:0,spatii:0};
     e.n++; if(c.statusS==='Stand by')e.sb++; else if(c.statusS==='Finalizat')e.fin++; else e.activ++;
     e.mp+=parseInt(c.mp)||0; e.spatii+=parseInt(c.nrSpatii)||0; m.set(b,e); });
@@ -606,27 +721,29 @@ const progress = c => Math.round((ST(c.stage).n/11)*100);
 /* ---------------- nav ---------------- */
 function renderNav(){
   let h='', last='';
-  VIEWS.forEach(v=>{
+  VIEWS.filter(v=>canView(v.id)).forEach(v=>{
     if(v.grp!==last){h+=`<div class="grp">${v.grp}</div>`;last=v.grp}
     let cnt='';
-    if(v.id==='clienti') cnt=CLIENTS.length;
-    if(v.id==='taskuri') cnt=TASKS.filter(t=>!t.done&&!t.restanta).length;
-    if(v.id==='restante')cnt=TASKS.filter(t=>!t.done&&t.restanta).length;
-    if(v.id==='remindere')cnt=REMINDERS.filter(r=>!r.done).length;
+    if(v.id==='clienti') cnt=scopeClients().length;
+    if(v.id==='taskuri') cnt=scopeTasks().filter(t=>!t.done&&!t.restanta).length;
+    if(v.id==='restante')cnt=scopeTasks().filter(t=>!t.done&&t.restanta).length;
+    if(v.id==='remindere')cnt=scopeRem().filter(r=>!r.done).length;
     h+=`<a href="#" class="${STATE.view===v.id?'on':''}" onclick="go('${v.id}');return false">
         <span class="ico">${v.ico}</span>${v.nm}<span class="cnt">${cnt}</span></a>`;
   });
   document.getElementById('nav').innerHTML=h;
-  const sel=document.getElementById('userSel');
-  if(!sel.options.length) sel.innerHTML=TEAM.map(t=>`<option value="${t.id}">${t.name}</option>`).join('');
-  sel.value=STATE.me;
+  const wb=document.getElementById('whoBox');
+  if(wb) wb.innerHTML = AUTH.user
+    ? `<span class="eyebrow">${esc((TEAM.find(t=>t.id===AUTH.user)||{}).role||'')}</span>
+       <strong style="font-size:11px;letter-spacing:.1em;text-transform:uppercase">${esc(NAME(AUTH.user))}</strong>
+       <button class="out" onclick="logout()">Ieși</button>` : '';
   renderTabbar();
 }
 function renderTabbar(){
-  const cnt={taskuri:TASKS.filter(t=>!t.done&&!t.restanta).length,
-             restante:TASKS.filter(t=>!t.done&&t.restanta).length,
-             remindere:REMINDERS.filter(r=>!r.done&&days(r.due)<0).length};
-  document.getElementById('tabbar').innerHTML='<div class="row">'+TABS.map(t=>{
+  const cnt={taskuri:scopeTasks().filter(t=>!t.done&&!t.restanta).length,
+             restante:scopeTasks().filter(t=>!t.done&&t.restanta).length,
+             remindere:scopeRem().filter(r=>!r.done&&days(r.due)<0).length};
+  document.getElementById('tabbar').innerHTML='<div class="row">'+TABS.filter(t=>canView(t.id)).map(t=>{
     const n=cnt[t.id];
     const alert = t.id==='remindere'||t.id==='restante';
     return `<a href="#" class="${STATE.view===t.id?'on':''} ${alert&&n?'alert':''}" onclick="go('${t.id}');return false">
@@ -637,20 +754,20 @@ function go(v){STATE.view=v;closeSheet();render();document.getElementById('view'
 
 /* ---------- sheet mobil ---------- */
 function openSheet(){
+  const t = TEAM.find(x=>x.id===AUTH.user)||{};
   document.getElementById('sheet').innerHTML=`
     <div class="sh"><div class="grip"></div>
-      <div class="eyebrow" style="margin-bottom:8px">Vezi ca</div>
-      <select id="userSelM" onchange="STATE.me=this.value;render()"
-        style="width:100%;border:1px solid var(--line-2);background:var(--paper);padding:12px;font-size:15px">
-        ${TEAM.map(t=>`<option value="${t.id}" ${STATE.me===t.id?'selected':''}>${esc(t.name)} — ${esc(t.role)}</option>`).join('')}
-      </select>
+      <div class="eyebrow" style="margin-bottom:6px">Autentificat ca</div>
+      <div style="font-size:16px">${esc(t.name||'—')}</div>
+      <div style="font-size:11.5px;color:var(--muted);margin-bottom:4px">${esc(t.role||'')}</div>
     </div>
-    <button class="it" onclick="closeSheet();openIntake()"><span style="width:18px">●</span>Preluare client</button>
-    <button class="it" onclick="closeSheet();quickSync()"><span style="width:18px">⟳</span>Sincronizează acum</button>
-    <button class="it" onclick="closeSheet();openSync()"><span style="width:18px">⚙</span>Setări sincronizare</button>
-    <button class="it" onclick="go('echipa')"><span style="width:18px">◇</span>Echipă &amp; roluri</button>
-    <button class="it" onclick="go('reguli')"><span style="width:18px">§</span>Reguli proces</button>
-    <button class="it" onclick="exportJSON();closeSheet()"><span style="width:18px">↓</span>Export date (JSON)</button>
+    ${can('intake')?`<button class="it" onclick="closeSheet();openIntake()"><span style="width:18px">●</span>Preluare client</button>`:''}
+    ${can('sync')?`<button class="it" onclick="closeSheet();quickSync()"><span style="width:18px">⟳</span>Sincronizează acum</button>
+    <button class="it" onclick="closeSheet();openSync()"><span style="width:18px">⚙</span>Setări sincronizare</button>`:''}
+    ${canView('echipa')?`<button class="it" onclick="go('echipa')"><span style="width:18px">◇</span>Echipă &amp; roluri</button>`:''}
+    ${canView('reguli')?`<button class="it" onclick="go('reguli')"><span style="width:18px">§</span>Reguli proces</button>`:''}
+    ${can('export')?`<button class="it" onclick="exportJSON();closeSheet()"><span style="width:18px">↓</span>Export date (JSON)</button>`:''}
+    <button class="it" onclick="closeSheet();logout()"><span style="width:18px">⎋</span>Ieși din cont</button>
     <div class="sf"><button class="btn ghost" style="width:100%;justify-content:center;padding:14px" onclick="closeSheet()">Închide</button></div>`;
   document.getElementById('sheet').classList.add('on');
   document.getElementById('sheetScrim').classList.add('on');
@@ -676,7 +793,15 @@ function render(){
     STATE.view==='restante' ? viewTasks(true) :
     STATE.view==='remindere'? viewRemindere() :
     STATE.view==='echipa'   ? viewEchipa()   : viewReguli();
+  const fl=document.getElementById('footLinks');
+  if(fl) fl.innerHTML = [
+      can('sync')  ? `<a href="#" onclick="openSync();return false" style="text-decoration:underline">Setări sync</a>` : '',
+      can('export')? `<a href="#" onclick="exportJSON();return false" style="text-decoration:underline">Export</a>` : '',
+      `<a href="#" onclick="logout();return false" style="text-decoration:underline">Ieși</a>`
+    ].filter(Boolean).join(' · ');
+  const bn=document.getElementById('btnNew'); if(bn) bn.hidden = !can('intake');
   const bs=document.getElementById('btnSync');
+  if(bs) bs.hidden = !can('sync');
   if(bs){
     bs.classList.toggle('stale', !SYNC.last);
     bs.title = SYNC.last ? 'Ultima sincronizare: '+SYNC.last.toLocaleString('ro-RO')
@@ -693,12 +818,12 @@ function render(){
 
 /* ---------------- PIPELINE ---------------- */
 function viewPipeline(){
-  const list=CLIENTS.filter(matched);
-  const late=REMINDERS.filter(r=>!r.done&&days(r.due)<0).length;
-  const rest=TASKS.filter(t=>t.restanta&&!t.done).length;
+  const list=scopeClients().filter(matched);
+  const late=scopeRem().filter(r=>!r.done&&days(r.due)<0).length;
+  const rest=scopeTasks().filter(t=>t.restanta&&!t.done).length;
   const sb=list.filter(c=>c.statusS==='Stand by').length;
   const inLucru=list.filter(c=>['proiect','deofert'].includes(c.stage)).length;
-  const cta=`<button class="bigcta" onclick="openIntake()">
+  const cta=!can('intake')?'':`<button class="bigcta" onclick="openIntake()">
     <span class="mic">●</span>
     <span class="tx"><span class="t1">Preluare client</span>
       <span class="t2">Înregistrezi vocal · pleacă la ${esc(NAME('roxana'))}</span></span>
@@ -833,19 +958,19 @@ function tableOf(list){
 
 /* ---------------- CLIENTI ---------------- */
 function viewClienti(){
-  const list=CLIENTS.filter(matched);
+  const list=scopeClients().filter(matched);
   const byTip=[['cu','Cu proiect de design'],['fara','Fără proiect de design']];
-  const mpTot=CLIENTS.reduce((a,c)=>a+(parseInt(c.mp)||0),0);
+  const mpTot=list.reduce((a,c)=>a+(parseInt(c.mp)||0),0);
   return `<div class="grid-stats">
-    ${byTip.map(([k,l])=>`<div class="stat"><div class="n">${CLIENTS.filter(c=>c.tip===k).length}</div><div class="l">${l}</div></div>`).join('')}
-    <div class="stat"><div class="n">${CLIENTS.reduce((a,c)=>a+(parseInt(c.nrSpatii)||0),0)}</div><div class="l">Spații total</div></div>
+    ${byTip.map(([k,l])=>`<div class="stat"><div class="n">${list.filter(c=>c.tip===k).length}</div><div class="l">${l}</div></div>`).join('')}
+    <div class="stat"><div class="n">${list.reduce((a,c)=>a+(parseInt(c.nrSpatii)||0),0)}</div><div class="l">Spații total</div></div>
     <div class="stat"><div class="n">${mpTot}</div><div class="l">Mp în lucru</div></div>
   </div>`+tableOf(list);
 }
 
 /* ---------------- TASKS / RESTANTE ---------------- */
 function viewTasks(restOnly){
-  const mine=TASKS.filter(t=>t.restanta===restOnly);
+  const mine=scopeTasks().filter(t=>t.restanta===restOnly);
   const hdr = restOnly
     ? `<div class="notice">Restanțele înlocuiesc grupul de WhatsApp: montatorul bifează lucrarea, încarcă poze și lista de rest la montaj. Task-ul rămâne pe client până la închidere.</div>`
     : `<div class="notice">Task-urile sunt generate automat la fiecare tranziție de etapă și pot fi adăugate manual de coordonator.</div>`;
@@ -886,7 +1011,7 @@ function addPhoto(id,inp){
 
 /* ---------------- REMINDERE ---------------- */
 function viewRemindere(){
-  const list=REMINDERS.filter(r=>!r.done).sort((a,b)=>a.due<b.due?-1:1);
+  const list=scopeRem().filter(r=>!r.done).sort((a,b)=>a.due<b.due?-1:1);
   const M=['IAN','FEB','MAR','APR','MAI','IUN','IUL','AUG','SEP','OCT','NOI','DEC'];
   return `<div class="notice">Reguli active: recall la 7 zile pentru clienți fără răspuns · reverificare șantier la 14 zile pentru lucrările la roșu · notificare client cu 14 zile înainte de lansarea în producție · alertă de blocare preț materiale pentru proiecte la peste 3 luni.</div>
   ${list.length?list.map(r=>{
@@ -1676,9 +1801,9 @@ window.addEventListener('resize',()=>{
   clearTimeout(rzT);
   rzT=setTimeout(()=>{ if(MOB()!==lastMob){ lastMob=MOB(); closeSheet(); render(); } },150);
 });
-window.addEventListener('orientationchange',()=>setTimeout(render,250));
+window.addEventListener('orientationchange',()=>setTimeout(()=>{ if(AUTH.user) render(); },250));
 
-render();
+loginScreen();
 </script>
 </body>
 </html>
