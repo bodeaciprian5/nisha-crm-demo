@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#1C1D1D">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>NISHA · CRM</title>
+<title>TetherSystem · CRM</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
@@ -37,10 +37,13 @@ a{color:inherit;text-decoration:none}
 .app{display:flex;height:100vh;overflow:hidden}
 .sidebar{width:232px;flex:0 0 232px;background:var(--ink);color:var(--bone);display:flex;flex-direction:column;padding:26px 0}
 .brand{padding:0 26px 30px;border-bottom:1px solid rgba(241,240,235,.12);margin-bottom:22px}
-.brand .lg{width:118px;height:auto;color:#fff;display:block;margin-bottom:12px}
+.brand .wm{font-family:'Cormorant Garamond',Georgia,serif;font-weight:300;font-size:19px;
+  letter-spacing:.085em;text-transform:uppercase;color:#fff;line-height:1;margin-bottom:11px;
+  white-space:nowrap}
 .brand .sub{font-size:7.5px;letter-spacing:.26em;text-transform:uppercase;color:rgba(241,240,235,.45)}
 .brandbar{display:none;align-items:center;gap:11px;min-width:0;flex:1}
-.brandbar .lgw{height:13px;width:auto;flex:0 0 auto;color:var(--ink)}
+.brandbar .wm{font-family:'Cormorant Garamond',Georgia,serif;font-weight:300;font-size:17px;
+  letter-spacing:.13em;text-transform:uppercase;color:var(--ink);line-height:1;flex:0 0 auto;white-space:nowrap}
 .crumb{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
   padding-left:11px;border-left:1px solid var(--line-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .nav{flex:1;overflow-y:auto}
@@ -257,7 +260,9 @@ td .nm{font-family:var(--serif);font-size:17px;text-transform:uppercase;letter-s
   align-items:center;justify-content:center;padding:26px}
 .gate.on{display:flex}
 .gbox{width:min(370px,100%);color:var(--bone)}
-.glogo{width:132px;height:auto;color:var(--bone);display:block;margin:0 auto 12px}
+.gwm{font-family:'Cormorant Garamond',Georgia,serif;font-weight:300;font-size:36px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--bone);text-align:center;
+  line-height:1;margin:0 auto 13px}
 .gsub{font-size:8px;letter-spacing:.3em;text-transform:uppercase;color:rgba(241,240,235,.4);
   text-align:center;margin-bottom:34px}
 .gbox .field label{color:rgba(241,240,235,.45)}
@@ -403,22 +408,13 @@ td .nm{font-family:var(--serif);font-size:17px;text-transform:uppercase;letter-s
 </style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
-<g id="lg-mark"><path d="M231.11,50.7l37.6,37.6V2.84h-5.25V75.64L187.83,0V76.08l-37.6-37.6V124.38h5.25V51.14l75.64,75.64V50.7Zm-38.04,30.62V12.67l32.79,32.79V114.11l-32.79-32.79Z"/></g>
-<g id="lg-word">
-<polygon points="41.94 221.5 5.11 171.46 0 171.46 0 230.22 5.02 230.22 5.02 179.48 42.02 230.22 46.96 230.22 46.96 171.46 41.94 171.46 41.94 221.5"/>
-<rect x="105.64" y="171.46" width="5.02" height="58.76"/>
-<path d="M188.55,197.1c-8.02-2.2-15.33-4.23-15.33-11.19,0-6.34,5.9-10.84,13.74-10.84,6.61,0,12.6,2.29,16.83,7.4l3.35-3.7c-4.58-5.2-11.19-8.28-19.91-8.28-10.66,0-19.29,6.08-19.29,15.68,0,10.84,9.87,13.48,19.12,16.03,8.19,2.2,16.12,4.49,16.12,12.77,0,5.02-3.44,11.72-15.51,11.72-8.37,0-14.54-4.14-18.33-8.55l-3.26,3.79c4.49,5.46,11.81,9.34,21.5,9.34,15.86,0,20.88-9.07,20.88-16.56,0-11.98-10.48-14.98-19.91-17.62Z"/>
-<polygon points="311.98 230.22 311.98 171.46 306.87 171.46 306.87 197.71 269.61 197.71 269.61 171.46 264.58 171.46 264.58 230.22 269.61 230.22 269.61 202.29 306.87 202.29 306.87 230.22 311.98 230.22"/>
-<path d="M394.89,171.46h-6.26l-24.05,58.76h5.64l5.9-14.45h31.28l5.9,14.45h5.64l-24.05-58.76Zm-17.18,39.73l14.01-34.8,14.1,34.8h-28.1Z"/>
-</g>
-</defs></svg>
+<!-- sigla se pune aici; momentan wordmark tipografic -->
 
 <div class="app">
   <aside class="sidebar">
     <div class="brand">
-      <svg class="lg" viewBox="0 0 418.95 230.22" fill="currentColor" role="img" aria-label="Nisha"><use href="#lg-mark"/><use href="#lg-word"/></svg>
-      <div class="sub">Furniture &amp; Design · CRM</div>
+      <div class="wm">TetherSystem</div>
+      <div class="sub">CRM · Atelier mobilier</div>
     </div>
     <nav class="nav" id="nav"></nav>
     <div class="sidefoot">
@@ -431,7 +427,7 @@ td .nm{font-family:var(--serif);font-size:17px;text-transform:uppercase;letter-s
     <header class="topbar">
       <button class="mnav" onclick="openSheet()" aria-label="Meniu">≡</button>
       <div class="brandbar">
-        <svg class="lgw" viewBox="0 171.46 418.95 58.76" fill="currentColor" role="img" aria-label="Nisha"><use href="#lg-word"/></svg>
+        <span class="wm">TetherSystem</span>
         <span class="crumb" id="crumb"></span>
       </div>
       <h1 id="pageTitle">Pipeline</h1>
@@ -458,7 +454,7 @@ td .nm{font-family:var(--serif);font-size:17px;text-transform:uppercase;letter-s
 
 <script>
 /* =========================================================
-   NISHA CRM — prototip
+   TETHERSYSTEM CRM — prototip
    Proces reconstituit din discuția Andrei Mureșan (aug. 2026)
    ========================================================= */
 
@@ -664,8 +660,8 @@ function loginScreen(){
     .map(t=>`<option value="${t.id}">${esc(t.name)} — ${esc(t.role)}</option>`).join('');
   document.getElementById('gate').innerHTML = `
     <div class="gbox">
-      <svg class="glogo" viewBox="0 0 418.95 230.22" fill="currentColor" role="img" aria-label="Nisha"><use href="#lg-mark"/><use href="#lg-word"/></svg>
-      <div class="gsub">Furniture &amp; Design · CRM</div>
+      <div class="gwm">TetherSystem</div>
+      <div class="gsub">CRM · Atelier mobilier</div>
       <div class="field"><label>Cine ești</label><select id="g_user">${opts}</select></div>
       <div class="field"><label>Parolă</label><input id="g_pass" type="password" autocomplete="current-password"
         onkeydown="if(event.key==='Enter')doLogin()"></div>
@@ -1891,7 +1887,7 @@ function setAuto(){
 function exportJSON(){
   const data={exportat:new Date().toISOString(),clienti:CLIENTS,taskuri:TASKS,remindere:REMINDERS,echipa:TEAM,etape:STAGES};
   const b=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='nisha-crm-export.json'; a.click();
+  const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='tethersystem-export.json'; a.click();
 }
 
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeDrawer();closeSheet()}});

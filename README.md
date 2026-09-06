@@ -1,4 +1,4 @@
-# NISHA CRM — demo public
+# TetherSystem CRM — demo public
 
 Prototip de CRM pentru un atelier de mobilier personalizat. Un singur fișier HTML, fără build,
 fără dependențe, fără server.
