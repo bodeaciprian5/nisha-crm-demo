@@ -92,6 +92,15 @@ a{color:inherit;text-decoration:none}
 .grid-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px}
 .empty{padding:50px;text-align:center;color:var(--muted-2);font-size:13px;border:1px dashed var(--line-2)}
 .seg{display:inline-flex;border:1px solid var(--line-2)}
+.phbar{display:flex;gap:7px;overflow-x:auto;margin:0 0 16px;padding-bottom:4px;scrollbar-width:none}
+.phbar::-webkit-scrollbar{display:none}
+.phbar button{flex:0 0 auto;display:flex;align-items:center;gap:7px;border:1px solid var(--line-2);
+  background:var(--paper);color:var(--ink-2);padding:7px 13px;font:inherit;font-size:11px;
+  letter-spacing:.09em;text-transform:uppercase;cursor:pointer}
+.phbar button:hover{border-color:var(--muted)}
+.phbar button.on{background:var(--ink);color:var(--bone);border-color:var(--ink)}
+.phbar button .n{font-size:10px;opacity:.6;font-variant-numeric:tabular-nums}
+.phbar .dot{width:6px;height:6px;border-radius:50%;flex:0 0 auto}
 .seg button{padding:7px 15px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .seg button.on{background:var(--ink);color:var(--bone)}
 
@@ -459,29 +468,48 @@ const TEAM = [
   {id:'mihaela', name:'Maria Ionescu',    role:'Măsurători',               short:'MG'},
   {id:'andreea', name:'Elena Radu', role:'Comenzi & achiziții',      short:'AC'},
   {id:'trutca',  name:'Cristina Stan',  role:'Proiectant / lansare',     short:'TA'},
-  {id:'sorin',   name:'Sorin',           role:'Proiectant',               short:'S'},
-  {id:'gabriel', name:'Gabriel',         role:'Proiectant',               short:'G'},
+  {id:'stefan',  name:'Radu Barbu',          role:'Design',                   short:'Ș'},
+  {id:'sorin',   name:'Emil Voicu',           role:'Proiectant',               short:'S'},
+  {id:'gabriel', name:'Toma Preda',         role:'Proiectant',               short:'G'},
   {id:'potco',   name:'Dan Ilieș',role:'Proiectant',               short:'AP'},
   {id:'bright',  name:'Atelier Nord',          role:'Design & proiectare',      short:'B'},
   {id:'dedecor', name:'Atelier Sud',         role:'Design & proiectare',      short:'D'},
-  {id:'adela',   name:'Adela',           role:'Producție atelier',        short:'A'},
-  {id:'vasile',  name:'Vasile',          role:'Montaj',                   short:'V'},
+  {id:'adela',   name:'Sanda Nistor',           role:'Producție atelier',        short:'A'},
+  {id:'vasile',  name:'Nicu Roman',          role:'Montaj',                   short:'V'},
 ];
 const NAME = id => (TEAM.find(t=>t.id===id)||{name:'—'}).name;
 
-const STAGES = [
-  {id:'inreg',    n:1,  nm:'Înregistrare clienți',      ow:'ilie',    c:'#86867F', note:'Andrei introduce clientul + specificații audio'},
-  {id:'triaj',    n:2,  nm:'Triaj & programare',        ow:'roxana',  c:'#5B6B73', note:'Ana decide dacă și când se măsoară'},
-  {id:'masur',    n:3,  nm:'Măsurători',                ow:'mihaela', c:'#6E7A6B', note:'Doar dacă spațiul e finisat (șapă + glet)'},
-  {id:'proiect',  n:4,  nm:'Proiectare',                ow:'sorin',   c:'#6E7A6B', note:'Delegat de Ana unui proiectant'},
-  {id:'deofert',  n:5,  nm:'Clienți de ofertat',        ow:'roxana',  c:'#B9A489', note:'Proiect validat, gata de ofertare'},
-  {id:'ofertare', n:6,  nm:'Ofertare & achiziție',      ow:'andreea', c:'#B9A489', note:'Se emite oferta, se comandă materialele'},
-  {id:'ofertat',  n:7,  nm:'Clienți ofertați',          ow:'andreea', c:'#C0A062', note:'Ofertă trimisă, așteptăm confirmare'},
-  {id:'delansat', n:8,  nm:'De lansat în producție',    ow:'trutca',  c:'#A8785F', note:'Materiale în firmă, proiect validat'},
-  {id:'productie',n:9,  nm:'Producție atelier',         ow:'adela',   c:'#A8785F', note:'Se lucrează efectiv'},
-  {id:'livrat',   n:10, nm:'Lucrări livrate',           ow:'vasile',  c:'#1C1D1D', note:'Montaj terminat, snag list încărcat'},
-  {id:'restante', n:11, nm:'Restanțe',                  ow:'vasile',  c:'#9A5B52', note:'Ce a rămas de rezolvat după montaj'},
+const PHASES = [
+  {id:'intrare',    nm:'Intrare',    c:'#86867F'},
+  {id:'relevare',   nm:'Relevare',   c:'#5B6B73'},
+  {id:'proiect',    nm:'Proiect',    c:'#6E7A6B'},
+  {id:'angajament', nm:'Angajament', c:'#B9A489'},
+  {id:'executie',   nm:'Execuție',   c:'#A8785F'},
 ];
+const PH = id => PHASES.find(p=>p.id===id) || PHASES[0];
+
+/* Etapele reconstruite după ședința 2 (vezi docs/analiza-sedinta-2.md).
+   Ordinea contează: triajul/selecția vine ÎNAINTE de înregistrare, iar
+   înregistrarea începe cu factura de avans. */
+const STAGES = [
+  {id:'preluare',   n:1,  ph:'intrare',    nm:'Preluare client',          ow:'ilie',    c:'#86867F', note:'Andrei lasă nota vocală. Clientul nu are încă fișă completă.'},
+  {id:'selectie',   n:2,  ph:'intrare',    nm:'Selecție & studiu de caz', ow:'roxana',  c:'#8E8B80', note:'Ana sună, colectează datele și face pre-încadrarea de timp și cost. Aici se poate refuza.'},
+  {id:'inreg',      n:3,  ph:'intrare',    nm:'Înregistrare & avans',     ow:'roxana',  c:'#9A968B', note:'Se emite factura de avans și se creează folderul clientului în Drive.'},
+  {id:'procedura',  n:4,  ph:'intrare',    nm:'Procedură de colaborare',  ow:'roxana',  c:'#A6A296', note:'Procedura e trimisă. Se așteaptă acceptul scris al clientului.'},
+  {id:'masur',      n:5,  ph:'relevare',   nm:'Măsurători',               ow:'mihaela', c:'#5B6B73', note:'Doar pe spațiu semi-finisat sau finisat. La roșu nu se măsoară.'},
+  {id:'asteptare',  n:6,  ph:'relevare',   nm:'Listă de așteptare',       ow:'roxana',  c:'#6B7B84', note:'Ana alocă designerul sau trimite direct la redesenare.'},
+  {id:'design',     n:7,  ph:'proiect',    nm:'Design',                   ow:'stefan',  c:'#6E7A6B', note:'Intern sau la un birou partener. Toți clienții trec pe aici.'},
+  {id:'verificare', n:8,  ph:'proiect',    nm:'Verificare proiect',       ow:'potco',   c:'#7C8878', note:'Cineva confirmă că proiectul e complet înainte să intre în proiectare.'},
+  {id:'preofert',   n:9,  ph:'proiect',    nm:'Preofertare',              ow:'potco',   c:'#B9A489', note:'Ofertă estimativă pe desenul designerului, înainte de redesenare.'},
+  {id:'proiectare', n:10, ph:'proiect',    nm:'Proiectare & redesenare',  ow:'gabriel', c:'#8A9584', note:'Documentația finală de execuție, pe cote reale.'},
+  {id:'ofertaf',    n:11, ph:'angajament', nm:'Ofertă finală & contract', ow:'ilie',    c:'#C0A062', note:'Preț final și act adițional de corelare. Prețurile sunt confidențiale.'},
+  {id:'comanda',    n:12, ph:'angajament', nm:'Comandă materiale',        ow:'andreea', c:'#B9A489', note:'Doar după măsurătoarea finală și după confirmarea clientului.'},
+  {id:'delansat',   n:13, ph:'executie',   nm:'De lansat în producție',   ow:'trutca',  c:'#A8785F', note:'Materiale în firmă. Confirmare de la client cu o săptămână înainte.'},
+  {id:'productie',  n:14, ph:'executie',   nm:'Producție atelier',        ow:'adela',   c:'#A8785F', note:'Se lucrează efectiv.'},
+  {id:'livrat',     n:15, ph:'executie',   nm:'Montaj & predare',         ow:'vasile',  c:'#1C1D1D', note:'Montaj terminat, snag list încărcat.'},
+  {id:'restante',   n:16, ph:'executie',   nm:'Restanțe',                 ow:'vasile',  c:'#9A5B52', note:'Ce a rămas de rezolvat după montaj.'},
+];
+const LAST = STAGES.length;
 const ST = id => STAGES.find(s=>s.id===id) || STAGES[0];
 
 const AVANS = {apartament:5000, casa:10000, comercial:10000};
@@ -492,59 +520,60 @@ const d = (off)=>{const x=new Date(today);x.setDate(x.getDate()+off);return x.to
 
 let SEQ = 140;
 const mk = o => Object.assign({
-  id:'C'+(++SEQ), stage:'inreg', designer:'—', tip:'fara', santier:'finisat',
+  id:'C'+(++SEQ), stage:'preluare', designer:'—', tip:'fara', santier:'finisat',
   buget:'', avansPlatit:false, gdpr:true, tel:'', adresa:'', oras:'Cluj',
   substadiu:'', statusS:'Activ', nrSpatii:'', mp:'', tipSpatiu:'',
+  procAcceptata:null, remap:false,
   audio:[], docs:[], hist:[], creat:d(0), termen:'', proiectant:'', obs:''
 }, o);
 
 /* ---- Set de date demo, structurat ca centralizatorul de proiectare — valori fictive, generate pentru demonstrație ---- */
 let CLIENTS = [
-  {id:'C101', nume:'Andrei Marinescu', tel:'', adresa:'', oras:'Dej', tip:'', santier:'', tipLocuinta:'', designer:'—', proiectant:'', stage:'inreg', substadiu:'', statusS:'', nrSpatii:'', mp:'', tipSpatiu:'', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-18', termen:'', obs:'', audio:[], docs:[], hist:[['inreg','2026-08-18']]},
-  {id:'C102', nume:'Maria Anton', tel:'', adresa:'', oras:'', tip:'cu', santier:'', tipLocuinta:'', designer:'', proiectant:'', stage:'inreg', substadiu:'', statusS:'', nrSpatii:'', mp:'', tipSpatiu:'', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-17', termen:'', obs:'', audio:[], docs:[], hist:[['inreg','2026-08-17']]},
-  {id:'C103', nume:'Ioan Barbu', tel:'', adresa:'', oras:'', tip:'', santier:'', tipLocuinta:'', designer:'—', proiectant:'', stage:'inreg', substadiu:'', statusS:'', nrSpatii:'', mp:'', tipSpatiu:'', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-11', termen:'', obs:'', audio:[], docs:[], hist:[['inreg','2026-08-11']]},
-  {id:'C104', nume:'Elena Neagu', tel:'', adresa:'', oras:'Timisoara', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'', stage:'inreg', substadiu:'', statusS:'', nrSpatii:'4', mp:'60mp', tipSpatiu:'', buget:'10-50K €', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate scazuta', audio:[], docs:[], hist:[['inreg','2026-08-10']]},
-  {id:'C105', nume:'Cristian Marin', tel:'', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Nord Design', proiectant:'', stage:'inreg', substadiu:'', statusS:'', nrSpatii:'1', mp:'15mp', tipSpatiu:'', buget:'10-50K €', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate scazuta', audio:[], docs:[], hist:[['inreg','2026-08-10']]},
-  {id:'C106', nume:'Ana Oprea', tel:'', adresa:'', oras:'Timisoara', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'', stage:'inreg', substadiu:'', statusS:'', nrSpatii:'4', mp:'60mp', tipSpatiu:'Mixt', buget:'10-50K €', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate scazuta · sursă: internă', audio:[], docs:[], hist:[['inreg','2026-08-10']]},
-  {id:'C107', nume:'Vlad Sabin', tel:'', adresa:'', oras:'', tip:'cu', santier:'', tipLocuinta:'', designer:'', proiectant:'potco', stage:'triaj', substadiu:'0 - tema proiectare', statusS:'Activ', nrSpatii:'1', mp:'15mp', tipSpatiu:'Comercial', buget:'< 10.000 €', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie premium · prioritate scazuta', audio:[], docs:[], hist:[['inreg','2026-08-10'],['triaj','2026-08-10']]},
-  {id:'C108', nume:'Ioana Enache', tel:'', adresa:'', oras:'', tip:'cu', santier:'', tipLocuinta:'', designer:'', proiectant:'dedecor', stage:'triaj', substadiu:'0 - tema proiectare', statusS:'Stand by', nrSpatii:'4', mp:'70mp', tipSpatiu:'Mixt', buget:'10-50K €', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie premium · prioritate normal', audio:[], docs:[], hist:[['inreg','2026-08-10'],['triaj','2026-08-10']]},
-  {id:'C109', nume:'Paul Filip', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Nord Design', proiectant:'', stage:'inreg', substadiu:'', statusS:'', nrSpatii:'', mp:'', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate scazuta', audio:[], docs:[], hist:[['inreg','2026-08-10']]},
-  {id:'C110', nume:'Simona Lazăr', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Nord Design', proiectant:'', stage:'masur', substadiu:'0 - masurare', statusS:'', nrSpatii:'4', mp:'60mp', tipSpatiu:'Mixt', buget:'10-50K €', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate scazuta', audio:[], docs:[], hist:[['inreg','2026-08-10'],['masur','2026-08-07']]},
-  {id:'C111', nume:'Radu Rusu', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Atelier Beta', proiectant:'', stage:'masur', substadiu:'0 - masurare', statusS:'', nrSpatii:'2', mp:'40mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie premium · prioritate normal', audio:[], docs:[], hist:[['inreg','2026-08-10'],['masur','2026-08-11']]},
-  {id:'C112', nume:'Carmen Vlad', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Studio Alfa', proiectant:'', stage:'masur', substadiu:'0 - masurare', statusS:'', nrSpatii:'5', mp:'70mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2024-07-30', termen:'', obs:'categorie mediu · prioritate normal', audio:[], docs:[], hist:[['inreg','2024-07-30'],['masur','2026-08-07']]},
-  {id:'C113', nume:'Tudor Preda', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'bright', stage:'proiect', substadiu:'1 - design general', statusS:'Activ', nrSpatii:'7', mp:'120mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-04', termen:'2026-08-21', obs:'categorie economic · prioritate ridicata', audio:[], docs:[], hist:[['inreg','2026-08-04'],['proiect','2026-08-07']]},
-  {id:'C114', nume:'Alina Dinu', tel:'07xx xxx xxx', adresa:'', oras:'', tip:'cu', santier:'', tipLocuinta:'', designer:'Forma Studio', proiectant:'sorin', stage:'deofert', substadiu:'3 - design final', statusS:'Activ', nrSpatii:'5', mp:'70mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'2026-08-21', obs:'categorie premium · prioritate ridicata', audio:[], docs:[], hist:[['inreg','2026-08-10'],['masur','2026-08-12'],['proiect','2026-08-04'],['deofert','2026-08-10']]},
-  {id:'C115', nume:'Mihai Toma', tel:'', adresa:'', oras:'', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'potco', stage:'ofertat', substadiu:'4 - ofertare', statusS:'Finalizat', nrSpatii:'5', mp:'70mp', tipSpatiu:'Mixt', buget:'10-50K €', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate normal · predat efectiv 2026-08-10', audio:[], docs:[], hist:[['inreg','2026-08-10'],['ofertat','2026-08-10']]},
-  {id:'C116', nume:'Diana Costin', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'dedecor', stage:'proiect', substadiu:'1 - design general', statusS:'Activ', nrSpatii:'3', mp:'20mp', tipSpatiu:'Dormitor', buget:'< 10.000 €', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'2026-08-21', obs:'categorie premium · prioritate ridicata · sursă: internă', audio:[], docs:[], hist:[['inreg','2026-08-10'],['proiect','2026-07-31']]},
-  {id:'C117', nume:'Bogdan Voicu', tel:'07xx xxx xxx', adresa:'', oras:'', tip:'cu', santier:'', tipLocuinta:'', designer:'Nord Design', proiectant:'gabriel', stage:'deofert', substadiu:'3 - design final', statusS:'Activ', nrSpatii:'6', mp:'120mp', tipSpatiu:'Mixt', buget:'10-50K €', avansPlatit:null, gdpr:false, creat:'2026-07-29', termen:'2026-08-21', obs:'categorie premium · prioritate ridicata', audio:[], docs:[], hist:[['inreg','2026-07-29'],['proiect','2026-07-29'],['deofert','2026-08-10']]},
-  {id:'C118', nume:'Raluca Șerban', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'bright', stage:'proiect', substadiu:'2 - design detalii', statusS:'Activ', nrSpatii:'4', mp:'60mp', tipSpatiu:'Mixt', buget:'10-50K €', avansPlatit:null, gdpr:false, creat:'2026-07-10', termen:'2026-08-21', obs:'categorie mediu · prioritate normal · sursă: internă', audio:[], docs:[], hist:[['inreg','2026-07-10'],['proiect','2026-07-20']]},
-  {id:'C119', nume:'Sorin Nistor', tel:'07xx xxx xxx', adresa:'', oras:'', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'bright', stage:'proiect', substadiu:'2 - design detalii', statusS:'Activ', nrSpatii:'1', mp:'20mp', tipSpatiu:'Dormitor', buget:'< 10.000 €', avansPlatit:null, gdpr:false, creat:'2026-07-22', termen:'2026-08-21', obs:'categorie economic · prioritate normal · sursă: internă', audio:[], docs:[], hist:[['inreg','2026-07-22'],['proiect','2026-08-03']]},
-  {id:'C120', nume:'Delia Pavel', tel:'07xx xxx xxx', adresa:'', oras:'', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'bright', stage:'triaj', substadiu:'0 - tema proiectare', statusS:'Stand by', nrSpatii:'2', mp:'20mp', tipSpatiu:'Mixt', buget:'< 10.000 €', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'2026-08-28', obs:'categorie economic · prioritate scazuta · sursă: internă', audio:[], docs:[], hist:[['inreg','2026-08-10'],['triaj','2026-08-10']]},
-  {id:'C121', nume:'Victor Grigore', tel:'07xx xxx xxx', adresa:'', oras:'Alba Iulia', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'bright', stage:'triaj', substadiu:'0 - tema proiectare', statusS:'Stand by', nrSpatii:'8', mp:'120mp', tipSpatiu:'Mixt', buget:'10-50K €', avansPlatit:null, gdpr:false, creat:'2026-07-09', termen:'2026-08-21', obs:'categorie economic · prioritate scazuta · sursă: internă', audio:[], docs:[], hist:[['inreg','2026-07-09'],['triaj','2026-08-10']]},
-  {id:'C122', nume:'Anca Dobrin', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'bright', stage:'ofertat', substadiu:'4 - ofertare', statusS:'Finalizat', nrSpatii:'1', mp:'20mp', tipSpatiu:'Camera copil/ birou', buget:'< 10.000 €', avansPlatit:null, gdpr:false, creat:'2026-07-09', termen:'2026-07-27', obs:'categorie premium · prioritate normal · sursă: internă· predat efectiv 2026-07-27', audio:[], docs:[], hist:[['inreg','2026-07-09'],['proiect','2026-07-13'],['ofertat','2026-08-10']]},
-  {id:'C123', nume:'Marius Ilie', tel:'07xx xxx xxx', adresa:'', oras:'Bistra', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'bright', stage:'ofertat', substadiu:'4 - ofertare', statusS:'Finalizat', nrSpatii:'1', mp:'15mp', tipSpatiu:'Bucatarie', buget:'< 10.000 €', avansPlatit:null, gdpr:false, creat:'2026-07-10', termen:'2026-08-03', obs:'categorie mediu · prioritate ridicata · sursă: internă· predat efectiv 2026-07-28', audio:[], docs:[], hist:[['inreg','2026-07-10'],['proiect','2026-07-20'],['ofertat','2026-08-10']]},
-  {id:'C124', nume:'Oana Manea', tel:'07xx xxx xxx', adresa:'', oras:'Dej', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'bright', stage:'ofertat', substadiu:'4 - ofertare', statusS:'Finalizat', nrSpatii:'1', mp:'10mp', tipSpatiu:'Dormitor', buget:'< 10.000 €', avansPlatit:null, gdpr:false, creat:'2026-07-10', termen:'2026-07-27', obs:'categorie premium · prioritate normal · sursă: internă· predat efectiv 2026-07-27', audio:[], docs:[], hist:[['inreg','2026-07-10'],['proiect','2026-07-15'],['ofertat','2026-08-10']]},
-  {id:'C125', nume:'Dan Frâncu', tel:'', adresa:'', oras:'', tip:'cu', santier:'', tipLocuinta:'', designer:'', proiectant:'gabriel', stage:'proiect', substadiu:'2 - design detalii', statusS:'Activ', nrSpatii:'6', mp:'70mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'2026-08-21', obs:'categorie mediu · prioritate normal', audio:[], docs:[], hist:[['inreg','2026-08-10'],['proiect','2026-07-28']]},
-  {id:'C126', nume:'Laura Roman', tel:'', adresa:'', oras:'', tip:'cu', santier:'', tipLocuinta:'', designer:'', proiectant:'sorin', stage:'deofert', substadiu:'3 - design final', statusS:'Activ', nrSpatii:'6', mp:'70mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'2026-08-21', obs:'categorie mediu · prioritate normal', audio:[], docs:[], hist:[['inreg','2026-08-10'],['deofert','2026-08-10']]},
-  {id:'C127', nume:'Ciprian Tudose', tel:'', adresa:'', oras:'', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'sorin', stage:'triaj', substadiu:'0 - tema proiectare', statusS:'Stand by', nrSpatii:'', mp:'', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate scazuta', audio:[], docs:[], hist:[['inreg','2026-08-10'],['triaj','2026-08-10']]},
-  {id:'C128', nume:'Roxana Zaharia', tel:'', adresa:'', oras:'', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'sorin', stage:'deofert', substadiu:'3 - design final', statusS:'Stand by', nrSpatii:'1', mp:'15mp', tipSpatiu:'Living', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate scazuta', audio:[], docs:[], hist:[['inreg','2026-08-10'],['deofert','2026-08-10']]},
-  {id:'C129', nume:'Alex Bălan', tel:'', adresa:'', oras:'', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'dedecor', stage:'deofert', substadiu:'3 - design final', statusS:'Finalizat', nrSpatii:'4', mp:'40mp', tipSpatiu:'Camera copil/ birou', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'2026-08-14', obs:'categorie mediu · prioritate normal', audio:[], docs:[], hist:[['inreg','2026-08-10'],['deofert','2026-08-10']]},
-  {id:'C130', nume:'Bianca Crețu', tel:'', adresa:'', oras:'', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'dedecor', stage:'ofertat', substadiu:'4 - ofertare', statusS:'Finalizat', nrSpatii:'', mp:'', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'2026-08-16', obs:'categorie mediu · prioritate scazuta', audio:[], docs:[], hist:[['inreg','2026-08-10'],['ofertat','2026-08-10']]},
-  {id:'C131', nume:'Adrian Moraru', tel:'', adresa:'', oras:'', tip:'cu', santier:'', tipLocuinta:'', designer:'', proiectant:'dedecor', stage:'proiect', substadiu:'1 - design general', statusS:'Activ', nrSpatii:'7', mp:'100mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'2026-09-04', obs:'categorie mediu · prioritate normal', audio:[], docs:[], hist:[['inreg','2026-08-10'],['proiect','2026-08-14']]},
-  {id:'C132', nume:'Corina Sava', tel:'', adresa:'', oras:'', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'dedecor', stage:'ofertat', substadiu:'4 - ofertare', statusS:'Finalizat', nrSpatii:'', mp:'', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-12', termen:'2026-08-10', obs:'categorie mediu · prioritate normal · predat efectiv 2026-08-12', audio:[], docs:[], hist:[['inreg','2026-08-12'],['ofertat','2026-08-12']]},
-  {id:'C133', nume:'Emil Pintea', tel:'', adresa:'', oras:'', tip:'cu', santier:'', tipLocuinta:'', designer:'', proiectant:'dedecor', stage:'proiect', substadiu:'1 - design general', statusS:'Stand by', nrSpatii:'1', mp:'15mp', tipSpatiu:'Camera copil/ birou', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate scazuta', audio:[], docs:[], hist:[['inreg','2026-08-10'],['proiect','2026-08-10']]},
-  {id:'C134', nume:'Sanda Chirilă', tel:'', adresa:'', oras:'', tip:'cu', santier:'', tipLocuinta:'', designer:'', proiectant:'dedecor', stage:'proiect', substadiu:'1 - design general', statusS:'Stand by', nrSpatii:'9', mp:'120mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate scazuta', audio:[], docs:[], hist:[['inreg','2026-08-10'],['proiect','2026-08-10']]},
-  {id:'C135', nume:'Nicu Damian', tel:'', adresa:'', oras:'Cluj', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'dedecor', stage:'triaj', substadiu:'0 - tema proiectare', statusS:'Stand by', nrSpatii:'', mp:'', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate scazuta · sursă: internă', audio:[], docs:[], hist:[['inreg','2026-08-10'],['triaj','2026-08-10']]},
+  {id:'C101', nume:'Andrei Marinescu', tel:'', adresa:'', oras:'Dej', tip:'', santier:'', tipLocuinta:'', designer:'—', proiectant:'', stage:'selectie', substadiu:'', statusS:'', nrSpatii:'', mp:'', tipSpatiu:'', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-18', termen:'', obs:'', audio:[], docs:[], hist:[['selectie','2026-08-18']], procAcceptata:null, remap:true},
+  {id:'C102', nume:'Maria Anton', tel:'', adresa:'', oras:'', tip:'cu', santier:'', tipLocuinta:'', designer:'', proiectant:'', stage:'selectie', substadiu:'', statusS:'', nrSpatii:'', mp:'', tipSpatiu:'', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-17', termen:'', obs:'', audio:[], docs:[], hist:[['selectie','2026-08-17']], procAcceptata:null, remap:true},
+  {id:'C103', nume:'Ioan Barbu', tel:'', adresa:'', oras:'', tip:'', santier:'', tipLocuinta:'', designer:'—', proiectant:'', stage:'selectie', substadiu:'', statusS:'', nrSpatii:'', mp:'', tipSpatiu:'', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-11', termen:'', obs:'', audio:[], docs:[], hist:[['selectie','2026-08-11']], procAcceptata:null, remap:true},
+  {id:'C104', nume:'Elena Neagu', tel:'', adresa:'', oras:'Timisoara', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'', stage:'selectie', substadiu:'', statusS:'', nrSpatii:'4', mp:'60mp', tipSpatiu:'', buget:'10-50K €', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate scazuta', audio:[], docs:[], hist:[['selectie','2026-08-10']], procAcceptata:null, remap:true},
+  {id:'C105', nume:'Cristian Marin', tel:'', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Nord Design', proiectant:'', stage:'selectie', substadiu:'', statusS:'', nrSpatii:'1', mp:'15mp', tipSpatiu:'', buget:'10-50K €', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate scazuta', audio:[], docs:[], hist:[['selectie','2026-08-10']], procAcceptata:null, remap:true},
+  {id:'C106', nume:'Ana Oprea', tel:'', adresa:'', oras:'Timisoara', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'', stage:'selectie', substadiu:'', statusS:'', nrSpatii:'4', mp:'60mp', tipSpatiu:'Mixt', buget:'10-50K €', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate scazuta · sursă: internă', audio:[], docs:[], hist:[['selectie','2026-08-10']], procAcceptata:null, remap:true},
+  {id:'C107', nume:'Vlad Sabin', tel:'', adresa:'', oras:'', tip:'cu', santier:'', tipLocuinta:'', designer:'', proiectant:'potco', stage:'design', substadiu:'0 - tema proiectare', statusS:'Activ', nrSpatii:'1', mp:'15mp', tipSpatiu:'Comercial', buget:'< 10.000 €', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie premium · prioritate scazuta', audio:[], docs:[], hist:[['selectie','2026-08-10'],['design','2026-08-10']], procAcceptata:null, remap:true},
+  {id:'C108', nume:'Ioana Enache', tel:'', adresa:'', oras:'', tip:'cu', santier:'', tipLocuinta:'', designer:'', proiectant:'dedecor', stage:'design', substadiu:'0 - tema proiectare', statusS:'Stand by', nrSpatii:'4', mp:'70mp', tipSpatiu:'Mixt', buget:'10-50K €', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie premium · prioritate normal', audio:[], docs:[], hist:[['selectie','2026-08-10'],['design','2026-08-10']], procAcceptata:null, remap:true},
+  {id:'C109', nume:'Paul Filip', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Nord Design', proiectant:'', stage:'selectie', substadiu:'', statusS:'', nrSpatii:'', mp:'', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate scazuta', audio:[], docs:[], hist:[['selectie','2026-08-10']], procAcceptata:null, remap:true},
+  {id:'C110', nume:'Simona Lazăr', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Nord Design', proiectant:'', stage:'masur', substadiu:'0 - masurare', statusS:'', nrSpatii:'4', mp:'60mp', tipSpatiu:'Mixt', buget:'10-50K €', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate scazuta', audio:[], docs:[], hist:[['selectie','2026-08-10'],['masur','2026-08-07']], procAcceptata:null, remap:true},
+  {id:'C111', nume:'Radu Rusu', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Atelier Beta', proiectant:'', stage:'masur', substadiu:'0 - masurare', statusS:'', nrSpatii:'2', mp:'40mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie premium · prioritate normal', audio:[], docs:[], hist:[['selectie','2026-08-10'],['masur','2026-08-11']], procAcceptata:null, remap:true},
+  {id:'C112', nume:'Carmen Vlad', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'cu', santier:'', tipLocuinta:'', designer:'Studio Alfa', proiectant:'', stage:'masur', substadiu:'0 - masurare', statusS:'', nrSpatii:'5', mp:'70mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2024-07-30', termen:'', obs:'categorie mediu · prioritate normal', audio:[], docs:[], hist:[['selectie','2024-07-30'],['masur','2026-08-07']], procAcceptata:null, remap:true},
+  {id:'C113', nume:'Tudor Preda', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'bright', stage:'design', substadiu:'1 - design general', statusS:'Activ', nrSpatii:'7', mp:'120mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-04', termen:'2026-08-21', obs:'categorie economic · prioritate ridicata', audio:[], docs:[], hist:[['selectie','2026-08-04'],['design','2026-08-07']], procAcceptata:null, remap:true},
+  {id:'C114', nume:'Alina Dinu', tel:'07xx xxx xxx', adresa:'', oras:'', tip:'cu', santier:'', tipLocuinta:'', designer:'Forma Studio', proiectant:'sorin', stage:'verificare', substadiu:'3 - design final', statusS:'Activ', nrSpatii:'5', mp:'70mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'2026-08-21', obs:'categorie premium · prioritate ridicata', audio:[], docs:[], hist:[['selectie','2026-08-10'],['masur','2026-08-12'],['design','2026-08-04'],['verificare','2026-08-10']], procAcceptata:null, remap:true},
+  {id:'C115', nume:'Mihai Toma', tel:'', adresa:'', oras:'', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'potco', stage:'ofertaf', substadiu:'4 - ofertare', statusS:'Finalizat', nrSpatii:'5', mp:'70mp', tipSpatiu:'Mixt', buget:'10-50K €', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate normal · predat efectiv 2026-08-10', audio:[], docs:[], hist:[['selectie','2026-08-10'],['ofertaf','2026-08-10']], procAcceptata:null, remap:true},
+  {id:'C116', nume:'Diana Costin', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'dedecor', stage:'design', substadiu:'1 - design general', statusS:'Activ', nrSpatii:'3', mp:'20mp', tipSpatiu:'Dormitor', buget:'< 10.000 €', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'2026-08-21', obs:'categorie premium · prioritate ridicata · sursă: internă', audio:[], docs:[], hist:[['selectie','2026-08-10'],['design','2026-07-31']], procAcceptata:null, remap:true},
+  {id:'C117', nume:'Bogdan Voicu', tel:'07xx xxx xxx', adresa:'', oras:'', tip:'cu', santier:'', tipLocuinta:'', designer:'Nord Design', proiectant:'gabriel', stage:'verificare', substadiu:'3 - design final', statusS:'Activ', nrSpatii:'6', mp:'120mp', tipSpatiu:'Mixt', buget:'10-50K €', avansPlatit:null, gdpr:false, creat:'2026-07-29', termen:'2026-08-21', obs:'categorie premium · prioritate ridicata', audio:[], docs:[], hist:[['selectie','2026-07-29'],['design','2026-07-29'],['verificare','2026-08-10']], procAcceptata:null, remap:true},
+  {id:'C118', nume:'Raluca Șerban', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'bright', stage:'design', substadiu:'2 - design detalii', statusS:'Activ', nrSpatii:'4', mp:'60mp', tipSpatiu:'Mixt', buget:'10-50K €', avansPlatit:null, gdpr:false, creat:'2026-07-10', termen:'2026-08-21', obs:'categorie mediu · prioritate normal · sursă: internă', audio:[], docs:[], hist:[['selectie','2026-07-10'],['design','2026-07-20']], procAcceptata:null, remap:true},
+  {id:'C119', nume:'Sorin Nistor', tel:'07xx xxx xxx', adresa:'', oras:'', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'bright', stage:'design', substadiu:'2 - design detalii', statusS:'Activ', nrSpatii:'1', mp:'20mp', tipSpatiu:'Dormitor', buget:'< 10.000 €', avansPlatit:null, gdpr:false, creat:'2026-07-22', termen:'2026-08-21', obs:'categorie economic · prioritate normal · sursă: internă', audio:[], docs:[], hist:[['selectie','2026-07-22'],['design','2026-08-03']], procAcceptata:null, remap:true},
+  {id:'C120', nume:'Delia Pavel', tel:'07xx xxx xxx', adresa:'', oras:'', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'bright', stage:'design', substadiu:'0 - tema proiectare', statusS:'Stand by', nrSpatii:'2', mp:'20mp', tipSpatiu:'Mixt', buget:'< 10.000 €', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'2026-08-28', obs:'categorie economic · prioritate scazuta · sursă: internă', audio:[], docs:[], hist:[['selectie','2026-08-10'],['design','2026-08-10']], procAcceptata:null, remap:true},
+  {id:'C121', nume:'Victor Grigore', tel:'07xx xxx xxx', adresa:'', oras:'Alba Iulia', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'bright', stage:'design', substadiu:'0 - tema proiectare', statusS:'Stand by', nrSpatii:'8', mp:'120mp', tipSpatiu:'Mixt', buget:'10-50K €', avansPlatit:null, gdpr:false, creat:'2026-07-09', termen:'2026-08-21', obs:'categorie economic · prioritate scazuta · sursă: internă', audio:[], docs:[], hist:[['selectie','2026-07-09'],['design','2026-08-10']], procAcceptata:null, remap:true},
+  {id:'C122', nume:'Anca Dobrin', tel:'07xx xxx xxx', adresa:'', oras:'Cluj', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'bright', stage:'ofertaf', substadiu:'4 - ofertare', statusS:'Finalizat', nrSpatii:'1', mp:'20mp', tipSpatiu:'Camera copil/ birou', buget:'< 10.000 €', avansPlatit:null, gdpr:false, creat:'2026-07-09', termen:'2026-07-27', obs:'categorie premium · prioritate normal · sursă: internă· predat efectiv 2026-07-27', audio:[], docs:[], hist:[['selectie','2026-07-09'],['design','2026-07-13'],['ofertaf','2026-08-10']], procAcceptata:null, remap:true},
+  {id:'C123', nume:'Marius Ilie', tel:'07xx xxx xxx', adresa:'', oras:'Bistra', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'bright', stage:'ofertaf', substadiu:'4 - ofertare', statusS:'Finalizat', nrSpatii:'1', mp:'15mp', tipSpatiu:'Bucatarie', buget:'< 10.000 €', avansPlatit:null, gdpr:false, creat:'2026-07-10', termen:'2026-08-03', obs:'categorie mediu · prioritate ridicata · sursă: internă· predat efectiv 2026-07-28', audio:[], docs:[], hist:[['selectie','2026-07-10'],['design','2026-07-20'],['ofertaf','2026-08-10']], procAcceptata:null, remap:true},
+  {id:'C124', nume:'Oana Manea', tel:'07xx xxx xxx', adresa:'', oras:'Dej', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'bright', stage:'ofertaf', substadiu:'4 - ofertare', statusS:'Finalizat', nrSpatii:'1', mp:'10mp', tipSpatiu:'Dormitor', buget:'< 10.000 €', avansPlatit:null, gdpr:false, creat:'2026-07-10', termen:'2026-07-27', obs:'categorie premium · prioritate normal · sursă: internă· predat efectiv 2026-07-27', audio:[], docs:[], hist:[['selectie','2026-07-10'],['design','2026-07-15'],['ofertaf','2026-08-10']], procAcceptata:null, remap:true},
+  {id:'C125', nume:'Dan Frâncu', tel:'', adresa:'', oras:'', tip:'cu', santier:'', tipLocuinta:'', designer:'', proiectant:'gabriel', stage:'design', substadiu:'2 - design detalii', statusS:'Activ', nrSpatii:'6', mp:'70mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'2026-08-21', obs:'categorie mediu · prioritate normal', audio:[], docs:[], hist:[['selectie','2026-08-10'],['design','2026-07-28']], procAcceptata:null, remap:true},
+  {id:'C126', nume:'Laura Roman', tel:'', adresa:'', oras:'', tip:'cu', santier:'', tipLocuinta:'', designer:'', proiectant:'sorin', stage:'verificare', substadiu:'3 - design final', statusS:'Activ', nrSpatii:'6', mp:'70mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'2026-08-21', obs:'categorie mediu · prioritate normal', audio:[], docs:[], hist:[['selectie','2026-08-10'],['verificare','2026-08-10']], procAcceptata:null, remap:true},
+  {id:'C127', nume:'Ciprian Tudose', tel:'', adresa:'', oras:'', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'sorin', stage:'design', substadiu:'0 - tema proiectare', statusS:'Stand by', nrSpatii:'', mp:'', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate scazuta', audio:[], docs:[], hist:[['selectie','2026-08-10'],['design','2026-08-10']], procAcceptata:null, remap:true},
+  {id:'C128', nume:'Roxana Zaharia', tel:'', adresa:'', oras:'', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'sorin', stage:'verificare', substadiu:'3 - design final', statusS:'Stand by', nrSpatii:'1', mp:'15mp', tipSpatiu:'Living', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate scazuta', audio:[], docs:[], hist:[['selectie','2026-08-10'],['verificare','2026-08-10']], procAcceptata:null, remap:true},
+  {id:'C129', nume:'Alex Bălan', tel:'', adresa:'', oras:'', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'dedecor', stage:'verificare', substadiu:'3 - design final', statusS:'Finalizat', nrSpatii:'4', mp:'40mp', tipSpatiu:'Camera copil/ birou', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'2026-08-14', obs:'categorie mediu · prioritate normal', audio:[], docs:[], hist:[['selectie','2026-08-10'],['verificare','2026-08-10']], procAcceptata:null, remap:true},
+  {id:'C130', nume:'Bianca Crețu', tel:'', adresa:'', oras:'', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'dedecor', stage:'ofertaf', substadiu:'4 - ofertare', statusS:'Finalizat', nrSpatii:'', mp:'', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'2026-08-16', obs:'categorie mediu · prioritate scazuta', audio:[], docs:[], hist:[['selectie','2026-08-10'],['ofertaf','2026-08-10']], procAcceptata:null, remap:true},
+  {id:'C131', nume:'Adrian Moraru', tel:'', adresa:'', oras:'', tip:'cu', santier:'', tipLocuinta:'', designer:'', proiectant:'dedecor', stage:'design', substadiu:'1 - design general', statusS:'Activ', nrSpatii:'7', mp:'100mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'2026-09-04', obs:'categorie mediu · prioritate normal', audio:[], docs:[], hist:[['selectie','2026-08-10'],['design','2026-08-14']], procAcceptata:null, remap:true},
+  {id:'C132', nume:'Corina Sava', tel:'', adresa:'', oras:'', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'dedecor', stage:'ofertaf', substadiu:'4 - ofertare', statusS:'Finalizat', nrSpatii:'', mp:'', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-12', termen:'2026-08-10', obs:'categorie mediu · prioritate normal · predat efectiv 2026-08-12', audio:[], docs:[], hist:[['selectie','2026-08-12'],['ofertaf','2026-08-12']], procAcceptata:null, remap:true},
+  {id:'C133', nume:'Emil Pintea', tel:'', adresa:'', oras:'', tip:'cu', santier:'', tipLocuinta:'', designer:'', proiectant:'dedecor', stage:'design', substadiu:'1 - design general', statusS:'Stand by', nrSpatii:'1', mp:'15mp', tipSpatiu:'Camera copil/ birou', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate scazuta', audio:[], docs:[], hist:[['selectie','2026-08-10'],['design','2026-08-10']], procAcceptata:null, remap:true},
+  {id:'C134', nume:'Sanda Chirilă', tel:'', adresa:'', oras:'', tip:'cu', santier:'', tipLocuinta:'', designer:'', proiectant:'dedecor', stage:'design', substadiu:'1 - design general', statusS:'Stand by', nrSpatii:'9', mp:'120mp', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate scazuta', audio:[], docs:[], hist:[['selectie','2026-08-10'],['design','2026-08-10']], procAcceptata:null, remap:true},
+  {id:'C135', nume:'Nicu Damian', tel:'', adresa:'', oras:'Cluj', tip:'fara', santier:'', tipLocuinta:'', designer:'—', proiectant:'dedecor', stage:'design', substadiu:'0 - tema proiectare', statusS:'Stand by', nrSpatii:'', mp:'', tipSpatiu:'Mixt', buget:'', avansPlatit:null, gdpr:false, creat:'2026-08-10', termen:'', obs:'categorie mediu · prioritate scazuta · sursă: internă', audio:[], docs:[], hist:[['selectie','2026-08-10'],['design','2026-08-10']], procAcceptata:null, remap:true},
 ];
 
 let TASKS = [
-  {id:'T1', cid:'C102', t:'Triaj: stabilește etapa curentă și programează măsurătoarea', who:'roxana', due:'2026-08-20', done:false, restanta:false, photos:[], auto:true},
-  {id:'T2', cid:'C104', t:'Triaj: stabilește etapa curentă și programează măsurătoarea', who:'roxana', due:'2026-08-20', done:false, restanta:false, photos:[], auto:true},
-  {id:'T3', cid:'C105', t:'Triaj: stabilește etapa curentă și programează măsurătoarea', who:'roxana', due:'2026-08-20', done:false, restanta:false, photos:[], auto:true},
-  {id:'T4', cid:'C106', t:'Triaj: stabilește etapa curentă și programează măsurătoarea', who:'roxana', due:'2026-08-20', done:false, restanta:false, photos:[], auto:true},
+  {id:'T1', cid:'C102', t:'Studiu de caz: colectează datele și fă pre-încadrarea de timp și cost', who:'roxana', due:'2026-08-20', done:false, restanta:false, photos:[], auto:true},
+  {id:'T2', cid:'C104', t:'Studiu de caz: colectează datele și fă pre-încadrarea de timp și cost', who:'roxana', due:'2026-08-20', done:false, restanta:false, photos:[], auto:true},
+  {id:'T3', cid:'C105', t:'Studiu de caz: colectează datele și fă pre-încadrarea de timp și cost', who:'roxana', due:'2026-08-20', done:false, restanta:false, photos:[], auto:true},
+  {id:'T4', cid:'C106', t:'Studiu de caz: colectează datele și fă pre-încadrarea de timp și cost', who:'roxana', due:'2026-08-20', done:false, restanta:false, photos:[], auto:true},
   {id:'T5', cid:'C107', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[], auto:true},
   {id:'T6', cid:'C108', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[], auto:true},
-  {id:'T7', cid:'C109', t:'Triaj: stabilește etapa curentă și programează măsurătoarea', who:'roxana', due:'2026-08-20', done:false, restanta:false, photos:[], auto:true},
+  {id:'T7', cid:'C109', t:'Studiu de caz: colectează datele și fă pre-încadrarea de timp și cost', who:'roxana', due:'2026-08-20', done:false, restanta:false, photos:[], auto:true},
   {id:'T8', cid:'C115', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[], auto:true},
   {id:'T9', cid:'C125', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[], auto:true},
   {id:'T10', cid:'C126', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-08-21', done:false, restanta:false, photos:[], auto:true},
@@ -583,6 +612,7 @@ const ACCOUNTS = {
   mihaela: {h:'2a97516c354b68848cdbd8f54a226a0a55b21ed138e207ad6c5cbb9c00aa5aea', perm:'masurator'},
   andreea: {h:'2a97516c354b68848cdbd8f54a226a0a55b21ed138e207ad6c5cbb9c00aa5aea', perm:'ofertare'},
   trutca: {h:'2a97516c354b68848cdbd8f54a226a0a55b21ed138e207ad6c5cbb9c00aa5aea', perm:'proiectant'},
+  stefan: {h:'2a97516c354b68848cdbd8f54a226a0a55b21ed138e207ad6c5cbb9c00aa5aea', perm:'designer'},
   sorin: {h:'2a97516c354b68848cdbd8f54a226a0a55b21ed138e207ad6c5cbb9c00aa5aea', perm:'proiectant'},
   gabriel: {h:'2a97516c354b68848cdbd8f54a226a0a55b21ed138e207ad6c5cbb9c00aa5aea', perm:'proiectant'},
   potco: {h:'2a97516c354b68848cdbd8f54a226a0a55b21ed138e207ad6c5cbb9c00aa5aea', perm:'proiectant'},
@@ -594,17 +624,23 @@ const ACCOUNTS = {
 
 /* ---- Ce poate face fiecare rol ---- */
 const ACL = {
-  admin:       {views:'all', stages:'all', sync:true,  export:true,  intake:true,  team:'all'},
+  admin:       {views:'all', stages:'all', sync:true,  export:true,  intake:true,  team:'all',  prices:true},
   coordonator: {views:['pipeline','clienti','taskuri','restante','remindere','echipa','reguli'],
-                stages:'all', sync:false, export:true,  intake:true,  team:'all'},
+                stages:'all', sync:false, export:true,  intake:true,  team:'all',  prices:true},
   masurator:   {views:['pipeline','clienti','taskuri','remindere'],
-                stages:['triaj','masur'], sync:false, export:false, intake:false, team:'self'},
+                stages:['masur'], sync:false, export:false, intake:false, team:'self', prices:false},
+  designer:    {views:['pipeline','clienti','taskuri','remindere'],
+                stages:['design'], sync:false, export:false, intake:false, team:'self', prices:false},
   proiectant:  {views:['pipeline','clienti','taskuri','remindere'],
-                stages:['proiect','deofert'], sync:false, export:false, intake:false, team:'self'},
+                stages:['asteptare','design','verificare','preofert','proiectare'],
+                sync:false, export:false, intake:false, team:'self', prices:false},
+  /* Cristina emite facturile, deci are nevoie de prețuri. De reconfirmat cu Andrei. */
   ofertare:    {views:['pipeline','clienti','taskuri','remindere'],
-                stages:['deofert','ofertare','ofertat','delansat'], sync:false, export:false, intake:false, team:'self'},
+                stages:['preofert','ofertaf','comanda','delansat'],
+                sync:false, export:false, intake:false, team:'self', prices:true},
   productie:   {views:['pipeline','clienti','taskuri','restante','remindere'],
-                stages:['delansat','productie','livrat','restante'], sync:false, export:false, intake:false, team:'self'},
+                stages:['delansat','productie','livrat','restante'],
+                sync:false, export:false, intake:false, team:'self', prices:false},
 };
 const AUTH = {user:null, perm:null};
 const acl  = () => ACL[AUTH.perm] || ACL.proiectant;
@@ -667,7 +703,7 @@ function logout(){
 }
 
 /* ---------------- state ---------------- */
-const STATE = {view:'pipeline', me:'ilie', q:'', boardMode:'kanban', drawerId:null, tab:'detalii', recording:null, mStage:'inreg', fDes:''};
+const STATE = {view:'pipeline', me:'ilie', q:'', boardMode:'kanban', drawerId:null, tab:'detalii', recording:null, mStage:'preluare', ph:'', fDes:''};
 const MOB = () => window.innerWidth <= 900;
 
 const TABS = [
@@ -696,7 +732,12 @@ const fmt = iso => { if(!iso) return '—'; const p=iso.split('-'); const M=['ia
 const zile = n => n===1 ? '1 zi' : n+' zile';
 const clientById = id => CLIENTS.find(c=>c.id===id);
 const tipLabel = c => (c.tip==='cu'?'Cu proiect design':c.tip==='fara'?'Fără proiect design':'Tipologie neprecizată');
-const santLabel = c => (c.santier==='rosu'?'Șantier la roșu':c.santier==='finisat'?'Spațiu finisat':'Stadiu spațiu neprecizat');
+const santLabel = c => (c.santier==='rosu'?'Șantier la roșu'
+  :c.santier==='semi'?'Spațiu semi-finisat'
+  :c.santier==='finisat'?'Spațiu finisat':'Stadiu spațiu neprecizat');
+/* semi-finisat = șapă, tavane închise, tâmplărie montată, instalații poziționate,
+   fără parchet și fără ceramică. Se poate măsura, dar cere o a doua măsurătoare. */
+const poateMasura = c => c.santier==='finisat' || c.santier==='semi';
 const desLabel = c => c.tip==='cu' ? ((c.designer && c.designer!=='—') ? c.designer : 'Designer neprecizat')
                      : c.tip==='fara' ? 'Fără proiect' : 'Sursă neprecizată';
 const dim = c => [c.nrSpatii?(c.nrSpatii==='1'?'1 spațiu':c.nrSpatii+' spații'):'', c.mp||'', c.tipSpatiu||''].filter(Boolean).join(' · ');
@@ -716,7 +757,7 @@ const matched = c => {
   if(STATE.fDes && birou(c)!==STATE.fDes) return false;
   const q=STATE.q.trim().toLowerCase(); if(!q) return true;
   return (c.nume+' '+c.adresa+' '+c.tel+' '+c.designer+' '+(c.obs||'')).toLowerCase().includes(q); };
-const progress = c => Math.round((ST(c.stage).n/11)*100);
+const progress = c => Math.round((ST(c.stage).n/LAST)*100);
 
 /* ---------------- nav ---------------- */
 function renderNav(){
@@ -822,7 +863,8 @@ function viewPipeline(){
   const late=scopeRem().filter(r=>!r.done&&days(r.due)<0).length;
   const rest=scopeTasks().filter(t=>t.restanta&&!t.done).length;
   const sb=list.filter(c=>c.statusS==='Stand by').length;
-  const inLucru=list.filter(c=>['proiect','deofert'].includes(c.stage)).length;
+  const inLucru=list.filter(c=>['design','verificare','preofert','proiectare'].includes(c.stage)).length;
+  const remap=list.filter(c=>c.remap).length;
   const cta=!can('intake')?'':`<button class="bigcta" onclick="openIntake()">
     <span class="mic">●</span>
     <span class="tx"><span class="t1">Preluare client</span>
@@ -853,19 +895,29 @@ function viewPipeline(){
     <div class="stat"><div class="n">${list.length}</div><div class="l">${STATE.fDes?'Fișe filtrate':'Clienți în sistem'}</div></div>
     <div class="stat"><div class="n">${inLucru}</div><div class="l">În proiectare</div></div>
     <div class="stat"><div class="n" style="${sb?'color:var(--clay)':''}">${sb}</div><div class="l">În stand by</div></div>
+    <div class="stat"><div class="n" style="${remap?'color:var(--clay)':''}">${remap}</div><div class="l">Poziție de reconfirmat</div></div>
     <div class="stat"><div class="n">${list.filter(c=>!c.tel).length}</div><div class="l">Fără telefon</div></div>
     <div class="stat"><div class="n" style="${late?'color:var(--rose)':''}">${late}</div><div class="l">Remindere depășite</div></div>
   </div>`;
 
+  const phCount = ph => list.filter(c=>ST(c.stage).ph===ph).length;
+  const phbar = `<div class="phbar">
+    <button class="${STATE.ph?'':'on'}" onclick="STATE.ph='';render()">Tot fluxul<span class="n">${list.length}</span></button>
+    ${PHASES.map(f=>`<button class="${STATE.ph===f.id?'on':''}" onclick="STATE.ph='${f.id}';render()">
+      <span class="dot" style="background:${f.c}"></span>${esc(f.nm)}<span class="n">${phCount(f.id)}</span></button>`).join('')}
+  </div>`;
+  const stagesShown = () => STATE.ph ? STAGES.filter(s=>s.ph===STATE.ph) : STAGES;
+
   if(MOB()){
-    const chips=`<div class="mchips">${STAGES.map(s=>{
+    const chips=`<div class="mchips">${stagesShown().map(s=>{
       const n=list.filter(c=>c.stage===s.id).length;
       return `<button class="mchip ${STATE.mStage===s.id?'on':''}" onclick="STATE.mStage='${s.id}';render()">
         <span class="dot" style="background:${s.c}"></span>${s.n}. ${esc(s.nm)}<span class="n">${n}</span></button>`;
     }).join('')}</div>`;
-    const s=ST(STATE.mStage);
+    let s=ST(STATE.mStage);
+    if(STATE.ph && s.ph!==STATE.ph){ s=stagesShown()[0]||s; STATE.mStage=s.id; }
     const items=list.filter(c=>c.stage===STATE.mStage);
-    return stats+chips+
+    return stats+phbar+chips+
       `<div class="mstage"><span class="dot" style="background:${s.c}"></span>${esc(s.nm)} · ${esc(NAME(s.ow))}</div>
        <div class="mlist">${items.length?items.map(c=>kcard(c)).join('')
          :`<div class="empty" style="padding:34px 20px">${esc(s.note)}</div>`}</div>`;
@@ -881,9 +933,9 @@ function viewPipeline(){
 
   if(STATE.boardMode==='lista') return stats+toolbar+tableOf(list);
 
-  const cols=STAGES.map(s=>{
+  const cols=stagesShown().map(s=>{
     const items=list.filter(c=>c.stage===s.id);
-    return `<div class="col" data-stage="${s.id}"
+    return `<div class="col" style="border-top:2px solid ${PH(s.ph).c}" data-stage="${s.id}"
       ondragover="event.preventDefault();this.classList.add('over')"
       ondragleave="this.classList.remove('over')"
       ondrop="drop(event,'${s.id}');this.classList.remove('over')">
@@ -896,7 +948,7 @@ function viewPipeline(){
         ${items.map(c=>kcard(c)).join('') || `<div style="font-size:11px;color:var(--muted-2);padding:14px 4px;letter-spacing:.05em">${esc(s.note)}</div>`}
       </div></div>`;
   }).join('');
-  return stats+toolbar+`<div class="board">${cols}</div>`;
+  return stats+phbar+toolbar+`<div class="board">${cols}</div>`;
 }
 
 function kcard(c, withStage){
@@ -904,7 +956,9 @@ function kcard(c, withStage){
   if(c.lipsaSheet) alerts.push('<span class="tag" style="border-color:var(--rose);color:var(--rose)">Lipsă din sheet</span>');
   if(c.statusS==='Stand by') alerts.push('<span class="tag" style="border-color:var(--clay);color:var(--clay)">Stand by</span>');
   if(c.avansPlatit===false && ST(c.stage).n>=5) alerts.push('<span class="tag" style="border-color:var(--rose);color:var(--rose)">Avans neîncasat</span>');
+  if(c.remap) alerts.push('<span class="tag" style="border-color:var(--clay);color:var(--clay)">Poziție de reconfirmat</span>');
   if(c.santier==='rosu') alerts.push('<span class="tag">La roșu</span>');
+  if(c.santier==='semi') alerts.push('<span class="tag">Semi-finisat</span>');
   alerts.push(`<span class="tag">${esc(desLabel(c))}</span>`);
   if(c.substadiu) alerts.push(`<span class="tag">${esc(c.substadiu)}</span>`);
   const t=days(c.termen);
@@ -926,13 +980,28 @@ function drop(e,stage){
   e.preventDefault();
   const id=e.dataTransfer.getData('text/plain'); const c=clientById(id); if(!c||c.stage===stage) return;
   const s=ST(stage);
-  if(s.n>=6 && c.avansPlatit===false){
-    if(!confirm(`${c.nume} nu are avansul de ofertare încasat (${AVANS[c.tipLocuinta||'apartament'].toLocaleString('ro-RO')} lei).\n\nRegula procesului: oferta de preț nu se face fără angajament financiar.\n\nContinui totuși?`)) return;
+
+  /* Avansul se facturează la înregistrare. Fără el nu se merge la măsurători. */
+  if(s.n>=5 && c.avansPlatit===false){
+    if(!confirm(`${c.nume} nu are avansul încasat (${AVANS[c.tipLocuinta||'apartament'].toLocaleString('ro-RO')} lei).\n\nRegula procesului: factura de avans se emite la înregistrare, iar fluxul nu continuă până nu e încasată.\n\nContinui totuși?`)) return;
   }
+  /* Procedura de colaborare trebuie acceptată de client înainte de măsurători. */
+  if(s.n>=5 && c.procAcceptata!==true){
+    if(!confirm(`${c.nume} nu a confirmat procedura de colaborare.\n\nMăsurătoarea se programează abia după ce clientul acceptă termenele și condițiile.\n\nContinui totuși?`)) return;
+  }
+  /* Trei stadii de spațiu: la roșu nu se măsoară deloc. */
   if(stage==='masur' && c.santier==='rosu'){
-    if(!confirm(`${c.nume} are șantierul la roșu. Nu se poate măsura până la șapă turnată + pereți gletuiți.\n\nContinui totuși?`)) return;
+    if(!confirm(`${c.nume} are șantierul la roșu. Mihaela nu se deplasează până la stadiul semi-finisat: șapă, tavane închise, tâmplărie montată.\n\nContinui totuși?`)) return;
   }
-  c.stage=stage; c.hist.push([stage,d(0)]); render();
+  if(stage==='masur' && c.santier==='semi'){
+    toast('Spațiu semi-finisat — măsurătoare inițială. Va fi nevoie de o a doua măsurătoare după montarea ușilor.');
+  }
+  /* Comanda de materiale cere măsurătoarea finală și confirmarea de termen. */
+  if(stage==='comanda' && c.santier!=='finisat'){
+    if(!confirm(`${c.nume} nu are spațiul marcat ca finisat.\n\nComanda de materiale se lansează după măsurătoarea finală și după ce clientul confirmă că respectă termenul.\n\nContinui totuși?`)) return;
+  }
+
+  c.stage=stage; c.hist.push([stage,d(0)]); c.remap=false; render();
 }
 
 function tableOf(list){
@@ -1035,7 +1104,7 @@ function doneRem(id){REMINDERS.find(r=>r.id===id).done=true;render()}
 
 /* ---------------- ECHIPA ---------------- */
 function viewEchipa(){
-  const intro=`<div class="notice">În prototip nu există login — schimbi persoana din meniul de sus. În versiunea cu backend fiecare rol vede doar etapele lui, exact ca drepturile de acces pe folderele din Drive.</div>`;
+  const intro=`<div class="notice">Fiecare rol vede doar etapele lui. Administratorul și coordonatorul văd tot fluxul și prețurile finale; designerii, proiectanții, măsurătorile și montajul nu văd oferta finală — confidențialitatea prețurilor e scrisă în procedura de colaborare. Ecranul de login separă rolurile, dar într-o pagină statică nu protejează datele: pentru asta e nevoie de backend sau de o protecție în fața site-ului.</div>`;
   if(MOB()){
     return intro+`<div class="mlist">${TEAM.map(t=>{
       const st=STAGES.filter(s=>s.ow===t.id);
@@ -1072,18 +1141,27 @@ function viewEchipa(){
 /* ---------------- REGULI ---------------- */
 function viewReguli(){
   const R=[
-    ['Calificare','Decizia de colaborare se ia în primele 5 minute de discuție. Dacă nu există compatibilitate, clientul nu intră în sistem.'],
-    ['Avans de ofertare','Oferta de preț nu se face fără angajament financiar: 5.000 lei pentru apartament, 10.000 lei pentru casă. Excepție: clientul vine cu o ofertă existentă — se pornește discuția de pe ea.'],
-    ['GDPR','Bifă obligatorie înainte de submit la înregistrarea clientului. Clientul primește documentul înainte de introducerea în sistem.'],
-    ['Procedura semnată','La intrarea în sistem clientul semnează procedura care clarifică termenele, calendarul și consecințele nerespectării lor.'],
-    ['Prag de măsurare','Se măsoară doar cu șapă turnată și pereți gletuiți. Lavabilul nu e necesar. Pentru șantier la roșu se ofertează pe proiectul designerului.'],
-    ['Comandă anticipată materiale','Materialele se comandă imediat după validarea proiectului final, chiar dacă montajul e peste 6 luni — prețurile se pot dubla.'],
-    ['Nerespectarea termenului','Clientul e anunțat cu 14 zile înainte de lansarea în producție. Dacă spațiul nu e gata, lucrarea se reprogramează la prima dată disponibilă (1 săptămână – 2 luni, în funcție de încărcare).'],
-    ['Interacțiunea cu clientul','Doar Andrei, Ana și proiectantul discută cu clientul. Restul echipei lucrează pe fișa din CRM.'],
-    ['Specificații audio','La înregistrare, specificațiile se lasă ca note vocale, nu ca text — mai multă informație ajunge mai departe în flux.'],
-    ['Normare','Fiecare proiectant primește o normă de timp per lucrare. De definit înainte de trecerea în producție a sistemului.'],
+    ['Preluarea e doar vocală','Andrei apasă un buton și lasă nota vocală. Clientul nu are încă fișă completă și nimeni nu-i cere date. Confirmarea că mesajul a fost preluat se întoarce la Andrei.'],
+    ['Selecția vine înaintea înregistrării','Ana sună, colectează datele, face profilul și pre-încadrarea de timp și cost. Refuzul, dacă e cazul, se dă aici — nu după ce clientul e deja în sistem.'],
+    ['Contul îl facem noi','Clientul nu se înregistrează singur. Nisha creează contul și trimite datele de acces. Oamenii nu completează formulare.'],
+    ['Factura de avans, primul lucru la înregistrare','5.000 lei apartament, 10.000 lei casă sau spațiu comercial. Contabilitatea se ține în Saga. Factura se atașează la fișa clientului, iar starea plății se vede pe fișă: „nu există plată” / „plată înregistrată”.'],
+    ['Procedura de colaborare, acceptată în scris','Se trimite după încasare și conține termenele, calendarul, consecințele întârzierii și clauza de confidențialitate a prețurilor. Fluxul nu continuă fără acceptul clientului.'],
+    ['GDPR','Bifă obligatorie înainte de salvarea fișei.'],
+    ['Trei stadii de spațiu, nu două','La roșu nu se măsoară. Semi-finisat (șapă, tavane închise, tâmplărie montată, instalații poziționate) permite măsurătoarea inițială, ca să nu stea proiectanții. Finisat (parchet, ceramică, lavabil) permite măsurătoarea finală.'],
+    ['Două măsurători, nu una','Pe semi-finisat se măsoară o dată ca să înceapă proiectarea, și încă o dată după montarea ușilor. Comanda de materiale se lansează doar după măsurătoarea finală.'],
+    ['Lista de așteptare','Între măsurători și design, Ana decide ruta: clientul cu proiect final merge direct la redesenare, restul primesc un designer alocat. Sistemul propune pe baza disponibilității, omul bifează — alocarea nu se automatizează.'],
+    ['Toți trec prin design','Indiferent dacă vine cu proiect de la un birou extern sau fără niciun proiect, clientul intră în departamentul de design. Proiectarea înseamnă altceva: redesenarea în forma finală de execuție.'],
+    ['Verificarea proiectului','Înainte de proiectare, cineva parcurge proiectul designerului, poartă discuția cu clientul și confirmă că e complet. Neregulile descoperite abia la redesenare costă timp și bani.'],
+    ['Preofertarea','Oferta estimativă se face pe desenul designerului, imediat ce ajunge — nu la final. Clientul știe că e estimativă și că prețul final vine după redesenare, cu act adițional de corelare.'],
+    ['Coeficient de risc','5% peste preț, colectat separat, acoperă situațiile în care oferta finală depășește estimarea. Diferențele mici nu se recuperează de la client.'],
+    ['Prețurile sunt confidențiale','Doar administratorul și coordonatorul văd oferta finală. Proiectanții, designerii și montajul nu. Clauza e scrisă în procedura de colaborare.'],
+    ['Două confirmări înainte de producție','Prima înainte de comanda materialelor („se poate respecta termenul?”), a doua cu o săptămână înainte de lansare. Un „nu” decalează tot lanțul: măsurare, proiect, achiziție, debitare, montaj.'],
+    ['Câmpuri obligatorii pe etapă','Nu se trece mai departe fără datele cerute de etapa curentă. Cine nu completează blochează pe cine vine după el.'],
+    ['Fișierele stau în Drive','La înregistrare se creează automat folderul clientului, cu subfoldere pe spații. Din fișa clientului se intră direct în folder, de pe telefon, fără să cauți prin Drive.'],
+    ['Normare în ore','Bucătărie ≈ 33 ore, apartament de 50–80 mp ≈ 58 ore. Timpii sunt de referință și se discută cu echipa, ca așteptările să fie realiste.'],
+    ['Interacțiunea cu clientul','Doar Andrei, Ana și proiectantul alocat discută cu clientul. Restul echipei lucrează pe fișa din CRM.'],
   ];
-  return `<div class="notice">Regulile de mai jos sunt extrase din discuția înregistrată și sunt aplicate ca validări în pipeline. Blocajul pe avans se activează după ce marchezi avansul ca neîncasat în fișa clientului — centralizatorul importat nu urmărește încă acest câmp.</div>
+  return `<div class="notice">Regulile sunt extrase din cele două discuții înregistrate. Cele marcate ca validări sunt deja aplicate la mutarea între etape: plata avansului, acceptul procedurii, stadiul spațiului la măsurători și la comanda materialelor.</div>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px">
   ${R.map((r,i)=>`<div class="card"><div class="eyebrow">Regula ${String(i+1).padStart(2,'0')}</div>
     <div class="serif" style="font-size:22px;margin:7px 0 9px">${esc(r[0])}</div>
@@ -1100,7 +1178,9 @@ function setTab(t){STATE.tab=t;renderDrawer()}
 function renderDrawer(){
   const c=clientById(STATE.drawerId); if(!c) return;
   const s=ST(c.stage);
-  const tabs=[['detalii','Detalii'],['audio','Note vocale'],['parcurs','Parcurs'],['taskuri','Task-uri'],['ofertare','Ofertare']];
+  const tabs=[['detalii','Detalii'],['audio','Note vocale'],['parcurs','Parcurs'],['taskuri','Task-uri']];
+  if(can('prices')) tabs.push(['ofertare','Ofertare']);
+  else if(STATE.tab==='ofertare') STATE.tab='detalii';
   document.getElementById('drawer').innerHTML=`
    <div class="dhd" style="position:relative">
      <button class="close" onclick="closeDrawer()">×</button>
@@ -1120,7 +1200,7 @@ function renderDrawer(){
 }
 
 function tabDetalii(c){
-  const s=ST(c.stage), next=STAGES[Math.min(s.n,10)];
+  const s=ST(c.stage), next=STAGES[Math.min(s.n,LAST-1)];
   return `<div class="sec"><h3>Date client</h3>
    <dl class="kv">
      <dt>Telefon</dt><dd>${c.tel?esc(c.tel):'<span class="warn">necompletat</span>'}</dd>
@@ -1134,30 +1214,49 @@ function tabDetalii(c){
      <dt>Tip spațiu</dt><dd>${esc(c.tipSpatiu||'—')}</dd>
      <dt>Înregistrat</dt><dd>${fmt(c.creat)}</dd>
      <dt>Termen predare</dt><dd>${fmt(c.termen)}</dd>
-     <dt>Buget estimat</dt><dd>${esc(c.buget||'—')}</dd>
+     ${can('prices')?`<dt>Buget estimat</dt><dd>${esc(c.buget||'—')}</dd>`:''}
      <dt>GDPR</dt><dd>${c.gdpr?'Bifat la înregistrare':'<span class="warn">neconfirmat</span>'}</dd>
    </dl></div>
    <div class="sec"><h3>Observații</h3><div style="font-size:13px;color:var(--ink-2)">${esc(c.obs||'—')}</div></div>
+   <div class="sec"><h3>Stare la zi</h3>
+     <dl class="kv">
+       <dt>Factură avans</dt><dd>${c.avansPlatit===true?'<span class="tag f">Plată înregistrată</span>':c.avansPlatit===false?'<span class="tag" style="border-color:var(--rose);color:var(--rose)">Nu există plată</span>':'<span class="tag">Neconfirmat</span>'}</dd>
+       <dt>Procedura de colaborare</dt><dd>${c.procAcceptata===true?'<span class="tag f">Acceptată de client</span>':c.procAcceptata===false?'<span class="tag" style="border-color:var(--rose);color:var(--rose)">Trimisă, fără răspuns</span>':'<span class="tag">Netrimisă</span>'}</dd>
+       <dt>Stadiu spațiu</dt><dd>${esc(santLabel(c))}</dd>
+     </dl>
+     <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:12px">
+       <button class="btn ghost" onclick="toggleAvans('${c.id}')">Plată: ${c.avansPlatit===true?'înregistrată':c.avansPlatit===false?'inexistentă':'neconfirmată'}</button>
+       <button class="btn ghost" onclick="toggleProc('${c.id}')">Procedură: ${c.procAcceptata===true?'acceptată':c.procAcceptata===false?'fără răspuns':'netrimisă'}</button>
+       <button class="btn ghost" onclick="cycleSant('${c.id}')">Spațiu: ${c.santier==='finisat'?'finisat':c.santier==='semi'?'semi-finisat':c.santier==='rosu'?'la roșu':'neprecizat'}</button>
+     </div>
+   </div>
    <div class="sec"><h3>Avansează etapa</h3>
-     ${c.avansPlatit===false&&ST(c.stage).n>=5?`<div class="notice rose">Avansul de ofertare nu e încasat. Oferta nu se emite fără angajament financiar.</div>`:''}
-     ${c.avansPlatit===null?`<div class="notice">Avansul nu e urmărit în centralizatorul importat — confirmă-l din tabul Ofertare ca să se activeze regula de blocare.</div>`:''}
-     ${c.santier==='rosu'?`<div class="notice">Șantier la roșu — măsurătoarea se face după finisaje. Ofertăm pe proiectul designerului și blocăm prețul la materiale.</div>`:''}
+     ${c.remap?`<div class="notice">Poziția în flux a fost estimată la trecerea pe etapele noi, pornind de la substadiul din centralizator. Confirm-o sau mut-o în coloana corectă — badge-ul dispare la prima mutare.</div>`:''}
+     ${c.avansPlatit===false&&ST(c.stage).n>=5?`<div class="notice rose">Nu există plată înregistrată. Factura de avans se emite la înregistrare, înainte de orice altceva.</div>`:''}
+     ${c.avansPlatit===null?`<div class="notice">Plata nu e urmărită în centralizatorul importat — marcheaz-o mai sus ca să se activeze regula de blocare.</div>`:''}
+     ${c.procAcceptata!==true&&ST(c.stage).n>=5?`<div class="notice">Procedura de colaborare nu e confirmată de client. Măsurătoarea se programează abia după accept.</div>`:''}
+     ${c.santier==='rosu'?`<div class="notice">Șantier la roșu — nu se măsoară. Se așteaptă stadiul semi-finisat: șapă, tavane închise, tâmplărie montată.</div>`:''}
+     ${c.santier==='semi'?`<div class="notice">Spațiu semi-finisat — se poate face măsurătoarea inițială, ca să nu stea proiectanții. A doua măsurătoare, după montarea ușilor, rămâne obligatorie înainte de comanda materialelor.</div>`:''}
      <div style="display:flex;gap:9px;flex-wrap:wrap">
-       ${s.n<11?`<button class="btn dark" onclick="advance('${c.id}')">Bifează → ${esc(next.nm)}</button>`:''}
+       ${s.n<LAST?`<button class="btn dark" onclick="advance('${c.id}')">Bifează → ${esc(next.nm)}</button>`:''}
        <button class="btn" onclick="openTaskModal(false,'${c.id}')">+ Task</button>
-       <button class="btn ghost" onclick="toggleAvans('${c.id}')">Avans: ${c.avansPlatit===true?'încasat':c.avansPlatit===false?'neîncasat':'neconfirmat'}</button>
      </div>
    </div>`;
 }
 function advance(id){
   const c=clientById(id); const i=ST(c.stage).n;
-  const nx=STAGES[Math.min(i,10)];
+  const nx=STAGES[Math.min(i,LAST-1)];
   const fake={dataTransfer:{getData:()=>id},preventDefault(){}};
   drop(fake,nx.id);
 }
 function setLoc(id,v){clientById(id).tipLocuinta=v;renderDrawer()}
 function toggleAvans(id){const c=clientById(id);
-  c.avansPlatit = c.avansPlatit===null ? true : c.avansPlatit===true ? false : null; render()}
+  c.avansPlatit = c.avansPlatit===null ? true : c.avansPlatit===true ? false : null; render(); renderDrawer()}
+function toggleProc(id){const c=clientById(id);
+  c.procAcceptata = c.procAcceptata===null ? true : c.procAcceptata===true ? false : null; render(); renderDrawer()}
+function cycleSant(id){const c=clientById(id);
+  const seq=['','rosu','semi','finisat'];
+  c.santier = seq[(seq.indexOf(c.santier)+1)%seq.length]; render(); renderDrawer()}
 
 function tabAudio(c){
   const bars=n=>Array.from({length:34},(_,i)=>`<i style="height:${6+((i*37+n*13)%17)}px"></i>`).join('');
@@ -1214,16 +1313,16 @@ function playNote(cid,i){
 }
 
 function tabParcurs(c){
-  const done=c.hist.map(h=>h[0]);
-  return `<div class="sec"><h3>Parcurs în proces</h3><div class="tl">
-   ${STAGES.map(s=>{
+  return `<div class="sec"><h3>Parcurs în proces</h3>
+   ${PHASES.map(f=>`<div class="eyebrow" style="margin:14px 0 6px;color:${f.c}">${esc(f.nm)}</div><div class="tl">
+   ${STAGES.filter(s=>s.ph===f.id).map(s=>{
      const h=c.hist.find(x=>x[0]===s.id);
      const cur=c.stage===s.id;
      return `<div class="it ${h&&!cur?'done':''} ${cur?'cur':''}">
        <div class="t">${s.n}. ${esc(s.nm)}</div>
        <div class="d">${h?fmt(h[1]):'—'} · ${esc(NAME(s.ow))}</div>
      </div>`}).join('')}
-   </div></div>`;
+   </div>`).join('')}</div>`;
 }
 function tabTask(c){
   const ts=TASKS.filter(t=>t.cid===c.id);
@@ -1246,7 +1345,8 @@ function tabOfertare(c){
        <option value="comercial"${c.tipLocuinta==='comercial'?' selected':''}>spațiu comercial</option></select></dd>
      <dt>Avans ofertare</dt><dd>${av?av.toLocaleString('ro-RO')+' lei':'<span class="warn">alege tipul locuinței pentru a calcula pragul</span>'}</dd>
      <dt>Stare</dt><dd>${stare}</dd>
-     <dt>Facturare</dt><dd>${c.avansPlatit===true?'Factură emisă (Smart Bill)':'Se emite la încasare'}</dd>
+     <dt>Facturare</dt><dd>${c.avansPlatit===true?'Factură emisă (Saga)':'Se emite la înregistrare'}</dd>
+     <dt>Factura încărcată</dt><dd>${c.avansPlatit===true?'<span class="tag">de atașat</span>':'—'}</dd>
      <dt>Buget estimat</dt><dd>${esc(c.buget||'—')}</dd>
    </dl></div>
    <div class="sec"><h3>Materiale</h3>
@@ -1255,7 +1355,7 @@ function tabOfertare(c){
      : 'Comanda de materiale se lansează după validarea proiectului final de către coordonator.'}</div>
    <div style="display:flex;gap:9px;flex-wrap:wrap">
      <button class="btn ghost" onclick="alert('În versiunea cu backend: generează PDF-ul ofertei din fișa tehnică și îl trimite pe e-mail clientului.')">Generează ofertă</button>
-     <button class="btn ghost" onclick="alert('În versiunea cu backend: emite factura de avans prin API-ul Smart Bill.')">Emite factură avans</button>
+     <button class="btn ghost" onclick="alert('În versiunea cu backend: emite factura de avans prin exportul către Saga.')">Emite factură avans</button>
    </div></div>`;
 }
 
@@ -1278,8 +1378,9 @@ function openNew(){
         <option value="casa">Casă — avans 10.000 lei</option>
         <option value="comercial">Spațiu comercial — avans 10.000 lei</option></select></div>
       <div class="field"><label>Stadiu spațiu</label><select id="n_sant">
-        <option value="finisat">Spațiu finisat (șapă + glet)</option>
-        <option value="rosu">Șantier la roșu</option></select></div>
+        <option value="finisat">Finisat — parchet, ceramică, lavabil</option>
+        <option value="semi">Semi-finisat — șapă, tavane, tâmplărie montată</option>
+        <option value="rosu">La roșu — nu se măsoară</option></select></div>
     </div>
     <div class="f2">
       <div class="field"><label>Proiect de design</label><select id="n_tip" onchange="updDesigner()">
@@ -1305,10 +1406,10 @@ function saveNew(){
   const c=mk({nume:g('n_nume').value.trim(),tel:g('n_tel').value,adresa:g('n_adr').value,
     tipLocuinta:g('n_loc').value, santier:g('n_sant').value, tip:g('n_tip').value,
     designer:g('n_tip').value==='cu'?g('n_des').value:'—', obs:g('n_obs').value,
-    creat:d(0), hist:[['inreg',d(0)]], gdpr:true});
+    creat:d(0), stage:'selectie', hist:[['preluare',d(0)],['selectie',d(0)]], gdpr:true});
   CLIENTS.unshift(c);
   REMINDERS.push({id:'R'+(Math.random()*1e6|0), cid:c.id, t:'Recall client nou — verifică dacă mergem mai departe', due:d(7), tip:'Recall client nou', done:false});
-  TASKS.push({id:'T'+(Math.random()*1e6|0), cid:c.id, t:'Triaj și programare măsurătoare', who:'roxana', due:d(3), done:false, restanta:false, photos:[]});
+  TASKS.push({id:'T'+(Math.random()*1e6|0), cid:c.id, t:'Studiu de caz: colectează datele, fă pre-încadrarea de timp și cost', who:'roxana', due:d(3), done:false, restanta:false, photos:[]});
   closeModal(); STATE.view='pipeline'; render(); openClient(c.id);
 }
 
@@ -1343,9 +1444,9 @@ const SYNC = {
   last:null, auto:false, timer:null, msg:'', busy:false
 };
 
-const SH_STAGE = {'':'inreg','0 - tema proiectare':'triaj','0 - masurare':'masur',
-  '1 - design general':'proiect','2 - design detalii':'proiect',
-  '3 - design final':'deofert','4 - ofertare':'ofertare'};
+const SH_STAGE = {'':'selectie','0 - tema proiectare':'design','0 - masurare':'masur',
+  '1 - design general':'design','2 - design detalii':'design',
+  '3 - design final':'verificare','4 - ofertare':'ofertaf'};
 const SH_PRO = {'andrei':'potco','sorin':'sorin','gabriel':'gabriel','bright':'bright','dedecor':'dedecor'};
 const SH_LUNI = {ianuarie:1,februarie:2,martie:3,aprilie:4,mai:5,iunie:6,iulie:7,
   august:8,septembrie:9,octombrie:10,noiembrie:11,decembrie:12};
@@ -1400,8 +1501,7 @@ function rowsToClients(rows){
     const nm=(g(r,'prenume')+' '+g(r,'nume')).trim();
     if(!nm) return null;
     const etapa=g(r,'etapa curenta'), status=g(r,'status'), tipP=g(r,'tip proiect').toLowerCase();
-    let stage=SH_STAGE[etapa]!==undefined?SH_STAGE[etapa]:'inreg';
-    if(etapa==='4 - ofertare'&&status==='Finalizat') stage='ofertat';
+    let stage=SH_STAGE[etapa]!==undefined?SH_STAGE[etapa]:'selectie';
     const sursa=g(r,'sursa'), efec=shDate(g(r,'data predare efectiva'));
     const obs=[g(r,'categorie client')&&'categorie '+g(r,'categorie client'),
                g(r,'prioritate')&&'prioritate '+g(r,'prioritate'),
@@ -1454,7 +1554,7 @@ function applySync(inc){
                 santier:'', tipLocuinta:'', adresa:''});
     SH_FIELDS.forEach(f=>{ c[f]=x[f]; });
     c._masur=x._masur;
-    if(c.stage!=='inreg') c.hist.push([c.stage, d(0)]);
+    if(c.stage!=='selectie') c.hist.push([c.stage, d(0)]);
     CLIENTS.push(c);
   });
   dif.lipsa.forEach(c=>{ c.lipsaSheet=true; });
@@ -1478,10 +1578,10 @@ function regenAuto(){
     const add=(o)=>TASKS.push(Object.assign({id:'TA'+(++n), cid:c.id, done:false, restanta:false, photos:[], auto:true}, o));
     const rem=(o)=>REMINDERS.push(Object.assign({id:'RA'+(++n), cid:c.id, done:false, auto:true}, o));
     if(c._masur && dd(c._masur)>=0) add({t:'Măsurătoare programată — '+c.nume, who:'mihaela', due:c._masur});
-    if(!c.tel && c.stage!=='inreg') add({t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:d(3)});
+    if(!c.tel && c.stage!=='preluare') add({t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:d(3)});
     const areTriajManual = TASKS.some(t=>t.cid===c.id && !t.auto && !t.done && t.who===COORD);
     if(!c.substadiu && c.tip && !areTriajManual)
-      add({t:'Triaj: stabilește etapa curentă și programează măsurătoarea', who:COORD, due:d(2)});
+      add({t:'Studiu de caz: colectează datele și fă pre-încadrarea de timp și cost', who:COORD, due:d(2)});
     if(c.statusS==='Stand by') rem({t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:d(14), tip:'Recall stand by'});
     if(c.termen && dd(c.termen)<0 && c.statusS!=='Finalizat')
       rem({t:'Termen de predare depășit — proiectul nu e marcat finalizat', due:c.termen, tip:'Termen depășit'});
@@ -1610,7 +1710,7 @@ function ikSave(){
     nume, tel:g('ik_tel').value.trim(), oras:g('ik_oras').value.trim(),
     tip:g('ik_tip').value, santier:'', tipLocuinta:'', designer:'—',
     avansPlatit:null, gdpr:true, statusS:'Activ', substadiu:'',
-    creat:d(0), hist:[['inreg',d(0)]],
+    creat:d(0), stage:'preluare', hist:[['preluare',d(0)]],
     audio: INTAKE.notes.map((a,i)=>({t:a.t, dsc:'Preluare — nota '+(i+1), url:a.url})),
     obs:'Preluat telefonic de '+NAME(STATE.me)+' pe '+fmt(d(0))
   });
@@ -1618,7 +1718,7 @@ function ikSave(){
 
   TASKS.unshift({
     id:'T'+(Math.random()*1e6|0), cid:c.id,
-    t:`Preluare client — ${nume}: ascultă notele vocale, fă triajul și programează măsurătoarea`,
+    t:`Preluare client — ${nume}: ascultă notele vocale, sună clientul și fă studiul de caz`,
     who:COORD, due:d(2), done:false, restanta:false, photos:[], auto:false
   });
 

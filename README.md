@@ -11,29 +11,41 @@ fără dependențe, fără server.
 ## Ce demonstrează
 
 Fluxul complet al unei comenzi de mobilier la comandă, de la primul telefon până la restanțele
-de după montaj — modelat ca 11 etape cu responsabil fix pe fiecare.
+de după montaj — modelat ca **16 etape grupate în 5 faze**, cu responsabil fix pe fiecare.
+
+| Fază | Etape |
+|---|---|
+| **Intrare** | Preluare client · Selecție & studiu de caz · Înregistrare & avans · Procedură de colaborare |
+| **Relevare** | Măsurători · Listă de așteptare |
+| **Proiect** | Design · Verificare proiect · Preofertare · Proiectare & redesenare |
+| **Angajament** | Ofertă finală & contract · Comandă materiale |
+| **Execuție** | De lansat în producție · Producție atelier · Montaj & predare · Restanțe |
+
+Selecția clientului vine **înaintea** înregistrării, iar înregistrarea începe cu factura de avans.
+Pipeline-ul se poate filtra pe fază, ca să nu ai 16 coloane deodată.
 
 | Ecran | Ce face |
 |---|---|
-| **Pipeline** | Kanban cu 11 etape, drag & drop între coloane, plus vedere tabelară |
-| **Clienți** | Segmentare pe tipologie: cu/fără proiect de design, șantier la roșu/spațiu finisat |
-| **Fișă client** | Panou lateral: date, parcurs în proces, note vocale, task-uri, ofertare |
+| **Pipeline** | Kanban pe 16 etape, filtrabil pe fază, drag & drop între coloane, plus vedere tabelară |
+| **Clienți** | Segmentare pe tipologie: cu/fără proiect de design, stadiul spațiului |
+| **Fișă client** | Panou lateral: date, stare la zi (plată, procedură, stadiu spațiu), parcurs, note vocale, task-uri, ofertare |
 | **Task-uri** | Grupate pe responsabil, generate la tranziția de etapă |
 | **Restanțe** | Snag list de montaj cu poze |
 | **Remindere** | Follow-up automat cu termene și marcarea întârzierilor |
 | **Echipă & roluri** | Cine deține ce etapă și ce are în lucru |
-| **Reguli proces** | Regulile de business, aplicate ca validări în pipeline |
+| **Reguli proces** | 19 reguli de business, aplicate ca validări în pipeline |
 
 ## Reguli implementate ca validări
 
-Pipeline-ul nu e doar un board — încearcă să muți un client în „Ofertare” fără avans încasat,
-sau în „Măsurători” cu șantierul la roșu, și te oprește cu motivul regulii.
+Pipeline-ul nu e doar un board — încearcă să muți un client mai departe fără plata avansului
+înregistrată, sau la măsurători cu șantierul la roșu, și te oprește cu motivul regulii.
 
-- Oferta nu se emite fără avans încasat (prag diferit pentru apartament vs. casă)
-- Măsurătoarea cere spațiu finisat — șapă turnată și pereți gletuiți
-- Bifă GDPR obligatorie la înregistrarea clientului
-- Termene depășite marcate vizual pe fișă și în remindere
-- Lucrările la peste 3 luni declanșează alerta de blocare a prețului la materiale
+- Factura de avans se emite la înregistrare; fără plată, fluxul nu ajunge la măsurători
+- Procedura de colaborare trebuie acceptată de client înainte de programarea măsurătorii
+- Trei stadii de spațiu: la roșu nu se măsoară, semi-finisat permite măsurătoarea inițială, finisat pe cea finală
+- Comanda de materiale cere spațiu finisat, adică măsurătoarea finală făcută
+- Prețurile finale sunt vizibile doar pentru anumite roluri — proiectanții nu văd tabul de ofertare
+- Bifă GDPR obligatorie la înregistrare; termene depășite marcate vizual
 
 ## Ce nu face (e un prototip)
 
@@ -56,4 +68,4 @@ python3 -m http.server 8000    # apoi http://localhost:8000
 ## Stack
 
 Vanilla HTML, CSS și JavaScript. Zero dependențe în afară de două fonturi Google
-(Cormorant Garamond, Jost). ~1.400 de linii într-un singur fișier.
+(Cormorant Garamond, Jost). ~1.900 de linii într-un singur fișier.
