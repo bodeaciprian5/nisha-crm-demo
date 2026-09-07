@@ -104,6 +104,14 @@ a{color:inherit;text-decoration:none}
 .phbar button.on{background:var(--ink);color:var(--bone);border-color:var(--ink)}
 .phbar button .n{font-size:10px;opacity:.6;font-variant-numeric:tabular-nums}
 .phbar .dot{width:6px;height:6px;border-radius:50%;flex:0 0 auto}
+.lnk{background:none;border:0;padding:0 0 0 10px;font:inherit;font-size:11.5px;color:var(--muted);
+  text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+.lnk:hover{color:var(--ink)}
+.drivelink{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
+.btn.drive{width:100%;justify-content:center;padding:13px;background:var(--paper);
+  border:1px solid var(--line-2);text-decoration:none}
+.btn.drive:hover{border-color:var(--ink)}
+.btn .di{font-size:13px;margin-right:7px}
 .seg button{padding:7px 15px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .seg button.on{background:var(--ink);color:var(--bone)}
 
@@ -519,7 +527,7 @@ const mk = o => Object.assign({
   id:'C'+(++SEQ), stage:'preluare', designer:'—', tip:'fara', santier:'finisat',
   buget:'', avansPlatit:false, gdpr:true, tel:'', adresa:'', oras:'Cluj',
   substadiu:'', statusS:'Activ', nrSpatii:'', mp:'', tipSpatiu:'',
-  procAcceptata:null, remap:false,
+  procAcceptata:null, remap:false, driveUrl:'',
   audio:[], docs:[], hist:[], creat:d(0), termen:'', proiectant:'', obs:''
 }, o);
 
@@ -571,71 +579,71 @@ let CLIENTS = [
 ];
 
 let TASKS = [
-  {id:'TA1', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA2', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA3', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA4', cid:'', t:'Studiu de caz: colectează datele și fă pre-încadrarea de timp și cost', who:'roxana', due:'2026-09-08', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA5', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA6', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA7', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA8', cid:'', t:'Studiu de caz: colectează datele și fă pre-încadrarea de timp și cost', who:'roxana', due:'2026-09-08', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA9', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA10', cid:'', t:'Studiu de caz: colectează datele și fă pre-încadrarea de timp și cost', who:'roxana', due:'2026-09-08', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA11', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA12', cid:'', t:'Studiu de caz: colectează datele și fă pre-încadrarea de timp și cost', who:'roxana', due:'2026-09-08', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA13', cid:'', t:'Studiu de caz: colectează datele și fă pre-încadrarea de timp și cost', who:'roxana', due:'2026-09-08', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA14', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA15', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA16', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA17', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA18', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA19', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA20', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA21', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA22', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA23', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA24', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA25', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA26', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA27', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA28', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA29', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA30', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA31', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA32', cid:'', t:'Studiu de caz: colectează datele și fă pre-încadrarea de timp și cost', who:'roxana', due:'2026-09-08', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA33', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
-  {id:'TA34', cid:'', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA1', cid:'C136', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA2', cid:'C137', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA3', cid:'C138', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA4', cid:'C138', t:'Studiu de caz: colectează datele și fă pre-încadrarea de timp și cost', who:'roxana', due:'2026-09-08', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA5', cid:'C139', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA6', cid:'C101', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA7', cid:'C102', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA8', cid:'C102', t:'Studiu de caz: colectează datele și fă pre-încadrarea de timp și cost', who:'roxana', due:'2026-09-08', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA9', cid:'C103', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA10', cid:'C103', t:'Studiu de caz: colectează datele și fă pre-încadrarea de timp și cost', who:'roxana', due:'2026-09-08', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA11', cid:'C106', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA12', cid:'C106', t:'Studiu de caz: colectează datele și fă pre-încadrarea de timp și cost', who:'roxana', due:'2026-09-08', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA13', cid:'C109', t:'Studiu de caz: colectează datele și fă pre-încadrarea de timp și cost', who:'roxana', due:'2026-09-08', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA14', cid:'C140', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA15', cid:'C141', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA16', cid:'C104', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA17', cid:'C134', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA18', cid:'C127', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA19', cid:'C128', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA20', cid:'C108', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA21', cid:'C107', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA22', cid:'C131', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA23', cid:'C125', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA24', cid:'C115', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA25', cid:'C142', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA26', cid:'C126', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA27', cid:'C129', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA28', cid:'C130', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA29', cid:'C132', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA30', cid:'C143', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA31', cid:'C105', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA32', cid:'C105', t:'Studiu de caz: colectează datele și fă pre-încadrarea de timp și cost', who:'roxana', due:'2026-09-08', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA33', cid:'C133', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
+  {id:'TA34', cid:'C135', t:'Lipsă telefon în fișă — completează datele de contact', who:'ilie', due:'2026-09-09', done:false, restanta:false, photos:[], auto:true},
 ];
 
 let REMINDERS = [
-  {id:'RA1', cid:'', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
-  {id:'RA2', cid:'', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
-  {id:'RA3', cid:'', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
-  {id:'RA4', cid:'', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
-  {id:'RA5', cid:'', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
-  {id:'RA6', cid:'', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
-  {id:'RA7', cid:'', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
-  {id:'RA8', cid:'', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
-  {id:'RA9', cid:'', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
-  {id:'RA10', cid:'', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
-  {id:'RA11', cid:'', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
-  {id:'RA12', cid:'', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
-  {id:'RA13', cid:'', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
-  {id:'RA14', cid:'', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
-  {id:'RA15', cid:'', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
-  {id:'RA16', cid:'', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
-  {id:'RA17', cid:'', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
-  {id:'RA18', cid:'', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
-  {id:'RA19', cid:'', t:'Termen de predare depășit — proiectul nu e marcat finalizat', due:'2026-09-04', tip:'Termen depășit', done:false, auto:true},
-  {id:'RA20', cid:'', t:'Termen de predare depășit — proiectul nu e marcat finalizat', due:'2026-09-04', tip:'Termen depășit', done:false, auto:true},
-  {id:'RA21', cid:'', t:'Termen de predare depășit — proiectul nu e marcat finalizat', due:'2026-09-04', tip:'Termen depășit', done:false, auto:true},
-  {id:'RA22', cid:'', t:'Termen de predare depășit — proiectul nu e marcat finalizat', due:'2026-09-04', tip:'Termen depășit', done:false, auto:true},
-  {id:'RA23', cid:'', t:'Termen de predare depășit — proiectul nu e marcat finalizat', due:'2026-09-04', tip:'Termen depășit', done:false, auto:true},
-  {id:'RA24', cid:'', t:'Fișa nu mai apare în centralizator — verifică dacă a fost ștearsă din sheet', due:'2026-09-08', tip:'Dispărut din sheet', done:false, auto:true},
-  {id:'RA25', cid:'', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
-  {id:'RA26', cid:'', t:'Fișa nu mai apare în centralizator — verifică dacă a fost ștearsă din sheet', due:'2026-09-08', tip:'Dispărut din sheet', done:false, auto:true},
-  {id:'RA27', cid:'', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
-  {id:'RA28', cid:'', t:'Fișa nu mai apare în centralizator — verifică dacă a fost ștearsă din sheet', due:'2026-09-08', tip:'Dispărut din sheet', done:false, auto:true},
+  {id:'RA1', cid:'C136', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
+  {id:'RA2', cid:'C137', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
+  {id:'RA3', cid:'C138', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
+  {id:'RA4', cid:'C139', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
+  {id:'RA5', cid:'C101', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
+  {id:'RA6', cid:'C102', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
+  {id:'RA7', cid:'C103', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
+  {id:'RA8', cid:'C106', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
+  {id:'RA9', cid:'C109', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
+  {id:'RA10', cid:'C110', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
+  {id:'RA11', cid:'C111', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
+  {id:'RA12', cid:'C112', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
+  {id:'RA13', cid:'C140', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
+  {id:'RA14', cid:'C141', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
+  {id:'RA15', cid:'C104', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
+  {id:'RA16', cid:'C134', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
+  {id:'RA17', cid:'C127', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
+  {id:'RA18', cid:'C128', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
+  {id:'RA19', cid:'C114', t:'Termen de predare depășit — proiectul nu e marcat finalizat', due:'2026-09-04', tip:'Termen depășit', done:false, auto:true},
+  {id:'RA20', cid:'C116', t:'Termen de predare depășit — proiectul nu e marcat finalizat', due:'2026-09-04', tip:'Termen depășit', done:false, auto:true},
+  {id:'RA21', cid:'C131', t:'Termen de predare depășit — proiectul nu e marcat finalizat', due:'2026-09-04', tip:'Termen depășit', done:false, auto:true},
+  {id:'RA22', cid:'C117', t:'Termen de predare depășit — proiectul nu e marcat finalizat', due:'2026-09-04', tip:'Termen depășit', done:false, auto:true},
+  {id:'RA23', cid:'C125', t:'Termen de predare depășit — proiectul nu e marcat finalizat', due:'2026-09-04', tip:'Termen depășit', done:false, auto:true},
+  {id:'RA24', cid:'C105', t:'Fișa nu mai apare în centralizator — verifică dacă a fost ștearsă din sheet', due:'2026-09-08', tip:'Dispărut din sheet', done:false, auto:true},
+  {id:'RA25', cid:'C133', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
+  {id:'RA26', cid:'C133', t:'Fișa nu mai apare în centralizator — verifică dacă a fost ștearsă din sheet', due:'2026-09-08', tip:'Dispărut din sheet', done:false, auto:true},
+  {id:'RA27', cid:'C135', t:'Client în stand by — de reconfirmat dacă mergem mai departe', due:'2026-09-20', tip:'Recall stand by', done:false, auto:true},
+  {id:'RA28', cid:'C135', t:'Fișa nu mai apare în centralizator — verifică dacă a fost ștearsă din sheet', due:'2026-09-08', tip:'Dispărut din sheet', done:false, auto:true},
 ];
 
 /* ---- Conturi. Parolele sunt stocate ca hash SHA-256, nu în clar. ----
@@ -742,7 +750,49 @@ function logout(){
 }
 
 /* ---------------- state ---------------- */
-const STATE = {view:'pipeline', me:'ilie', q:'', boardMode:'kanban', drawerId:null, tab:'detalii', recording:null, mStage:'preluare', ph:'', fDes:''};
+const STATE = {view:'pipeline', me:'ilie', q:'', boardMode:'kanban', drawerId:null, tab:'detalii', recording:null, mStage:'preluare', ph:'', fDes:'', live:false};
+
+/* ---------------- legătura cu serverul ----------------
+   Când aplicația e servită de Cloudflare Pages, /api/state răspunde și datele vin din D1.
+   Când e deschisă ca fișier sau pe demo, apelul pică și rămânem pe setul din pagină. */
+const acum = () => new Date().toISOString().slice(0,19).replace('T',' ');
+const stampNou = () => STATE.live ? acum() : d(0)+' 09:00:00';
+
+async function save(path, method, body){
+  if(!STATE.live) return {ok:true, demo:true};
+  try{
+    const r = await fetch(path, {method, headers:{'content-type':'application/json'},
+      body: body ? JSON.stringify(body) : undefined});
+    const j = await r.json().catch(()=>({}));
+    if(!r.ok){ toast(j.error || ('Serverul a răspuns '+r.status), true); return {ok:false}; }
+    return j;
+  }catch(e){ toast('Nu am putut salva: '+e.message, true); return {ok:false}; }
+}
+const patchClient = (id, camp) => save('/api/clients/'+encodeURIComponent(id), 'PATCH', camp);
+
+async function boot(){
+  try{
+    const r = await fetch('/api/state', {headers:{accept:'application/json'}});
+    if(!r.ok) throw new Error('fără server');
+    const st = await r.json();
+    CLIENTS = st.clients.map(c => ({...c, audio:c.audio||[], docs:[], hist:c.hist||[]}));
+    TASKS = st.tasks.map(t => ({...t, photos:t.photos||[]}));
+    REMINDERS = st.reminders;
+    if(st.team && st.team.length){
+      TEAM.length = 0;
+      st.team.forEach(t => TEAM.push({...t,
+        short:(t.name||'').split(/\s+/).map(w=>w[0]||'').join('').slice(0,2).toUpperCase()}));
+    }
+    AUTH.user = st.me.id; AUTH.perm = st.me.perm; STATE.me = st.me.id;
+    STATE.live = true;
+    document.getElementById('gate').classList.remove('on');
+    render();
+    toast('Conectat la baza de date · '+st.me.name);
+  }catch(e){
+    STATE.live = false;
+    loginScreen();
+  }
+}
 const MOB = () => window.innerWidth <= 900;
 
 const TABS = [
@@ -769,6 +819,34 @@ const days = iso => iso ? Math.round((new Date(iso)-today)/86400000) : null;
 const fmt = iso => { if(!iso) return '—'; const p=iso.split('-'); const M=['ian','feb','mar','apr','mai','iun','iul','aug','sep','oct','nov','dec'];
   return p[2].replace(/^0/,'')+' '+M[+p[1]-1]+' '+p[0]; };
 const zile = n => n===1 ? '1 zi' : n+' zile';
+/* momentul unei treceri, ca număr; acceptă și 'YYYY-MM-DD' și 'YYYY-MM-DD hh:mm:ss' */
+const tms = v => { if(!v) return NaN;
+  const x = String(v).length===10 ? v+'T09:00:00Z' : String(v).replace(' ','T')+'Z';
+  return Date.parse(x); };
+/* în modul demo „acum" e sfârșitul zilei de referință, ca durata etapei curente să nu iasă negativă */
+const ACUM = () => (STATE.live ? Date.now() : today.getTime() + 18*3600*1000);
+/* cât a stat, scris pe înțelesul omului */
+function durata(ms){
+  if(!isFinite(ms) || ms < 0) return '—';
+  const min = ms/60000, h = min/60, z = h/24;
+  if(min < 90) return Math.max(1,Math.round(min))+' min';
+  if(h < 48)   return Math.round(h)+' h';
+  if(z < 60)   return Math.round(z)+(Math.round(z)===1?' zi':' zile');
+  return (z/30.44).toFixed(1).replace('.',',')+' luni';
+}
+/* istoricul normalizat: [{din, stage, la, de}] — vechiul format [[stage,data]] tot merge */
+const histOf = c => (c.hist||[]).map(h => Array.isArray(h)
+  ? {din:'', stage:h[0], la:h[1], de:''} : h);
+/* trecerile în ordine, fiecare cu cât a stat acolo */
+function parcurs(c){
+  const h = histOf(c).slice().sort((a,b)=>tms(a.la)-tms(b.la));
+  return h.map((x,i)=>{
+    const t0 = tms(x.la), t1 = i+1<h.length ? tms(h[i+1].la) : ACUM();
+    return {...x, ms: t1-t0, curent: i+1===h.length};
+  });
+}
+const totalInProces = c => { const p=parcurs(c); if(!p.length) return NaN;
+  return ACUM() - tms(p[0].la); };
 const clientById = id => CLIENTS.find(c=>c.id===id);
 const tipLabel = c => (c.tip==='cu'?'Cu proiect design':c.tip==='fara'?'Fără proiect design':'Tipologie neprecizată');
 const santLabel = c => (c.santier==='rosu'?'Șantier la roșu'
@@ -890,7 +968,7 @@ function render(){
   const sf=document.getElementById('syncFoot');
   if(sf) sf.textContent = SYNC.last
     ? 'Sincronizat ' + SYNC.last.toLocaleTimeString('ro-RO',{hour:'2-digit',minute:'2-digit'}) + (SYNC.auto&&SYNC.endpoint?' · auto 5 min':'')
-    : 'Date importate 6 sep · nesincronizat';
+    : (STATE.live ? 'Conectat la baza de date' : 'Set demo în pagină · fără server');
   const chip=document.querySelector('.mchip.on');
   if(chip) chip.parentElement.scrollLeft = Math.max(0, chip.offsetLeft - 46);
   if(STATE.drawerId) renderDrawer();
@@ -998,6 +1076,7 @@ function kcard(c, withStage){
   if(c.remap) alerts.push('<span class="tag" style="border-color:var(--clay);color:var(--clay)">Poziție de reconfirmat</span>');
   if(c.santier==='rosu') alerts.push('<span class="tag">La roșu</span>');
   if(c.santier==='semi') alerts.push('<span class="tag">Semi-finisat</span>');
+  if(c.driveUrl) alerts.push('<span class="tag" style="border-color:var(--sage);color:var(--sage)">▤ Drive</span>');
   alerts.push(`<span class="tag">${esc(desLabel(c))}</span>`);
   if(c.substadiu) alerts.push(`<span class="tag">${esc(c.substadiu)}</span>`);
   const t=days(c.termen);
@@ -1040,7 +1119,12 @@ function drop(e,stage){
     if(!confirm(`${c.nume} nu are spațiul marcat ca finisat.\n\nComanda de materiale se lansează după măsurătoarea finală și după ce clientul confirmă că respectă termenul.\n\nContinui totuși?`)) return;
   }
 
-  c.stage=stage; c.hist.push([stage,d(0)]); c.remap=false; render();
+  const din = c.stage;
+  c.stage = stage;
+  c.hist = (c.hist||[]).concat([{din, stage, la: stampNou(), de: AUTH.user || STATE.me}]);
+  c.remap = false;
+  render();
+  patchClient(c.id, {stage, remap:false});
 }
 
 function tableOf(list){
@@ -1111,7 +1195,8 @@ function taskRow(t){
     ${c?`<button class="btn sm ghost" onclick="openClient('${c.id}')">Fișă</button>`:''}
   </div>`;
 }
-function toggleTask(id){const t=TASKS.find(x=>x.id===id);t.done=!t.done;render()}
+function toggleTask(id){const t=TASKS.find(x=>x.id===id);t.done=!t.done;render();
+  save('/api/tasks/'+encodeURIComponent(id),'PATCH',{done:t.done})}
 function addPhoto(id,inp){
   const f=inp.files[0]; if(!f) return;
   const r=new FileReader(); r.onload=e=>{TASKS.find(x=>x.id===id).photos.push(e.target.result);render()}; r.readAsDataURL(f);
@@ -1139,7 +1224,8 @@ function viewRemindere(){
       </div>
     </div>`}).join(''):`<div class="empty">Niciun reminder activ.</div>`}`;
 }
-function doneRem(id){REMINDERS.find(r=>r.id===id).done=true;render()}
+function doneRem(id){REMINDERS.find(r=>r.id===id).done=true;render();
+  save('/api/reminders/'+encodeURIComponent(id),'PATCH',{done:true})}
 
 /* ---------------- ECHIPA ---------------- */
 function viewEchipa(){
@@ -1255,6 +1341,11 @@ function tabDetalii(c){
      <dt>Termen predare</dt><dd>${fmt(c.termen)}</dd>
      ${can('prices')?`<dt>Buget estimat</dt><dd>${esc(c.buget||'—')}</dd>`:''}
      <dt>GDPR</dt><dd>${c.gdpr?'Bifat la înregistrare':'<span class="warn">neconfirmat</span>'}</dd>
+     <dt>Dosar Drive</dt><dd>${c.driveUrl
+       ? `<a class="drivelink" href="${esc(c.driveUrl)}" target="_blank" rel="noopener">Deschide dosarul ↗</a>
+          <button class="lnk" onclick="setDrive('${c.id}')">schimbă</button>`
+       : `<span class="warn">fără dosar</span>
+          <button class="lnk" onclick="setDrive('${c.id}')">adaugă link</button>`}</dd>
    </dl></div>
    <div class="sec"><h3>Observații</h3><div style="font-size:13px;color:var(--ink-2)">${esc(c.obs||'—')}</div></div>
    <div class="sec"><h3>Stare la zi</h3>
@@ -1263,6 +1354,11 @@ function tabDetalii(c){
        <dt>Procedura de colaborare</dt><dd>${c.procAcceptata===true?'<span class="tag f">Acceptată de client</span>':c.procAcceptata===false?'<span class="tag" style="border-color:var(--rose);color:var(--rose)">Trimisă, fără răspuns</span>':'<span class="tag">Netrimisă</span>'}</dd>
        <dt>Stadiu spațiu</dt><dd>${esc(santLabel(c))}</dd>
      </dl>
+     ${c.driveUrl
+       ? `<a class="btn drive" href="${esc(c.driveUrl)}" target="_blank" rel="noopener"
+            style="margin-bottom:12px"><span class="di">▤</span> Deschide dosarul în Drive</a>`
+       : `<button class="btn ghost" onclick="setDrive('${c.id}')" style="margin-bottom:12px">
+            <span class="di">▤</span> Leagă dosarul din Drive</button>`}
      <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:12px">
        <button class="btn ghost" onclick="toggleAvans('${c.id}')">Plată: ${c.avansPlatit===true?'înregistrată':c.avansPlatit===false?'inexistentă':'neconfirmată'}</button>
        <button class="btn ghost" onclick="toggleProc('${c.id}')">Procedură: ${c.procAcceptata===true?'acceptată':c.procAcceptata===false?'fără răspuns':'netrimisă'}</button>
@@ -1288,14 +1384,27 @@ function advance(id){
   const fake={dataTransfer:{getData:()=>id},preventDefault(){}};
   drop(fake,nx.id);
 }
-function setLoc(id,v){clientById(id).tipLocuinta=v;renderDrawer()}
+/* Dosarul clientului din Drive: aici stau documentele care îl însoțesc până la final.
+   Nu creăm folderul de aici — se lipește linkul folderului deja făcut. */
+function setDrive(id){
+  const c=clientById(id);
+  const v=(prompt('Linkul folderului din Google Drive pentru '+c.nume+':', c.driveUrl||'https://drive.google.com/drive/folders/')||'').trim();
+  if(v==='') return;
+  if(!/^https:\/\//i.test(v)) return toast('Linkul trebuie să înceapă cu https://', true);
+  c.driveUrl=v; renderDrawer(); render(); patchClient(id,{driveUrl:v});
+  toast('Dosar Drive legat de '+c.nume);
+}
+function setLoc(id,v){clientById(id).tipLocuinta=v;renderDrawer();patchClient(id,{tipLocuinta:v})}
 function toggleAvans(id){const c=clientById(id);
-  c.avansPlatit = c.avansPlatit===null ? true : c.avansPlatit===true ? false : null; render(); renderDrawer()}
+  c.avansPlatit = c.avansPlatit===null ? true : c.avansPlatit===true ? false : null;
+  render(); renderDrawer(); patchClient(id, {avansPlatit:c.avansPlatit})}
 function toggleProc(id){const c=clientById(id);
-  c.procAcceptata = c.procAcceptata===null ? true : c.procAcceptata===true ? false : null; render(); renderDrawer()}
+  c.procAcceptata = c.procAcceptata===null ? true : c.procAcceptata===true ? false : null;
+  render(); renderDrawer(); patchClient(id, {procAcceptata:c.procAcceptata})}
 function cycleSant(id){const c=clientById(id);
   const seq=['','rosu','semi','finisat'];
-  c.santier = seq[(seq.indexOf(c.santier)+1)%seq.length]; render(); renderDrawer()}
+  c.santier = seq[(seq.indexOf(c.santier)+1)%seq.length];
+  render(); renderDrawer(); patchClient(id, {santier:c.santier})}
 
 function tabAudio(c){
   const bars=n=>Array.from({length:34},(_,i)=>`<i style="height:${6+((i*37+n*13)%17)}px"></i>`).join('');
@@ -1352,16 +1461,39 @@ function playNote(cid,i){
 }
 
 function tabParcurs(c){
+  const p = parcurs(c);
+  const vazute = new Set(p.map(x=>x.stage));
+  const cronologie = p.length ? `
+   <div class="sec"><h3>Cât a stat în fiecare etapă</h3>
+     <div class="notice">Fiecare trecere își lasă propria linie, inclusiv întoarcerile. Ultima e în curs.</div>
+     <table style="margin-top:12px"><thead><tr>
+       <th>Etapă</th><th>A intrat</th><th>A stat</th><th>Mutat de</th>
+     </tr></thead><tbody>
+     ${p.slice().reverse().map(x=>{
+       const st = ST(x.stage);
+       return `<tr style="cursor:default">
+         <td><span class="tag"><span class="dot" style="background:${st.c}"></span>${st.n}. ${esc(st.nm)}</span>
+             ${x.din?`<div style="font-size:10px;color:var(--muted);margin-top:4px">din ${esc(ST(x.din).nm)}</div>`:''}</td>
+         <td style="font-size:12px">${fmt(String(x.la).slice(0,10))}</td>
+         <td style="font-size:12px;${x.curent?'color:var(--clay)':''}">${durata(x.ms)}${x.curent?' · în curs':''}</td>
+         <td style="font-size:12px;color:var(--muted)">${esc(x.de?NAME(x.de):'—')}</td>
+       </tr>`}).join('')}
+     </tbody></table>
+     <div class="eyebrow" style="margin-top:12px">Total în proces: ${durata(totalInProces(c))}</div>
+   </div>` : '';
+
   return `<div class="sec"><h3>Parcurs în proces</h3>
    ${PHASES.map(f=>`<div class="eyebrow" style="margin:14px 0 6px;color:${f.c}">${esc(f.nm)}</div><div class="tl">
    ${STAGES.filter(s=>s.ph===f.id).map(s=>{
-     const h=c.hist.find(x=>x[0]===s.id);
-     const cur=c.stage===s.id;
-     return `<div class="it ${h&&!cur?'done':''} ${cur?'cur':''}">
-       <div class="t">${s.n}. ${esc(s.nm)}</div>
-       <div class="d">${h?fmt(h[1]):'—'} · ${esc(NAME(s.ow))}</div>
+     const treceri = p.filter(x=>x.stage===s.id);
+     const prima = treceri[0];
+     const cur = c.stage===s.id;
+     const totalMs = treceri.reduce((a,x)=>a+(isFinite(x.ms)?x.ms:0),0);
+     return `<div class="it ${vazute.has(s.id)&&!cur?'done':''} ${cur?'cur':''}">
+       <div class="t">${s.n}. ${esc(s.nm)}${treceri.length>1?` <span class="tag" style="margin-left:6px">${treceri.length}×</span>`:''}</div>
+       <div class="d">${prima?fmt(String(prima.la).slice(0,10)):'—'} · ${esc(NAME(s.ow))}${treceri.length?' · '+durata(totalMs):''}</div>
      </div>`}).join('')}
-   </div>`).join('')}</div>`;
+   </div>`).join('')}</div>` + cronologie;
 }
 function tabTask(c){
   const ts=TASKS.filter(t=>t.cid===c.id);
@@ -1445,8 +1577,11 @@ function saveNew(){
   const c=mk({nume:g('n_nume').value.trim(),tel:g('n_tel').value,adresa:g('n_adr').value,
     tipLocuinta:g('n_loc').value, santier:g('n_sant').value, tip:g('n_tip').value,
     designer:g('n_tip').value==='cu'?g('n_des').value:'—', obs:g('n_obs').value,
-    creat:d(0), stage:'selectie', hist:[['preluare',d(0)],['selectie',d(0)]], gdpr:true});
+    creat:d(0), stage:'selectie', gdpr:true,
+    hist:[{din:'',stage:'preluare',la:stampNou(),de:AUTH.user||STATE.me},
+          {din:'preluare',stage:'selectie',la:stampNou(),de:AUTH.user||STATE.me}]});
   CLIENTS.unshift(c);
+  save('/api/clients','POST',{...c, audio:undefined, docs:undefined, hist:undefined});
   REMINDERS.push({id:'R'+(Math.random()*1e6|0), cid:c.id, t:'Recall client nou — verifică dacă mergem mai departe', due:d(7), tip:'Recall client nou', done:false});
   TASKS.push({id:'T'+(Math.random()*1e6|0), cid:c.id, t:'Studiu de caz: colectează datele, fă pre-încadrarea de timp și cost', who:'roxana', due:d(3), done:false, restanta:false, photos:[]});
   closeModal(); STATE.view='pipeline'; render(); openClient(c.id);
@@ -1467,7 +1602,10 @@ function openTaskModal(rest, cid){
 function saveTask(rest){
   const g=id=>document.getElementById(id);
   if(!g('t_t').value.trim()) return alert('Descrierea e obligatorie.');
-  TASKS.push({id:'T'+(Math.random()*1e6|0),cid:g('t_c').value,t:g('t_t').value.trim(),who:g('t_w').value,due:g('t_d').value,done:false,restanta:rest,photos:[]});
+  const nou={id:'T'+(Math.random()*1e6|0),cid:g('t_c').value,t:g('t_t').value.trim(),
+    who:g('t_w').value,due:g('t_d').value,done:false,restanta:rest,photos:[]};
+  TASKS.push(nou);
+  save('/api/tasks','POST',{cid:nou.cid,t:nou.t,who:nou.who,due:nou.due,restanta:rest});
   closeModal(); render();
 }
 
@@ -1585,15 +1723,15 @@ function applySync(inc){
   dif.mod.forEach(({c,x})=>{
     const old=c.stage;
     SH_FIELDS.forEach(f=>{ c[f]=x[f]; });
-    if(old!==c.stage) c.hist.push([c.stage, d(0)]);
+    if(old!==c.stage) c.hist.push({din:old, stage:c.stage, la:stampNou(), de:'sync'});
     c._masur=x._masur;
   });
   dif.noi.forEach(x=>{
-    const c=mk({nume:x.nume, hist:[['inreg',x.creat]], avansPlatit:null, gdpr:false,
+    const c=mk({nume:x.nume, hist:[{din:'',stage:'selectie',la:x.creat||d(0),de:'sync'}], avansPlatit:null, gdpr:false,
                 santier:'', tipLocuinta:'', adresa:''});
     SH_FIELDS.forEach(f=>{ c[f]=x[f]; });
     c._masur=x._masur;
-    if(c.stage!=='selectie') c.hist.push([c.stage, d(0)]);
+    if(c.stage!=='selectie') c.hist.push({din:'selectie', stage:c.stage, la:stampNou(), de:'sync'});
     CLIENTS.push(c);
   });
   dif.lipsa.forEach(c=>{ c.lipsaSheet=true; });
@@ -1749,11 +1887,13 @@ function ikSave(){
     nume, tel:g('ik_tel').value.trim(), oras:g('ik_oras').value.trim(),
     tip:g('ik_tip').value, santier:'', tipLocuinta:'', designer:'—',
     avansPlatit:null, gdpr:true, statusS:'Activ', substadiu:'',
-    creat:d(0), stage:'preluare', hist:[['preluare',d(0)]],
+    creat:d(0), stage:'preluare',
+    hist:[{din:'',stage:'preluare',la:stampNou(),de:AUTH.user||STATE.me}],
     audio: INTAKE.notes.map((a,i)=>({t:a.t, dsc:'Preluare — nota '+(i+1), url:a.url})),
     obs:'Preluat telefonic de '+NAME(STATE.me)+' pe '+fmt(d(0))
   });
   CLIENTS.unshift(c);
+  save('/api/clients','POST',{...c, audio:undefined, docs:undefined, hist:undefined});
 
   TASKS.unshift({
     id:'T'+(Math.random()*1e6|0), cid:c.id,
@@ -1942,7 +2082,7 @@ window.addEventListener('resize',()=>{
 });
 window.addEventListener('orientationchange',()=>setTimeout(()=>{ if(AUTH.user) render(); },250));
 
-loginScreen();
+boot();
 </script>
 </body>
 </html>
